@@ -11,45 +11,44 @@
     <div id="header"></div>
 
     <main class="container">
-        <section class="form-section">
-            <h2>✨ Criar Nova Publicação</h2>
-            <p class="text-muted">Compartilhe seu conhecimento com a comunidade.</p>
-            
-            <form id="maintenanceForm">
-                <input type="text" id="machineName" placeholder="Título da sua postagem..." required>
-                
-                <select id="type">
-                    <option value="Dúvida">❓ Dúvida</option>
-                    <option value="Tutorial">📚 Tutorial</option>
-                    <option value="Artigo">📝 Artigo</option>
-                    <option value="Notícia">🚀 Notícia</option>
-                </select>
-                
-                <input type="date" id="date" required>
-                
-                <textarea id="description" rows="5" placeholder="Escreva aqui o conteúdo do seu post..."></textarea>
-                
-                <button type="submit" class="btn-submit">Publicar no Feed</button>
-            </form>
+        <div class="blog-header">
+            <div>
+                <h1>Comunidade Tech GeTech</h1>
+                <p class="text-muted">Explore posts ou compartilhe seu conhecimento com a nossa fábrica.</p>
+            </div>
+            <button id="openModalBtn" class="btn-primary">✨ Criar Publicação</button>
+        </div>
+
+        <section class="feed-section">
+            <h2>🚀 Feed da Comunidade</h2>
+            <div id="feedContainer" class="feed-container">
+                </div>
         </section>
 
-        <section class="list-section">
-            <h2>Feed da Comunidade</h2>
-            <div class="table-responsive">
-                <table id="historyTable">
-                    <thead>
-                        <tr>
-                            <th>Assunto</th>
-                            <th>Categoria</th>
-                            <th>Data</th>
-                            <th>Prévia do Conteúdo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                        </tbody>
-                </table>
+        <div id="postModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>✨ Criar Nova Publicação</h2>
+                    <span id="closeModalBtn" class="close-modal">&times;</span>
+                </div>
+                <p class="text-muted mb-4">Preencha os dados abaixo para publicar no feed.</p>
+                
+                <form id="maintenanceForm">
+                    <input type="text" id="machineName" placeholder="Título da sua postagem..." required>
+                    
+                    <select id="type">
+                        <option value="❓ Dúvida">❓ Dúvida</option>
+                        <option value="📚 Tutorial">📚 Tutorial</option>
+                        <option value="📝 Artigo">📝 Artigo</option>
+                        <option value="🚀 Notícia">🚀 Notícia</option>
+                    </select>
+                    
+                    <textarea id="description" rows="5" placeholder="Escreva aqui o conteúdo do seu post..." required></textarea>
+                    
+                    <button type="submit" class="btn-submit">Publicar no Feed</button>
+                </form>
             </div>
-        </section>
+        </div>
     </main>
 
     <div id="footer"></div>
