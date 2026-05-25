@@ -35,7 +35,7 @@ function logout() {
 //  NAVEGAÇÃO PARA MÓDULOS
 // =========================
 function abrirModulo(nome) {
-    window.location.href = '/app/modules/' + nome + '/' + nome + '.html';
+    window.location.href = 'modules/' + nome + '/' + nome + '.html';
 }
 
 // =========================
