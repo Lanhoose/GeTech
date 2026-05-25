@@ -339,3 +339,33 @@
     background: var(--border-card);
     border-radius: 10px;
 }
+
+/* ==========================================================================
+   CORREÇÃO DO CHATBOT: FUNDO SÓLIDO NO TEMA ESCURO
+   ========================================================================== */
+[data-theme="dark"] .chat-window {
+    background: #1e293b !important; /* Cor sólida cinza-azulada escura (combina com o cabeçalho) */
+    border: 1px solid #334155;     /* Borda sólida discreta */
+    backdrop-filter: none !important; /* Remove qualquer transparência ou desfoque de vidro */
+    -webkit-backdrop-filter: none !important;
+}
+
+[data-theme="dark"] .chat-messages {
+    background: #0f172a !important; /* Fundo interno das mensagens sólido (mesmo tom do fundo do body) */
+}
+
+[data-theme="dark"] .chat-suggestions,
+[data-theme="dark"] .chat-input {
+    background: #1e293b !important; /* Base das sugestões e campo de texto também sólidos */
+    border-top: 1px solid #334155;
+}
+
+[data-theme="dark"] .msg.bot {
+    background: #334155 !important; /* Caixa de mensagens do robô sólida */
+    color: #f1f5f9 !important;
+}
+
+[data-theme="dark"] .msg.user {
+    background: #0ea5e9 !important; /* Caixa de mensagens do usuário sólida em azul destacado */
+    color: #ffffff !important;
+}
