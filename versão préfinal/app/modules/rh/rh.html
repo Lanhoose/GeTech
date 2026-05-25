@@ -12,7 +12,6 @@
            CSS INTERNO DE ALTA ESPECIFICIDADE (Compatibilidade com o global.css)
            ========================================================================== */
         
-        /* Ajuste estrutural do espaçamento e preenchimento base */
         body { padding: 0; }
 
         .rh-container {
@@ -56,7 +55,6 @@
 
         .header-actions { display: flex; align-items: center; gap: 10px; }
 
-        /* Sobrescreve com precisão o botão voltar para não esticar 100% devido ao CSS global */
         body .header-actions button.btn-voltar {
             background: var(--mod-btn-bg);
             border: none;
@@ -75,7 +73,7 @@
             transform: scale(1.04);
         }
 
-        /* Mecanismo do Alternador de Tema Nativo (Toggle Switch) */
+        /* Alternador de Tema */
         .theme-toggle-wrap { display: flex; align-items: center; gap: 6px; }
         .theme-icon { font-size: 1rem; color: rgba(255,255,255,0.8); }
         
@@ -93,9 +91,7 @@
         [data-theme="light"] .theme-toggle { background: var(--mod-accent); }
         [data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
 
-        /* ==========================================================================
-           BARRA DE NAVEGAÇÃO SUPERIOR (Estilo Abas Compartilhadas do Sistema)
-           ========================================================================== */
+        /* BARRA DE NAVEGAÇÃO SUPERIOR */
         .sub-nav-container {
             display: flex;
             justify-content: center;
@@ -142,7 +138,7 @@
             box-shadow: var(--shadow);
         }
 
-        /* Seções estilo Painel / Card */
+        /* Seções estilo Painel */
         .panel-section {
             background: var(--bg-card);
             padding: 30px;
@@ -172,17 +168,75 @@
             gap: 10px;
         }
 
-        /* Grupos de Formulário */
+        /* Grupos de Formulário e Alinhamento Responsivo */
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-size: 0.9rem;
             color: var(--text-muted);
             font-weight: 500;
+        }
+
+        body .form-group input[type="text"],
+        body .form-group input[type="email"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-table);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            background: var(--bg-input, #fff);
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        body .form-group input[readonly] {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background: rgba(0, 0, 0, 0.03);
+        }
+        [data-theme="dark"] body .form-group input[readonly] {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Botão Cadastrar */
+        body #btnCadastrar {
+            width: auto;
+            align-self: flex-start;
+            padding: 12px 24px;
+            font-weight: bold;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+        body #btnCadastrar:hover {
+            filter: brightness(0.9);
         }
 
         /* Tabela Responsiva */
@@ -191,7 +245,6 @@
             margin-top: 12px;
         }
 
-        /* Restringe o tamanho dos botões de ação injetados dinamicamente na tabela */
         body table td button.btn-action {
             background: var(--accent);
             color: white;
@@ -301,14 +354,45 @@
                     <h2><i class="fas fa-user-plus" style="color: var(--accent);"></i> Cadastro de Funcionário</h2>
                 </div>
                 
-                <div class="form-group">
-                    <label for="nomeFuncionario">Nome Completo</label>
-                    <input type="text" id="nomeFuncionario" placeholder="Ex: Lucas Silva">
+                <div class="form-grid">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nomeFuncionario">Nome Completo</label>
+                            <input type="text" id="nomeFuncionario" placeholder="Ex: Lucas Silva">
+                        </div>
+                        <div class="form-group">
+                            <label for="emailFuncionario">E-mail Corporativo</label>
+                            <input type="email" id="emailFuncionario" placeholder="Ex: lucas@getech.com">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 0 0 30%;">
+                            <label for="cep">CEP (Digite e saia do campo)</label>
+                            <input type="text" id="cep" placeholder="00000-000" maxlength="9">
+                        </div>
+                        <div class="form-group" style="flex: 0 0 70%;">
+                            <label for="rua">Rua / Logradouro</label>
+                            <input type="text" id="rua" placeholder="Logradouro automático..." readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bairro">Bairro</label>
+                            <input type="text" id="bairro" placeholder="Bairro automático..." readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="cidade">Cidade</label>
+                            <input type="text" id="cidade" placeholder="Cidade automática..." readonly>
+                        </div>
+                        <div class="form-group" style="flex: 0 0 15%;">
+                            <label for="uf">UF</label>
+                            <input type="text" id="uf" placeholder="--" readonly>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="emailFuncionario">E-mail Corporativo</label>
-                    <input type="email" id="emailFuncionario" placeholder="Ex: lucas@getech.com">
-                </div>
+                
                 <button id="btnCadastrar">Admitir Colaborador</button>
             </section>
 
@@ -322,6 +406,7 @@
                             <tr>
                                 <th>Nome</th>
                                 <th>E-mail</th>
+                                <th>Endereço Cadastrado</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -359,7 +444,6 @@
 
     <script src="../../assets/js/rh.js" defer></script>
     <script>
-        // 1. Função Global de Alternância de Telas com Feedback Visual das Abas (.active)
         window.trocarTela = function(tela) {
             const telaCadastro = document.getElementById("tela-cadastro");
             const telaPonto = document.getElementById("tela-ponto");
@@ -367,25 +451,18 @@
             const btnNavPonto = document.getElementById("btn-nav-ponto");
 
             if (tela === 'cadastro') {
-                // Alterna visibilidade estrutural das seções
                 if (telaCadastro) telaCadastro.style.display = "block";
                 if (telaPonto) telaPonto.style.display = "none";
-                
-                // Gerencia os estados visuais dos botões marcando a opção selecionada
                 if (btnNavCadastro) btnNavCadastro.classList.add("active");
                 if (btnNavPonto) btnNavPonto.classList.remove("active");
             } else if (tela === 'ponto') {
-                // Alterna visibilidade estrutural das seções
                 if (telaCadastro) telaCadastro.style.display = "none";
                 if (telaPonto) telaPonto.style.display = "block";
-                
-                // Gerencia os estados visuais dos botões marcando a opção selecionada
                 if (btnNavCadastro) btnNavCadastro.classList.remove("active");
                 if (btnNavPonto) btnNavPonto.classList.add("active");
             }
         };
 
-        // 2. Inicialização e gerenciamento lógico do chaveador de tema (Toggle Switch)
         document.addEventListener('DOMContentLoaded', () => {
             const btn  = document.getElementById('themeToggle');
             const icon = document.getElementById('themeIcon');
