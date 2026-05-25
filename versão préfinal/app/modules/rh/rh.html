@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>S.G.R.H. - GeTech</title>
+    
+    <style>
+        /* ==========================================================================
+           CSS INTERNO DE ALTA ESPECIFICIDADE (Compatibilidade com o global.css)
+           ========================================================================== */
+        
+        /* Ajuste estrutural do espaçamento e preenchimento base */
+        body { padding: 0; }
+
+        .rh-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Variáveis locais para o cabeçalho idêntico à referência */
+        :root,
+        [data-theme="light"] {
+            --mod-header-bg:  #2c3e50;
+            --mod-accent:     #3498db;
+            --mod-btn-bg:     #3498db;
+            --mod-btn-hover:  #2980b9;
+        }
+
+        [data-theme="dark"] {
+            --mod-header-bg:  #1e293b;
+            --mod-accent:     #3b82f6;
+            --mod-btn-bg:     #3b82f6;
+            --mod-btn-hover:  #2563eb;
+        }
+
+        /* Estilização do Header do Módulo */
+        .header-modulo {
+            background-color: var(--mod-header-bg);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--mod-accent);
+            transition: background 0.3s;
+        }
+
+        .header-modulo h2 { margin: 0; color: #fff; font-size: 1.5rem;}
+        .header-modulo small { opacity: 0.7; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+
+        /* Sobrescreve com precisão o botão voltar para não esticar 100% devido ao CSS global */
+        body .header-actions button.btn-voltar {
+            background: var(--mod-btn-bg);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            width: auto; 
+            margin: 0;
+        }
+
+        body .header-actions button.btn-voltar:hover {
+            background: var(--mod-btn-hover);
+            transform: scale(1.04);
+        }
+
+        /* Mecanismo do Alternador de Tema Nativo (Toggle Switch) */
+        .theme-toggle-wrap { display: flex; align-items: center; gap: 6px; }
+        .theme-icon { font-size: 1rem; color: rgba(255,255,255,0.8); }
+        
+        body .theme-toggle-wrap button.theme-toggle {
+            position: relative; width: 44px; height: 24px;
+            background: #334155; border-radius: 12px; border: none;
+            cursor: pointer; transition: background 0.3s; flex-shrink: 0;
+            padding: 0; margin: 0;
+        }
+        body .theme-toggle-wrap button.theme-toggle::after {
+            content: ''; position: absolute; top: 3px; left: 3px;
+            width: 18px; height: 18px; background: #fff;
+            border-radius: 50%; transition: transform 0.3s;
+        }
+        [data-theme="light"] .theme-toggle { background: var(--mod-accent); }
+        [data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
+
+        /* ==========================================================================
+           BARRA DE NAVEGAÇÃO SUPERIOR (Estilo Abas Compartilhadas do Sistema)
+           ========================================================================== */
+        .sub-nav-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        body .sub-nav-container button.nav-tab-btn {
+            width: auto;
+            min-width: 200px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border-table);
+            background: rgba(44, 62, 80, 0.06);
+            color: var(--text-primary);
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        [data-theme="dark"] body .sub-nav-container button.nav-tab-btn {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        body .sub-nav-container button.nav-tab-btn:hover:not(.active) {
+            background: rgba(44, 62, 80, 0.15);
+            border-color: var(--text-muted);
+        }
+
+        [data-theme="dark"] body .sub-nav-container button.nav-tab-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        body .sub-nav-container button.nav-tab-btn.active {
+            background: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+
+        /* Seções estilo Painel / Card */
+        .panel-section {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-table);
+            box-shadow: var(--shadow);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-table);
+            padding-bottom: 12px;
+        }
+
+        .panel-header h2 {
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Grupos de Formulário */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Tabela Responsiva */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+
+        /* Restringe o tamanho dos botões de ação injetados dinamicamente na tabela */
+        body table td button.btn-action {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: 0.2s;
+            width: auto; 
+            margin: 0;
+        }
+        body table td button.btn-action:hover { 
+            filter: brightness(0.85); 
+        }
+
+        /* Visor do Relógio de Ponto */
+        .ponto-display-box {
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-table);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        [data-theme="dark"] .ponto-display-box {
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .visor-ponto {
+            font-size: 2.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: var(--visor-color);
+            margin-top: 10px;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        /* Botões lado a lado */
+        .btn-flex {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        body .btn-flex button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            color: #ffffff;
+            transition: filter 0.2s, transform 0.1s;
+            width: 100%;
+            margin: 0;
+        }
+
+        body .btn-flex button:active { transform: scale(0.99); }
+        body .btn-flex button.btn-entrada { background: #27ae60; }
+        body .btn-flex button.btn-saida { background: #c0392b; }
+
+        footer { margin-top: auto; }
+    </style>
+</head>
+<body>
+
+    <script>
+        (function () {
+            const saved = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+
+    <header class="header-modulo">
+        <div>
+            <small>Módulo de Operações</small>
+            <h2><i class="fa-solid fa-id-card-clip"></i> Gestão de Recursos Humanos</h2>
+        </div>
+        <div class="header-actions">
+            <div class="theme-toggle-wrap">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema"></button>
+            </div>
+            <button class="btn-voltar" onclick="window.location.href='../../app.html'">← Voltar ao Menu</button>
+        </div>
+    </header>
+
+    <main class="rh-container">
+        
+        <div class="sub-nav-container">
+            <button id="btn-nav-cadastro" class="nav-tab-btn active" onclick="trocarTela('cadastro')">
+                <i class="fas fa-user-plus"></i> Registrar Usuário
+            </button>
+            <button id="btn-nav-ponto" class="nav-tab-btn" onclick="trocarTela('ponto')">
+                <i class="fas fa-clock"></i> Registrar Ponto
+            </button>
+        </div>
+        
+        <div id="tela-cadastro">
+            <section class="panel-section">
+                <div class="panel-header">
+                    <h2><i class="fas fa-user-plus" style="color: var(--accent);"></i> Cadastro de Funcionário</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label for="nomeFuncionario">Nome Completo</label>
+                    <input type="text" id="nomeFuncionario" placeholder="Ex: Lucas Silva">
+                </div>
+                <div class="form-group">
+                    <label for="emailFuncionario">E-mail Corporativo</label>
+                    <input type="email" id="emailFuncionario" placeholder="Ex: lucas@getech.com">
+                </div>
+                <button id="btnCadastrar">Admitir Colaborador</button>
+            </section>
+
+            <section class="panel-section">
+                <div class="panel-header">
+                    <h2><i class="fas fa-users" style="color: var(--accent);"></i> Funcionários Ativos</h2>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>E-mail</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTabelaRH"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <div id="tela-ponto" style="display: none;">
+            <section class="panel-section">
+                <div class="panel-header">
+                    <h2><i class="fas fa-clock" style="color: var(--accent);"></i> Relógio de Ponto Eletrônico</h2>
+                </div>
+                
+                <h3 id="colaboradorSelecionado" style="margin-top: 0;">Nenhum funcionário selecionado</h3>
+                
+                <div class="ponto-display-box">
+                    <p style="color: var(--text-muted); margin: 0; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em;">Último Registro / Status</p>
+                    <div id="visorStatus" class="visor-ponto">Aguardando batida...</div>
+                </div>
+
+                <div class="btn-flex">
+                    <button id="btnEntrada" class="btn-entrada"><i class="fas fa-sign-in-alt"></i> Registrar Entrada</button>
+                    <button id="btnSaida" class="btn-saida"><i class="fas fa-sign-out-alt"></i> Registrar Saída</button>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 GeTech - Sistema de Gestão Integrado</p>
+    </footer>
+
+    <script src="../../assets/js/rh.js" defer></script>
+    <script>
+        // 1. Função Global de Alternância de Telas com Feedback Visual das Abas (.active)
+        window.trocarTela = function(tela) {
+            const telaCadastro = document.getElementById("tela-cadastro");
+            const telaPonto = document.getElementById("tela-ponto");
+            const btnNavCadastro = document.getElementById("btn-nav-cadastro");
+            const btnNavPonto = document.getElementById("btn-nav-ponto");
+
+            if (tela === 'cadastro') {
+                // Alterna visibilidade estrutural das seções
+                if (telaCadastro) telaCadastro.style.display = "block";
+                if (telaPonto) telaPonto.style.display = "none";
+                
+                // Gerencia os estados visuais dos botões marcando a opção selecionada
+                if (btnNavCadastro) btnNavCadastro.classList.add("active");
+                if (btnNavPonto) btnNavPonto.classList.remove("active");
+            } else if (tela === 'ponto') {
+                // Alterna visibilidade estrutural das seções
+                if (telaCadastro) telaCadastro.style.display = "none";
+                if (telaPonto) telaPonto.style.display = "block";
+                
+                // Gerencia os estados visuais dos botões marcando a opção selecionada
+                if (btnNavCadastro) btnNavCadastro.classList.remove("active");
+                if (btnNavPonto) btnNavPonto.classList.add("active");
+            }
+        };
+
+        // 2. Inicialização e gerenciamento lógico do chaveador de tema (Toggle Switch)
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn  = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            
+            const aplicar = (tema) => {
+                document.documentElement.setAttribute('data-theme', tema);
+                localStorage.setItem('theme', tema);
+                if (icon) icon.textContent = tema === 'dark' ? '🌙' : '☀️';
+            };
+            
+            aplicar(localStorage.getItem('theme') || 'dark');
+            
+            if (btn) {  
+                btn.addEventListener('click', () => {
+                    aplicar(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
