@@ -1,0 +1,167 @@
+/* =========================
+    DEPOIMENTOS
+========================= */
+body {
+    background: var(--bg-page-gradient);
+    background-attachment: fixed;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.testimonials-wrapper { text-align: center; }
+
+.titulo-sessao {
+    color: var(--accent-cyan);
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+}
+
+/* Botão e formulário */
+.btn-primario {
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    padding: 12px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-bottom: 30px;
+    backdrop-filter: blur(5px);
+    transition: 0.3s;
+}
+
+.btn-primario:hover {
+    background: var(--bg-card-hover);
+    transform: scale(1.05);
+}
+
+.form-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    padding: 30px;
+    border-radius: 20px;
+    margin: 0 auto 40px;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: background 0.3s ease;
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select {
+    background: var(--bg-input);
+    border: 1px solid var(--border-input);
+    padding: 12px;
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: inherit;
+    transition: border-color 0.25s;
+}
+
+.form-card input::placeholder,
+.form-card textarea::placeholder { color: var(--text-muted); }
+
+.form-card input:focus,
+.form-card textarea:focus,
+.form-card select:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.18);
+}
+
+.form-card select option {
+    background: var(--bg-header);
+    color: var(--text-primary);
+}
+
+.hidden { display: none; }
+
+/* Grid de cards */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+    text-align: left;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    background: var(--bg-card-hover);
+    box-shadow: var(--shadow-card);
+}
+
+.stars { color: var(--accent-yellow); margin-bottom: 15px; }
+
+.card p {
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    color: var(--text-secondary);
+}
+
+.card-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 20px;
+}
+
+.card-footer strong {
+    display: block;
+    font-size: 1.2rem;
+    color: var(--accent-cyan);
+}
+
+.card-footer small {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.form-actions button {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#btn-salvar { background-color: var(--accent-cyan); color: #ffffff; }
+#btn-salvar:hover { background-color: var(--accent-cyan-hv); }
+
+#btn-cancelar {
+    background-color: var(--glass-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+    .titulo-sessao { font-size: 2rem; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+}

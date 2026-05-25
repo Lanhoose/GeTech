@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeTech | Login</title>
+    
+    <style>
+        :root {
+            --azul-industrial: #0664d7;
+            --azul-alerta: #3d92ff;
+            --cinza-claro: #f4f4f4;
+            --branco: #ffffff;
+            --preto-suave: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: var(--cinza-claro);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Idêntico ao da Home */
+        header {
+            background-color: var(--azul-industrial);
+            color: var(--branco);
+            padding: 0.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%; 
+            box-sizing: border-box; 
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
+        .logo-img {
+            height: 50px; 
+            display: block;
+            border-radius: 40px;
+        }
+
+        .logo-texto {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Ajuste para o conteúdo não ficar por baixo do header fixo */
+        .login-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin-top: 80px; /* Compensa o header fixo */
+        }
+
+        .login-card {
+            background: var(--branco);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            border-top: 5px solid var(--azul-industrial);
+        }
+
+        .login-card h2 {
+            text-align: center;
+            color: var(--azul-industrial);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--preto-suave);
+        }
+
+        input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--azul-industrial);
+        }
+
+        .btn-login {
+            background-color: var(--azul-industrial);
+            color: var(--branco);
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background-color: #054da5;
+        }
+
+        .links-auxiliares {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .links-auxiliares a {
+            color: var(--azul-industrial);
+            text-decoration: none;
+        }
+
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="Getech.png" alt="Logo GeTech" class="logo-img">
+        <span class="logo-texto"><strong>GE</strong>TECH</span>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="home.html">Início</a></li>
+            <li><a href="Contato.html">Contato</a></li>
+            <li><a href="orçamento.html">Orçamento</a></li>
+            <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
+        </ul>
+    </nav>
+</header>
+
+<main class="login-container">
+    <div class="login-card">
+        <h2>Acesso ao Sistema</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="usuario">E-mail ou Usuário</label>
+                <input type="text" id="usuario" placeholder="Digite seu acesso" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="Digite sua senha" required>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+
+        <div class="links-auxiliares">
+            <a href="#">Esqueceu a senha?</a><br><br>
+            <span>Não tem conta? <a href="cadastro.html">Cadastre-se aqui</a></span>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2026 GeTech Soluções Industriais</p>
+</footer>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        alert("Login simulado com sucesso!");
+        window.location.href = "home.html";
+    });
+</script>
+
+</body>
+</html>
