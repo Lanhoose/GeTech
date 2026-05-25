@@ -1,4 +1,5 @@
 let modal;
+let modalSucesso;
 
 // Texto da política de privacidade organizado para reuso
 let textoPrivacidade = [
@@ -10,18 +11,15 @@ let textoPrivacidade = [
 
 document.addEventListener('DOMContentLoaded', () => {
     modal = document.getElementById('modalPrivacidade');
+    modalSucesso = document.getElementById('modalSucesso');
 
-    // Estilo para quando já aceitou
+    // Se o usuário já tiver aceitado os termos anteriormente, reconstrói o botão de navegação direta
     if (localStorage.getItem('getech_termos_aceitos') === 'true') {
-        const btnAceite = document.getElementById('btnAceite');
-        if (btnAceite) {
-            btnAceite.innerHTML = "✅ Termos já aceitos";
-            btnAceite.style.backgroundColor = "#28a745";
-            btnAceite.onclick = null;
-        }
+        renderizarBotaoIrParaIndex();
     }
 });
 
+// Exibe o modal explicativo da LGPD
 function abrirModal() {
     if (modal) {
         modal.classList.add('active');
@@ -29,6 +27,7 @@ function abrirModal() {
     }
 }
 
+// Oculta o modal explicativo da LGPD
 function fecharModal() {
     if (modal) {
         modal.classList.remove('active');
@@ -36,17 +35,48 @@ function fecharModal() {
     }
 }
 
-window.onclick = function(event) {
-    if (event.target === modal) fecharModal();
-};
-
-function aceitarTermos() {
-    localStorage.setItem('getech_termos_aceitos', 'true');
-    alert('Obrigado por aceitar nossos termos!');
-    window.location.href = '/public/pages/index.html'; 
+// Fecha o modal de sucesso e redireciona para a página principal
+function fecharModalSucesso() {
+    if (modalSucesso) {
+        modalSucesso.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+    window.location.href = 'index.html';
 }
 
-// ESTA É A FUNÇÃO ATUALIZADA QUE VOCÊ DEVE SUBSTITUIR:
+// Monitora cliques fora da área dos modais para fechamento suave
+window.onclick = function(event) {
+    if (event.target === modal) fecharModal();
+    if (event.target === modalSucesso) fecharModalSucesso();
+};
+
+// Modifica a estrutura da interface substituindo o botão de aceite pelo link de navegação
+function renderizarBotaoIrParaIndex() {
+    const areaBotao = document.getElementById('area-botao-aceite');
+    if (areaBotao) {
+        areaBotao.innerHTML = `
+            <button onclick="window.location.href='index.html'" class="btn-web" style="background-color: #2563eb;">
+                Ir para a Página Inicial 🚀
+            </button>
+        `;
+    }
+}
+
+// Executa os procedimentos ao clicar em aceitar os termos
+function aceitarTermos() {
+    localStorage.setItem('getech_termos_aceitos', 'true');
+    
+    // Altera o layout substituindo o botão imediatamente
+    renderizarBotaoIrParaIndex();
+    
+    // Dispara o pop-up customizado de sucesso em vez do alert nativo
+    if (modalSucesso) {
+        modalSucesso.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Função de geração de PDF assistida por biblioteca externa
 async function gerarPDF() {
     const lib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
     if (!lib) {
@@ -67,7 +97,7 @@ async function gerarPDF() {
     doc.text("Documento oficial gerado pelo portal.", 20, 28);
     
     // Linha divisória
-    doc.line(20, 33, 190, 33); 
+    doc.line(20, 33, 190, 33);
 
     // Configurações para o corpo do texto
     doc.setFont("helvetica", "normal");
@@ -84,7 +114,7 @@ async function gerarPDF() {
         doc.text(linhasQuebradas, margemEsquerda, eixoY);
         
         // Ajusta o eixo Y dinamicamente para o próximo bloco de texto
-        eixoY += (linhasQuebradas.length * 7) + 5; 
+        eixoY += (linhasQuebradas.length * 7) + 5;
     });
 
     doc.save("Privacidade_GeTech.pdf");
