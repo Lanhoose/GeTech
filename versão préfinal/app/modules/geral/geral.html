@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeTech - Documentação Técnica do ERP</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <style>
+        /* ==========================================================================
+           VARIÁVEIS DE TEMA AVANÇADAS (Identidade GeTech Baseada no PDF)
+           ========================================================================== */
+        :root,
+        [data-theme="light"] {
+            --mod-header-bg:  #2c3e50;
+            --mod-accent:     #3498db;
+            --mod-btn-bg:     #3498db;
+            --mod-btn-hover:  #2980b9;
+            --bg-body:        #f8fafc;
+            --bg-card:        #ffffff;
+            --text-primary:   #334155;
+            --text-muted:     #64748b;
+            --code-bg:        #1e1e24;
+            --code-text:      #e2e8f0;
+            --code-border:    #cbd5e1;
+            --folder-color:   #f59e0b;
+            --table-border:   #e2e8f0;
+            --priority-high:  #ef4444;
+            --priority-med:   #f59e0b;
+            --priority-low:   #10b981;
+            --shadow-sm:      0 2px 8px rgba(0,0,0,0.05);
+            --shadow-md:      0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        [data-theme="dark"] {
+            --mod-header-bg:  #1e293b;
+            --mod-accent:     #3b82f6;
+            --mod-btn-bg:     #3b82f6;
+            --mod-btn-hover:  #2563eb;
+            --bg-body:        #0f172a;
+            --bg-card:        #1e293b;
+            --text-primary:   #f1f5f9;
+            --text-muted:     #94a3b8;
+            --code-bg:        #0f172a;
+            --code-text:      #38bdf8;
+            --code-border:    #334155;
+            --folder-color:   #fbbf24;
+            --table-border:   #334155;
+            --priority-high:  #f87171;
+            --priority-med:   #fbbf24;
+            --priority-low:   #34d399;
+            --shadow-sm:      0 2px 8px rgba(0,0,0,0.2);
+            --shadow-md:      0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        /* ==========================================================================
+           RESET E ESTRUTURA BASE DO LAYOUT
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+
+        /* Topbar Unificada */
+        .topbar {
+            background-color: var(--mod-header-bg);
+            color: #ffffff;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .topbar h1 {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .topbar h1 span {
+            color: var(--mod-accent);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* Seletor/Chaveador de Tema Rápido */
+        .theme-toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Navegabilidade por Abas de Documentação */
+        .nav-tabs {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--table-border);
+            display: flex;
+            padding: 0 40px;
+            gap: 5px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--mod-accent);
+            font-weight: 600;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--mod-accent);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Container de visualização principal */
+        .main-content {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .panel-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--table-border);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+        }
+
+        /* ==========================================================================
+           COMPONENTE DE ÁRVORE DE DIRETÓRIOS DINÂMICA (Aba Estrutura)
+           ========================================================================== */
+        .folder-wrapper {
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .folder-title {
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-top: 4px;
+            cursor: default;
+        }
+
+        .folder-title i {
+            color: var(--folder-color);
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .folder-content {
+            padding-left: 20px;
+            border-left: 1px dashed var(--text-muted);
+            margin-left: 9px;
+        }
+
+        .file-item {
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .file-item i {
+            color: var(--mod-accent);
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .comment-text {
+            color: #788896 !important;
+            font-style: italic;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+
+        /* ==========================================================================
+           TABELAS REUTILIZÁVEIS E COMPONENTES AUXILIARES
+           ========================================================================== */
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .tech-table th {
+            background-color: rgba(0, 0, 0, 0.02);
+            border-bottom: 2px solid var(--table-border);
+            padding: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .tech-table td {
+            padding: 14px;
+            border-bottom: 1px solid var(--table-border);
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+
+        .priority-badge.alta { background-color: var(--priority-high); }
+        .priority-badge.media { background-color: var(--priority-med); }
+        .priority-badge.baixa { background-color: var(--priority-low); }
+
+        /* Documentação de Texto Clássica */
+        .doc-section {
+            margin-bottom: 35px;
+        }
+
+        .doc-section h2 {
+            font-size: 22px;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--mod-accent);
+            padding-left: 12px;
+        }
+
+        .doc-section p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .info-box {
+            background-color: rgba(52, 152, 219, 0.05);
+            border-left: 4px solid var(--mod-accent);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            color: var(--text-muted);
+        }
+
+        code {
+            font-family: 'Consolas', monospace;
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <h1>GeTech <span>Technical Central</span></h1>
+        <div class="topbar-actions">
+            <div class="theme-toggle-wrap" id="themeToggle">
+                <span id="themeIcon">🌙</span>
+                <button class="theme-toggle">Alternar Tema</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="btn-aba-visao" onclick="trocarAba('visao')"><i class="fas fa-eye"></i> Visão Geral</button>
+        <button class="tab-btn" id="btn-aba-estrutura" onclick="trocarAba('estrutura')"><i class="fas fa-sitemap"></i> Estrutura de Pastas</button>
+        <button class="tab-btn" id="btn-aba-desenvolvimento" onclick="trocarAba('desenvolvimento')"><i class="fas fa-code"></i> Guia de Desenvolvimento</button>
+    </div>
+
+    <main class="main-content">
+
+        <div id="tela-visao" class="panel-card">
+            <div class="doc-section">
+                <h2>Introdução ao Sistema</h2>
+                <p>O <strong>ERP Industrial GeTech</strong> é uma plataforma de gestão e monitoramento fabril de alta performance desenvolvida de forma modular. O ecossistema simula perfeitamente uma infraestrutura empresarial real, segregado de forma segura em duas frentes de atuação: o <strong>Portal Público Institucional</strong> e o <strong>Dashboard Interno Operacional</strong> (protegido por regras rígidas de autenticação).</p>
+                <p>Este portal de documentação serve como central técnica activa para a manutenção, onboarding de engenheiros e controle de pendências de desenvolvimento.</p>
+            </div>
+
+            <div class="doc-section">
+                <h2>Tecnologias Utilizadas</h2>
+                <table class="tech-table">
+                    <thead>
+                        <tr>
+                            <th>Tecnologia</th>
+                            <th>Uso no Projeto</th>
+                            <th>Onde Aparece</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>HTML5</code></td>
+                            <td>Estruturação semântica de interfaces, módulos e modais de dados.</td>
+                            <td>Todo o escopo de arquivos <code>.html</code> do sistema.</td>
+                        </tr>
+                        <tr>
+                            <td><code>CSS3</code></td>
+                            <td>Estilização avançada baseada em CSS Variables nativas, Flexbox e Grid layouts.</td>
+                            <td>Diretórios <code>assets/css/</code> do App e do Site Público.</td>
+                        </tr>
+                        <tr>
+                            <td><code>JavaScript (ES6)</code></td>
+                            <td>Lógica comportamental local, controle de ponto em tempo real e simulações do banco.</td>
+                            <td>Diretórios <code>assets/js/</code> de controle relacional.</td>
+                        </tr>
+                        <tr>
+                            <td><code>Fetch API</code></td>
+                            <td>Injeção assíncrona modular de cabeçalhos e rodapés reutilizáveis.</td>
+                            <td>Componente genérico <code>component.js</code>.</td>
+                        </tr>
+                        <tr>
+                            <td><code>Web Storage</code></td>
+                            <td>Persistência local leve de sessões autenticadas e registros pragmáticos de usuários.</td>
+                            <td>Módulos de login e espelhos de ponto (<code>localStorage</code>).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tela-estrutura" class="panel-card" style="display: none;">
+            <div class="doc-section">
+                <h2>Arquitetura e Mapeamento de Diretórios</h2>
+                <p>Abaixo encontra-se a representação hierárquica oficial do ecossistema GeTech. Esta estrutura garante isolamento lógico completo entre as páginas públicas e os recursos operacionais privados.</p>
+                
+                <div class="folder-wrapper">
+                    <div class="folder-title"><i class="fas fa-folder"></i> versão préfinal</div>
+                    <div class="folder-content">
+                        <div class="file-item"><i class="fab fa-markdown" style="color: #42a5f5;"></i> README.md</div>
+                        
+                        <div class="folder-title"><i class="fas fa-folder"></i> app <span class="comment-text">// Painel/Dashboard Interno do ERP (Protegido)</span></div>
+                        <div class="folder-content">
+                            <div class="file-item"><i class="fab fa-html5"></i> app.html</div>
+                            <div class="folder-title"><i class="fas fa-folder"></i> assets</div>
+                            <div class="folder-content">
+                                <div class="folder-title"><i class="fas fa-folder"></i> css</div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> app.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> global.css</div>
+                                </div>
+                                <div class="folder-title"><i class="fas fa-folder"></i> img</div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fas fa-image"></i> Getech.png</div>
+                                </div>
+                                <div class="folder-title"><i class="fas fa-folder"></i> js</div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fab fa-js-square"></i> acessibilidade.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> app.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> estoque.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> manutencao.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> rh.js</div>
+                                </div>
+                            </div>
+                            <div class="folder-title"><i class="fas fa-folder"></i> modules</div>
+                            <div class="folder-content">
+                                <div class="folder-title"><i class="fas fa-folder"></i> estoque</div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fab fa-html5"></i> estoque.html</div>
+                                </div>
+                                <div class="folder-title"><i class="fas fa-folder"></i> manutencao</div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fab fa-html5"></i> manutencao.html</div>
+                                </div>
+                                <div class="folder-title"><i class="fas fa-folder"></i> rh</div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fab fa-html5"></i> rh.html</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="folder-title"><i class="fas fa-folder" style="color: #2ecc71;"></i> public <span class="comment-text">// Portal Público / Site Institucional da GeTech</span></div>
+                        <div class="folder-content">
+                            
+                            <div class="folder-title"><i class="fas fa-folder"></i> components <span class="comment-text">// Fragmentos estruturais assíncronos</span></div>
+                            <div class="folder-content">
+                                <div class="file-item"><i class="fab fa-html5"></i> footer.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> header.html</div>
+                            </div>
+
+                            <div class="folder-title"><i class="fas fa-folder"></i> pages <span class="comment-text">// Subpáginas de navegação externa</span></div>
+                            <div class="folder-content">
+                                <div class="file-item"><i class="fab fa-html5"></i> _template.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> ajuda.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> contato.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> depoimentos.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> FAQ.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> funcionalidades.html</div>
+                                <div class="file-item"><i class="fab fa-html5" style="color: #e67e22; font-weight: bold;"></i> index.html <span class="comment-text">(Home do Site)</span></div>
+                                <div class="file-item"><i class="fab fa-html5"></i> integração.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> login.html <span class="comment-text">(Portal de Acesso)</span></div>
+                                <div class="file-item"><i class="fab fa-html5"></i> planos.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> politica-privacidade.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> sobre.html</div>
+                                <div class="file-item"><i class="fab fa-html5"></i> teste_aumentada.html</div>
+                            </div>
+
+                            <div class="folder-title"><i class="fas fa-folder"></i> assets</div>
+                            <div class="folder-content">
+                                <div class="folder-title"><i class="fas fa-folder"></i> css <span class="comment-text">// Folhas de estilo modulares</span></div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> ajuda.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> blog.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> contato.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> depoimentos.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> FAQ.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> funcionalidade.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> index.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> integração.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> layout.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> login.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> planos.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> privacidade.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> sobre.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> template.css</div>
+                                    <div class="file-item"><i class="fab fa-css3-alt"></i> teste_aumentada.css</div>
+                                </div>
+                                <div class="folder-title"><i class="fas fa-folder"></i> js <span class="comment-text">// Controladores comportamentais</span></div>
+                                <div class="folder-content">
+                                    <div class="file-item"><i class="fab fa-js-square"></i> ajuda.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> blog.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> component.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> contato.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> depoimentos.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> FAQ.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> funcionalidade.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> integração.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> login.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> planos.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> privacidade.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> sobre.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> template.js</div>
+                                    <div class="file-item"><i class="fab fa-js-square"></i> teste_aumentada.js</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="tela-desenvolvimento" class="panel-card" style="display: none;">
+            <div class="doc-section">
+                <h2>Criação de Novos Módulos ERP</h2>
+                <p>Para expandir o barramento operacional e adicionar novos cartões de gestão ao Dashboard, siga estritamente a padronização arquitetural mapeada abaixo:</p>
+                <div class="info-box">
+                    <strong>Estrutura de Arquivo Obrigatória:</strong><br>
+                    Sempre inicialize o módulo criando o ficheiro em: <code>app/modules/nome-modulo/nome-modulo.html</code>
+                </div>
+                <p>Após a criação da interface isolada, importe os estilos compartilhados do sistema incluindo a tag de referência no cabeçalho do arquivo:</p>
+                <p><code>&lt;link rel="stylesheet" href="/app/assets/css/global.css"&gt;</code></p>
+                <p>Por fim, anexe o gatilho de execução injetando o novo bloco de código HTML diretamente na Grid de Módulos dentro de <code>app.html</code>:</p>
+                <p><code>&lt;div class="card" onclick="abrirModulo('nome-modulo')"&gt; ... &lt;/div&gt;</code></p>
+            </div>
+
+            <div class="doc-section">
+                <h2>Quadro de Pendências Ativas (Roadmap)</h2>
+                <p>Controle tático de features e requisitos mapeados para homologação imediata da versão estável.</p>
+                <table class="tech-table">
+                    <thead>
+                        <tr>
+                            <th>Item / Funcionalidade</th>
+                            <th>Tipo de Escopo</th>
+                            <th>Prioridade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Migrar motor de autenticação ativo para <code>sessionStorage</code></td>
+                            <td>Desafio de Codificação (Aula)</td>
+                            <td><span class="priority-badge alta">Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td>Desenvolvimento e integração da página de Blog</td>
+                            <td>Página Pública Institucional</td>
+                            <td><span class="priority-badge media">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td>Desenvolvimento da página estruturada de Contacto</td>
+                            <td>Página Pública Institucional</td>
+                            <td><span class="priority-badge media">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td>Implementação lógica do módulo fabril de Produção</td>
+                            <td>Módulo Nativo do ERP</td>
+                            <td><span class="priority-badge media">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td>Homologação e polimento dos demais módulos secundários do ERP</td>
+                            <td>Módulos do Sistema</td>
+                            <td><span class="priority-badge baixa">Baixa</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <script>
+        // 1. Alternador Fluido de Abas de Conteúdo
+        const trocarAba = (tela) => {
+            const telas = {
+                visao: document.getElementById("tela-visao"),
+                estrutura: document.getElementById("tela-estrutura"),
+                desenvolvimento: document.getElementById("tela-desenvolvimento")
+            };
+
+            const botoes = {
+                visao: document.getElementById("btn-aba-visao"),
+                estrutura: document.getElementById("btn-aba-estrutura"),
+                desenvolvimento: document.getElementById("btn-aba-desenvolvimento")
+            };
+
+            Object.keys(telas).forEach(key => {
+                if(telas[key]) telas[key].style.display = (key === tela) ? "block" : "none";
+                if(botoes[key]) {
+                    if(key === tela) botoes[key].classList.add("active");
+                    else botoes[key].classList.remove("active");
+                }
+            });
+        };
+
+        // 2. Chaveador e Persistência de Tema (Dark/Light Mode)
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn  = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            
+            const aplicar = (tema) => {
+                document.documentElement.setAttribute('data-theme', tema);
+                localStorage.setItem('theme', tema);
+                if (icon) icon.textContent = tema === 'dark' ? '🌙' : '☀️';
+            };
+            
+            aplicar(localStorage.getItem('theme') || 'dark');
+            
+            if (btn) {  
+                btn.addEventListener('click', () => {
+                    aplicar(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

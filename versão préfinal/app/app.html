@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ERP Industrial - Dashboard</title>
     <link rel="stylesheet" href="assets/css/app.css">
-
 </head>
 <body>
 
     <div class="header">
         <div class="header-left">
             <h1>Painel ERP</h1>
-            <p id="usuario">Bem-vindo, Usuário!</p>
-            
+            <p id=\"usuario\">Bem-vindo, Usuário!</p>
         </div>
         <div class="header-actions">
-            <!-- TOGGLE DE TEMA -->
             <div class="theme-toggle-wrap">
                 <span class="theme-icon" id="themeIcon">🌙</span>
                 <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema"></button>
@@ -28,43 +25,49 @@
 
     <div class="container">
         <div class="grid-modulos">
+            <div class="card" onclick="abrirModulo('geral')">
+                <h3>🌐 Visão Geral</h3>
+                <p>Informações institucionais, escopo e objetivos do projeto GeTech.</p>
+            </div>
+
             <div class="card" onclick="abrirModulo('estoque')">
                 <h3>📦 Gestão de Inventário</h3>
                 <p>Controle de entrada e saída de materiais.</p>
             </div>
+            
             <div class="card" onclick="abrirModulo('manutencao')">
                 <h3>⚙️ Manutenção Ativa</h3>
                 <p>Registro e preventivas de máquinas.</p>
             </div>
+            
             <div class="card" onclick="abrirModulo('rh')">
                 <h3>🕐 RH & Ponto Digital</h3>
                 <p>Registro de jornada dos funcionários.</p>
             </div>
+            
             <div class="card" onclick="abrirModulo('pedidos')">
                 <h3>📋 Ordens de Serviço</h3>
                 <p>Gestão de pedidos de produção.</p>
             </div>
+            
             <div class="card" onclick="abrirModulo('qualidade')">
                 <h3>✅ Controle de Qualidade</h3>
                 <p>Inspeção e relatórios de conformidade.</p>
             </div>
+            
             <div class="card" onclick="abrirModulo('suprimentos')">
                 <h3>🛒 Suprimentos</h3>
                 <p>Gestão de compras e fornecedores.</p>
             </div>
+            
             <div class="card" onclick="abrirModulo('producao')">
                 <h3>🏭 Linha de Produção</h3>
                 <p>Monitoramento industrial em tempo real.</p>
-            </div>
-            <div class="card" onclick="abrirModulo('treinamento')">
-                <h3>🎓 Portal de Treinamentos</h3>
-                <p>Capacitação e cursos internos.</p>
             </div>
         </div>
     </div>
 
     <script src="assets/js/app.js"></script>
-    <script src="assets/js/component.js"></script>
     <script src="assets/js/acessibilidade.js"></script>
 </body>
 </html>
