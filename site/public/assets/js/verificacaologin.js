@@ -20,20 +20,17 @@ function verificarStatusLogin() {
 function logout() {
     localStorage.removeItem('logado');
     localStorage.removeItem('usuarioAtual');
-    
-    // CORREÇÃO: Caminho absoluto direto, sem a pasta "public" que estava quebrando
-    window.location.href = "/site/pages/public/index.html";
+
+    window.location.href = "/GeTech/site/pages/index.html";
 }
 
 function redirecionarUsuario() {
     const estaLogado = localStorage.getItem('logado') === 'true';
 
     if (estaLogado) {
-        // CORREÇÃO: Vai para a área do app (ajuste o final se o arquivo do app não estiver aqui)
-        window.location.href = "/site/app/app.html";
+        window.location.href = "/GeTech/site/app/app.html";
     } else {
-        // CORREÇÃO: Se não estiver logado, volta para a página inicial/login correta
-        window.location.href = "/site/public/pages/index.html";
+        window.location.href = "/GeTech/site/pages/index.html";
     }
 }
 
