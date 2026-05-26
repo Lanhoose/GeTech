@@ -1,6 +1,8 @@
 // Caminho base do seu projeto no GitHub Pages
 const BASE_URL = window.location.origin + "/GeTech/site";
 
+
+
 function verificarStatusLogin() {
     const authSection = document.getElementById('auth-section');
 

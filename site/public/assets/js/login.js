@@ -43,6 +43,9 @@ function cadastrar() {
 // =========================
 //  LOGIN
 // =========================
+
+const BASE_URL = window.location.origin + "/GeTech/site";
+
 function fazerLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const senha = document.getElementById('loginSenha').value;
@@ -65,7 +68,7 @@ function fazerLogin() {
         localStorage.setItem('usuarioAtual', usuario.email);
 
         setTimeout(() => {
-            window.location.href = "/GeTech/site/app/app.html";
+            window.location.href = `${BASE_URL}/app/app.html`;
         }, 1000);
     } else {
         mostrarMensagem(msg, 'Email ou senha incorretos!', 'erro');
