@@ -48,7 +48,7 @@ function logout() {
     localStorage.removeItem('usuarioAtual');
 
     // Redireciona para a página inicial
-    window.location.href = "/GeTech/";
+    window.location.href = "/GeTech/site/public/index.html";
 }
 
 function redirecionarUsuario() {
@@ -63,7 +63,7 @@ function redirecionarUsuario() {
     } else {
 
         // Página de login
-        window.location.href = "/GeTech/site/pages/login.html";
+        window.location.href = "/GeTech/site/public/pages/login.html";
     }
 }
 
