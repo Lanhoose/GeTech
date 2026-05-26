@@ -254,7 +254,6 @@
 
     <main class="main-content">
 
-        <!-- ==================== ABA: VISÃO GERAL ==================== -->
         <div id="tela-visao" class="panel-card">
             <div class="doc-section">
                 <h2><i class="fas fa-rocket"></i> Introdução ao Sistema</h2>
@@ -303,7 +302,6 @@
             </div>
         </div>
 
-        <!-- ==================== ABA: ARQUITETURA ==================== -->
         <div id="tela-arquitetura" class="panel-card" style="display:none;">
             <div class="doc-section">
                 <h2><i class="fas fa-map"></i> Mapa do Sistema</h2>
@@ -320,16 +318,16 @@
                         <div class="map-page"><span class="map-page-name">depoimentos.html</span><span class="status-badge done">✓ pronto</span></div>
                         <div class="map-page"><span class="map-page-name">integracoes.html</span><span class="status-badge done">✓ pronto</span></div>
                         <div class="map-page"><span class="map-page-name">faq.html</span><span class="status-badge done">✓ pronto</span></div>
-                        <div class="map-page"><span class="map-page-name">blog.html</span><span class="status-badge pending">⚡ pendente</span></div>
-                        <div class="map-page"><span class="map-page-name">contato.html</span><span class="status-badge pending">⚡ pendente</span></div>
+                        <div class="map-page"><span class="map-page-name">blog.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">contato.html</span><span class="status-badge done">✓ pronto</span></div>
                     </div>
                     <div class="map-zone">
                         <div class="map-zone-title app-c"><i class="fas fa-lock"></i> app/ — Dashboard ERP</div>
                         <div class="map-page"><span class="map-page-name">app.html</span><span class="map-page-desc">Dashboard</span></div>
                         <div class="map-page"><span class="map-page-name">modules/estoque/</span><span class="status-badge done">✓ pronto</span></div>
                         <div class="map-page"><span class="map-page-name">modules/producao/</span><span class="status-badge empty">📁 vazia</span></div>
-                        <div class="map-page"><span class="map-page-name">modules/manutencao/</span><span class="status-badge notcreated">✗ não criado</span></div>
-                        <div class="map-page"><span class="map-page-name">modules/ponto/</span><span class="status-badge notcreated">✗ não criado</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/manutencao/</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/rh_ponto/</span><span class="status-badge done">✓ pronto</span></div>
                         <div class="map-page"><span class="map-page-name">modules/pedidos/</span><span class="status-badge notcreated">✗ não criado</span></div>
                         <div class="map-page"><span class="map-page-name">modules/qualidade/</span><span class="status-badge notcreated">✗ não criado</span></div>
                         <div class="map-page"><span class="map-page-name">modules/suprimentos/</span><span class="status-badge notcreated">✗ não criado</span></div>
@@ -363,7 +361,7 @@
     .then(data =&gt; { document.<span class="fn">getElementById</span>(id).innerHTML = data; });
 }
 
-document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentLoaded"</span>, () =&gt; {
+document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentLoaded"</span>, () => {
   <span class="fn">carregarComponente</span>(<span class="str">"header"</span>, <span class="str">"../components/header.html"</span>);
   <span class="fn">carregarComponente</span>(<span class="str">"footer"</span>, <span class="str">"../components/footer.html"</span>);
 });
@@ -396,7 +394,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             </div>
         </div>
 
-        <!-- ==================== ABA: ESTRUTURA DE PASTAS ==================== -->
         <div id="tela-estrutura" class="panel-card" style="display:none;">
             <div class="doc-section">
                 <h2><i class="fas fa-folder-tree"></i> Arquitetura e Mapeamento de Diretórios</h2>
@@ -410,7 +407,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
 
                 <div class="folder-wrapper" style="margin-top:24px;">
 
-                    <!-- ROOT -->
                     <div class="folder-title" onclick="toggleFolder(this)">
                         <i class="fas fa-folder"></i>
                         <span class="folder-label">versão préfinal <span class="zone-label zone-root">raiz</span></span>
@@ -419,7 +415,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                     <div class="folder-content">
                         <div class="file-item"><i class="fab fa-markdown" style="color:#42a5f5;"></i> README.md</div>
 
-                        <!-- APP -->
                         <div class="folder-title" onclick="toggleFolder(this)">
                             <i class="fas fa-folder"></i>
                             <span class="folder-label" style="color:#3498db;">app <span class="zone-label zone-app">sistema ERP</span></span>
@@ -463,17 +458,16 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                                 </div>
                                 <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">manutencao</span><i class="fas fa-chevron-down chevron"></i></div>
                                 <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-html5"></i> manutencao.html</div>
+                                    <div class="file-item"><i class="fab fa-html5"></i> manutencao.html <span class="comment-text">← implementado</span></div>
                                 </div>
                                 <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">rh</span><i class="fas fa-chevron-down chevron"></i></div>
                                 <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-html5"></i> rh.html</div>
+                                    <div class="file-item"><i class="fab fa-html5"></i> rh.html <span class="comment-text">← implementado com Ponto</span></div>
                                 </div>
-                                <div class="file-item" style="color:var(--text-muted);font-style:italic;"><i class="fas fa-times" style="color:var(--priority-high);"></i> manutencao/ · ponto/ · pedidos/ · qualidade/ · suprimentos/ · treinamento/ <span class="comment-text">← não criados</span></div>
+                                <div class="file-item" style="color:var(--text-muted);font-style:italic;"><i class="fas fa-times" style="color:var(--priority-high);"></i> pedidos/ · qualidade/ · suprimentos/ · treinamento/ <span class="comment-text">← não criados</span></div>
                             </div>
                         </div>
 
-                        <!-- PUBLIC -->
                         <div class="folder-title" onclick="toggleFolder(this)">
                             <i class="fas fa-folder"></i>
                             <span class="folder-label" style="color:#2ecc71;">public <span class="zone-label zone-public">site institucional</span></span>
@@ -489,8 +483,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                             <div class="folder-content">
                                 <div class="file-item"><i class="fab fa-html5"></i> _template.html</div>
                                 <div class="file-item"><i class="fab fa-html5"></i> ajuda.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> blog.html <span class="comment-text">← pendente</span></div>
-                                <div class="file-item"><i class="fab fa-html5"></i> contato.html <span class="comment-text">← pendente</span></div>
+                                <div class="file-item"><i class="fab fa-html5"></i> blog.html <span class="comment-text">← pronto</span></div>
+                                <div class="file-item"><i class="fab fa-html5"></i> contato.html <span class="comment-text">← pronto</span></div>
                                 <div class="file-item"><i class="fab fa-html5"></i> depoimentos.html</div>
                                 <div class="file-item"><i class="fab fa-html5"></i> FAQ.html</div>
                                 <div class="file-item"><i class="fab fa-html5"></i> funcionalidades.html</div>
@@ -518,7 +512,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                             </div>
                         </div>
 
-                        <!-- SITE C -->
                         <div class="folder-title" onclick="toggleFolder(this)">
                             <i class="fas fa-folder"></i>
                             <span class="folder-label" style="color:#9b59b6;">Site C <span class="zone-label zone-sitec">portal cliente</span></span>
@@ -536,12 +529,9 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                             <div class="file-item"><i class="fas fa-image" style="color:#e67e22;"></i> perfil.jpg <span class="comment-text">← asset de perfil</span></div>
                         </div>
 
-                    </div><!-- /folder-content raiz -->
-                </div><!-- /folder-wrapper -->
-            </div>
+                    </div></div></div>
         </div>
 
-        <!-- ==================== ABA: MÓDULOS & PÁGINAS ==================== -->
         <div id="tela-modulos" class="panel-card" style="display:none;">
             <div class="doc-section">
                 <h2><i class="fas fa-globe"></i> Páginas do Site Público</h2>
@@ -556,8 +546,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                         <tr><td>Depoimentos</td><td><code>depoimentos.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
                         <tr><td>Integrações</td><td><code>integracoes.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
                         <tr><td>FAQ</td><td><code>faq.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
-                        <tr><td>Blog</td><td><code>blog.html</code></td><td><span class="status-badge pending">⚡ pendente</span></td></tr>
-                        <tr><td>Contato</td><td><code>contato.html</code></td><td><span class="status-badge pending">⚡ pendente</span></td></tr>
+                        <tr><td>Blog</td><td><code>blog.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Contato</td><td><code>contato.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -571,8 +561,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                     <tbody>
                         <tr><td>Estoque</td><td><code>modules/estoque/estoque.html</code></td><td>SPA + localStorage</td><td><span class="status-badge done">✓ pronto</span></td></tr>
                         <tr><td>Produção</td><td><code>modules/producao/</code></td><td>—</td><td><span class="status-badge empty">📁 pasta vazia</span></td></tr>
-                        <tr><td>Manutenção</td><td><code>modules/manutencao/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
-                        <tr><td>RH / Ponto</td><td><code>modules/ponto/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
+                        <tr><td>Manutenção</td><td><code>modules/manutencao/manutencao.html</code></td><td>Controle corretivo/preventivo</td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>RH / Ponto</td><td><code>modules/rh/rh.html</code></td><td>Gestão de funcionários + ponto integrado</td><td><span class="status-badge done">✓ pronto</span></td></tr>
                         <tr><td>Pedidos / OS</td><td><code>modules/pedidos/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
                         <tr><td>Qualidade</td><td><code>modules/qualidade/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
                         <tr><td>Suprimentos</td><td><code>modules/suprimentos/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
@@ -601,7 +591,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             </div>
         </div>
 
-        <!-- ==================== ABA: DESENVOLVIMENTO ==================== -->
         <div id="tela-desenvolvimento" class="panel-card" style="display:none;">
             <div class="doc-section">
                 <h2><i class="fas fa-plus-circle"></i> Como Criar uma Nova Página Pública</h2>
@@ -665,7 +654,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             <div class="section-divider"></div>
 
             <div class="doc-section">
-                <h2><i class="fas fa-clipboard-list"></i> Pendências</h2>
+                <h2><i class="fas fa-clipboard-list"></i> Pendências Restantes</h2>
                 <table class="tech-table">
                     <thead><tr><th>Item / Funcionalidade</th><th>Tipo de Escopo</th><th>Prioridade</th></tr></thead>
                     <tbody>
@@ -673,16 +662,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                             <td>Migrar motor de autenticação para <code>sessionStorage</code></td>
                             <td>Desafio da aula</td>
                             <td><span class="priority-badge alta">Alta</span></td>
-                        </tr>
-                        <tr>
-                            <td>Criar <code>blog.html</code></td>
-                            <td>Página pública</td>
-                            <td><span class="priority-badge media">Média</span></td>
-                        </tr>
-                        <tr>
-                            <td>Criar <code>contato.html</code></td>
-                            <td>Página pública</td>
-                            <td><span class="priority-badge media">Média</span></td>
                         </tr>
                         <tr>
                             <td>Implementar módulo Produção</td>
@@ -695,7 +674,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                             <td><span class="priority-badge media">Média</span></td>
                         </tr>
                         <tr>
-                            <td>Demais módulos ERP (RH, Pedidos, Qualidade...)</td>
+                            <td>Demais módulos ERP (Pedidos, Qualidade, Suprimentos...)</td>
                             <td>Módulos ERP</td>
                             <td><span class="priority-badge baixa">Baixa</span></td>
                         </tr>
