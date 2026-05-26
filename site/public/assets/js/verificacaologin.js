@@ -24,20 +24,20 @@ function logout() {
     localStorage.removeItem('logado');
     localStorage.removeItem('usuarioAtual');
     
-    // Em vez de apenas recarregar, é melhor mandar para a home pública
-    window.location.href = "GeTech/site/public/pages/index.html";
+    // CORREÇÃO: Adicionada a barra "/" no início para fixar a rota na raiz do GitHub
+    window.location.href = "/GeTech/site/public/pages/index.html";
 }
 
 function redirecionarUsuario() {
     const estaLogado = localStorage.getItem('logado') === 'true';
 
     if (estaLogado) {
-        // Se estiver logado, vai para a área restrita
-        window.location.href = "GeTech/site/app/app.html";
+        // CORREÇÃO: Caminho absoluto a partir da raiz do repositório
+        window.location.href = "/GeTech/site/public/pages/site/app/app.html";
     } else {
-        // Se não estiver logado, vai para a tela de login
-        // Ajustei o caminho para o que costuma ser o padrão de pastas
-        window.location.href = "GeTech/site/public/pages/login.html";
+        // CORREÇÃO: Caminho absoluto para a tela de login
+        window.location.href = "/GeTech/site/public/pages/site/login/login.html"; 
+        // Nota: Ajuste o final acima se o seu arquivo de login se chamar index.html ou estiver em outra pasta.
     }
 }
 
