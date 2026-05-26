@@ -22,7 +22,7 @@ function logout() {
     localStorage.removeItem('usuarioAtual');
     
     // Força a URL a resetar a partir da raiz do GitHub, limpando caminhos antigos
-    window.location.href = "../../../public/pages/index.html";
+    window.location.href = "../../../../../GeTech/site/public/pages/index.html";
 }
 
 function redirecionarUsuario() {
@@ -30,10 +30,10 @@ function redirecionarUsuario() {
 
     if (estaLogado) {
         // CORREÇÃO: Força o caminho limpo direto para o app, sem acumular pastas
-        window.location.href = "../../../app/app.html";
+        window.location.href = "../../../../../GeTech/site/app/app.html";
     } else {
         // CORREÇÃO: Força o caminho limpo direto para o login
-        window.location.href = "../../../public/pages/index.html";
+        window.location.href = "../../../../../GeTech/site/public/pages/index.html";
     }
 }
 
