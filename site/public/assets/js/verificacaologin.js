@@ -54,7 +54,7 @@ function redirecionarUsuario() {
     if (estaLogado) {
         window.location.href = "app/app.html"; 
     } else {
-        window.location.href = "pages/login.html";
+        window.location.href = "login.html";
     }
 }
 
