@@ -1,3 +1,6 @@
 # GeTech
 Desenvolvimento de um sistema de ERP Industrial
 ...
+
+
+.
