@@ -28,11 +28,11 @@ function verificarStatusLogin() {
         authSection.innerHTML = `
             <div class="auth-buttons">
 
-                <a href="/GeTech/site/pages/login.html" class="btn-login">
+                <a href="/GeTech/site/public/pages/login.html" class="btn-login">
                     Entrar
                 </a>
 
-                <a href="/GeTech/site/pages/cadastro.html" class="btn-cadastro">
+                <a href="/GeTech/site/public/pages/cadastro.html" class="btn-cadastro">
                     Cadastrar
                 </a>
 
@@ -48,7 +48,7 @@ function logout() {
     localStorage.removeItem('usuarioAtual');
 
     // Redireciona para a página inicial
-    window.location.href = "/GeTech/site/pages/index.html";
+    window.location.href = "/GeTech/";
 }
 
 function redirecionarUsuario() {
