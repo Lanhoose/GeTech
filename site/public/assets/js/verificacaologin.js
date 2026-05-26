@@ -26,7 +26,7 @@ function verificarStatusLogin() {
     // Usuário deslogado
     else {
         authSection.innerHTML = `
-            <a href="/GETECH/site/pages/login.html" class="btn-login">
+            <a href="/GeTech/site/public/pages/login.html" class="btn-login">
                 Entrar
             </a>
         `;
@@ -39,7 +39,7 @@ function logout() {
     localStorage.removeItem('usuarioAtual');
 
     // Redireciona para a home
-    window.location.href = "/GeTech/index.html";
+    window.location.href = "/GeTech/site/public/pages/index.html";
 }
 
 function redirecionarUsuario() {
