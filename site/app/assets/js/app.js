@@ -10,7 +10,7 @@
 //  PROTEÇÃO DE LOGIN
 // =========================
 if (localStorage.getItem('logado') !== 'true') {
-    window.location.href = '/public/pages/index.html';
+    window.location.href = `${BASE_URL}/site/public/pages/index.html`;
 }
 
 // =========================
