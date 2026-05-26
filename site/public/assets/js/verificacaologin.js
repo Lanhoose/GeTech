@@ -25,7 +25,7 @@ function logout() {
     localStorage.removeItem('usuarioAtual');
     
     // Em vez de apenas recarregar, é melhor mandar para a home pública
-    window.location.href = "/public/pages/index.html";
+    window.location.href = "GeTech/site/public/pages/index.html";
 }
 
 function redirecionarUsuario() {
@@ -33,11 +33,11 @@ function redirecionarUsuario() {
 
     if (estaLogado) {
         // Se estiver logado, vai para a área restrita
-        window.location.href = "../../app/app.html";
+        window.location.href = "GeTech/site/app/app.html";
     } else {
         // Se não estiver logado, vai para a tela de login
         // Ajustei o caminho para o que costuma ser o padrão de pastas
-        window.location.href = "../pages/login.html";
+        window.location.href = "GeTech/site/public/pages/login.html";
     }
 }
 
