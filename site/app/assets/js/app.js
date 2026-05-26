@@ -25,10 +25,14 @@ if (emailLogado && elementoUsuario) {
 // =========================
 //  LOGOUT
 // =========================
+
+const BASE_URL = window.location.origin + "/GeTech";
+
+
 function logout() {
     localStorage.removeItem('logado');
     localStorage.removeItem('usuarioAtual');
-    window.location.href = '/public/pages/index.html';
+    window.location.href = `${BASE_URL}/site/public/pages/index.html`;
 }
 
 // =========================
