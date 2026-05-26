@@ -32,7 +32,7 @@ function verificarStatusLogin() {
                     Entrar
                 </a>
 
-                <a href="/GeTech/site/public/pages/cadastro.html" class="btn-cadastro">
+                <a href="/GeTech/site/public/pages/login.html" class="btn-cadastro">
                     Cadastrar
                 </a>
 
