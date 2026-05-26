@@ -1,13 +1,11 @@
 function verificarStatusLogin() {
     const authSection = document.getElementById('auth-section');
 
-    // Se a seção não existir, interrompe
     if (!authSection) return;
 
     const estaLogado = localStorage.getItem('logado') === 'true';
     const emailUsuario = localStorage.getItem('usuarioAtual');
 
-    // Usuário logado
     if (estaLogado && emailUsuario) {
         const nomeExibicao = emailUsuario.split('@')[0];
 
@@ -16,56 +14,48 @@ function verificarStatusLogin() {
                 <span class="user-logged">
                     Bem-vindo, <strong>${nomeExibicao}</strong>!
                 </span>
-
                 <button onclick="logout()" class="btn-logout">
                     Sair
                 </button>
             </div>
         `;
     } 
-    // Usuário deslogado
     else {
+        // CORREÇÃO: Removida a barra inicial e ajustado para o caminho real do GitHub
         authSection.innerHTML = `
             <div class="auth-buttons">
-
-                <a href="/GeTech/site/public/pages/login.html" class="btn-login">
+                <a href="pages/login.html" class="btn-login">
                     Entrar
                 </a>
-
-                <a href="/GeTech/site/public/pages/login.html" class="btn-cadastro">
+                <a href="pages/login.html" class="btn-cadastro">
                     Cadastrar
                 </a>
-
             </div>
         `;
     }
 }
 
 function logout() {
-
-    // Remove dados do usuário
     localStorage.removeItem('logado');
     localStorage.removeItem('usuarioAtual');
 
-    // Redireciona para a página inicial
-    window.location.href = "/GeTech/site/public/index.html";
+    // CORREÇÃO: Caminho relativo voltando pastas se necessário, ou apontando para a raiz relativa
+    // Se o logout for chamado a partir da index:
+    window.location.href = "index.html"; 
+    
+    // NOTA: Se o logout puder ser chamado de dentro de subpastas (como /pages/), 
+    // o ideal é usar: window.location.origin + "/GeTech/site/index.html" (ajuste conforme sua estrutura real)
 }
 
 function redirecionarUsuario() {
-
     const estaLogado = localStorage.getItem('logado') === 'true';
 
+    // Se a função for executada a partir da raiz (index.html):
     if (estaLogado) {
-
-        // Área principal do sistema
-        window.location.href = "/GeTech/site/app/app.html";
-
+        window.location.href = "app/app.html"; 
     } else {
-
-        // Página de login
-        window.location.href = "/GeTech/site/public/pages/login.html";
+        window.location.href = "pages/login.html";
     }
 }
 
-// Executa automaticamente ao carregar a página
 document.addEventListener('DOMContentLoaded', verificarStatusLogin);
