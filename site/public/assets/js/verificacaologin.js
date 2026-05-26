@@ -25,7 +25,7 @@ function logout() {
     localStorage.removeItem('usuarioAtual');
     
     // Em vez de apenas recarregar, é melhor mandar para a home pública
-    window.location.href = "/site/public/pages/index.html";
+    window.location.href = "/site/public/pages/";
 }
 
 function redirecionarUsuario() {
