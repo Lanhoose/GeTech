@@ -65,7 +65,7 @@ function fazerLogin() {
         localStorage.setItem('usuarioAtual', usuario.email);
 
         setTimeout(() => {
-            window.location.href = '.../.../.../app/app.html';
+            window.location.href = '/site/app/app.html';
         }, 1000);
     } else {
         mostrarMensagem(msg, 'Email ou senha incorretos!', 'erro');
