@@ -33,7 +33,7 @@ function redirecionarUsuario() {
 
     if (estaLogado) {
         // Se estiver logado, vai para a área restrita
-        window.location.href = "GeTech/site/app/app.html";
+        window.location.href = "site/app/app.html";
     } else {
         // Se não estiver logado, vai para a tela de login
         // Ajustei o caminho para o que costuma ser o padrão de pastas
