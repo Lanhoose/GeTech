@@ -26,33 +26,46 @@ function verificarStatusLogin() {
     // Usuário deslogado
     else {
         authSection.innerHTML = `
-            <a href="/GeTech/site/public/pages/login.html" class="btn-login">
-                Entrar
-            </a>
+            <div class="auth-buttons">
+
+                <a href="/GeTech/site/pages/login.html" class="btn-login">
+                    Entrar
+                </a>
+
+                <a href="/GeTech/site/pages/cadastro.html" class="btn-cadastro">
+                    Cadastrar
+                </a>
+
+            </div>
         `;
     }
 }
 
 function logout() {
+
     // Remove dados do usuário
     localStorage.removeItem('logado');
     localStorage.removeItem('usuarioAtual');
 
-    // Redireciona para a home
-    window.location.href = "/GeTech/site/public/pages/index.html";
+    // Redireciona para a página inicial
+    window.location.href = "/GeTech/site/pages/index.html";
 }
 
 function redirecionarUsuario() {
+
     const estaLogado = localStorage.getItem('logado') === 'true';
 
     if (estaLogado) {
-        // Área do app
+
+        // Área principal do sistema
         window.location.href = "/GeTech/site/app/app.html";
+
     } else {
+
         // Página de login
-        window.location.href = "/GeTech/site/public/pages/login.html";
+        window.location.href = "/GeTech/site/pages/login.html";
     }
 }
 
-// Executa automaticamente ao carregar
+// Executa automaticamente ao carregar a página
 document.addEventListener('DOMContentLoaded', verificarStatusLogin);
