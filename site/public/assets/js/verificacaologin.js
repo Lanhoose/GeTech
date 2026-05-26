@@ -21,19 +21,19 @@ function logout() {
     localStorage.removeItem('logado');
     localStorage.removeItem('usuarioAtual');
     
-    // Força a URL a resetar a partir da raiz do GitHub, limpando caminhos antigos
-    window.location.href = "../../../../../GeTech/site/public/pages/index.html";
+    // CORREÇÃO: Caminho absoluto direto, sem a pasta "public" que estava quebrando
+    window.location.href = "/site/pages/public/index.html";
 }
 
 function redirecionarUsuario() {
     const estaLogado = localStorage.getItem('logado') === 'true';
 
     if (estaLogado) {
-        // CORREÇÃO: Força o caminho limpo direto para o app, sem acumular pastas
-        window.location.href = "../../../../../GeTech/site/app/app.html";
+        // CORREÇÃO: Vai para a área do app (ajuste o final se o arquivo do app não estiver aqui)
+        window.location.href = "/site/app/app.html";
     } else {
-        // CORREÇÃO: Força o caminho limpo direto para o login
-        window.location.href = "../../../../../GeTech/site/public/pages/index.html";
+        // CORREÇÃO: Se não estiver logado, volta para a página inicial/login correta
+        window.location.href = "/site/public/pages/index.html";
     }
 }
 
