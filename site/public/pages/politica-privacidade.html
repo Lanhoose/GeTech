@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacidade - GeTech</title>
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/privacidade.css">
+</head>
+<body>
+    <div id="header"></div>
+
+    <main class="container">
+        <section class="custom-card">
+            <h1>Privacidade e Termos de Uso</h1>
+            <p>
+                A <strong>GeTech</strong> preza pela transparência e segurança no monitoramento de suas máquinas industriais.<br>
+                Coletamos apenas os dados necessários (Nome, E-mail e Empresa) para garantir o histórico técnico e a eficiência da sua manutenção.
+            </p>
+            
+            <hr class="divider">
+
+            <div class="download-section">
+                <h3>Documentação Oficial GeTech</h3>
+                <p>Escolha como deseja visualizar nossos termos e políticas:</p>
+                
+                <div class="btn-group">
+                    <button onclick="abrirModal()" class="btn-web btn-outline">
+                        Visualizar Agora
+                    </button>
+                    <button onclick="gerarPDF()" class="btn-web btn-outline">
+                        💾 Gerar PDF
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div class="external-action" id="area-botao-aceite">
+            <button onclick="aceitarTermos()" class="btn-web" id="btnAceite">
+                ✅ Li e concordo com os termos
+            </button>
+        </div>
+    </main>
+
+    <div id="modalPrivacidade" class="modal-container">
+        <div class="modal-card">
+            <span class="close-btn" onclick="fecharModal()">&times;</span>
+            <h2>Resumo das Leis de Privacidade (LGPD)</h2>
+            <div class="modal-content">
+                <p>Em conformidade com a <strong>LGPD</strong>, a GeTech garante:</p>
+                <ul>
+                    <li><strong>Finalidade:</strong> Seus dados são usados apenas para suporte técnico.</li>
+                    <li><strong>Acesso:</strong> Você pode solicitar a correção ou exclusão de seus dados a qualquer momento.</li>
+                    <li><strong>Segurança:</strong> Implementamos criptografia para proteger informações de manutenção industrial.</li>
+                    <li><strong>Retenção:</strong> Mantemos os dados apenas pelo período necessário para o histórico da máquina.</li>
+                </ul>
+                <p>Para ler o texto jurídico completo, baixe o PDF anexo na página principal.</p>
+            </div>
+            <div style="margin-top: 20px;">
+                <button onclick="fecharModal()" class="btn-web">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalSucesso" class="modal-container">
+        <div class="modal-card" style="text-align: center; max-width: 400px;">
+            <div style="font-size: 50px; color: #28a745; margin-bottom: 15px;">🎉</div>
+            <h2>Termos Aceitos!</h2>
+            <p style="color: var(--text-secondary); margin-top: 10px; font-size: 15px;">
+                Obrigado por aceitar nossos termos de uso e políticas de privacidade.
+            </p>
+            <div style="margin-top: 25px;">
+                <button onclick="fecharModalSucesso()" class="btn-web">Prosseguir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script src="../assets/js/component.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="../assets/js/privacidade.js"></script>
+    <script src="../assets/js/verificacaologin.js"></script>
+    <script src="../assets/js/acessibilidade.js"></script>
+</body>
+</html>

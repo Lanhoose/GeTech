@@ -1,0 +1,195 @@
+/* =========================
+   VARIÁVEIS DE TEMA
+========================= */
+:root,
+[data-theme="light"] {
+    --bg-body:        #f0f2f5;
+    --bg-nav:         #2c3e50;
+    --bg-card:        #ffffff;
+    --bg-input:       #ffffff;
+    --text-primary:   #2c3e50;
+    --text-muted:     #666666;
+    --border-input:   #cccccc;
+    --border-table:   #eeeeee;
+    --shadow:         0 4px 10px rgba(0,0,0,0.10);
+    --accent:         #3498db;
+    --visor-color:    #2c3e50;
+}
+
+[data-theme="dark"] {
+    --bg-body:        #0f172a;
+    --bg-nav:         #1e293b;
+    --bg-card:        #1e293b;
+    --bg-input:       #263248;
+    --text-primary:   #e2e8f0;
+    --text-muted:     #94a3b8;
+    --border-input:   #334155;
+    --border-table:   #334155;
+    --shadow:         0 4px 10px rgba(0,0,0,0.40);
+    --accent:         #3b82f6;
+    --visor-color:    #e2e8f0;
+}
+
+/* =========================
+   BASE
+========================= */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* =========================
+   NAV
+========================= */
+nav {
+    background: var(--bg-nav);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    transition: background 0.3s;
+}
+
+nav button {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.6);
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background 0.2s, color 0.2s;
+    width: auto;
+}
+
+nav button:hover {
+    background: white;
+    color: var(--bg-nav);
+    border-color: white;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+.content-wrapper { flex: 1; }
+
+.container {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* =========================
+   CARDS
+========================= */
+.card {
+    background: var(--bg-card);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    margin-bottom: 15px;
+    transition: background 0.3s;
+}
+
+/* =========================
+   INPUTS
+========================= */
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid var(--border-input);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.2s, background 0.3s;
+}
+
+input::placeholder { color: var(--text-muted); }
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.18);
+}
+
+/* =========================
+   BOTÕES
+========================= */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    background: var(--accent);
+    font-family: inherit;
+    transition: filter 0.2s;
+}
+
+button:hover { filter: brightness(0.88); }
+
+/* =========================
+   TABELA
+========================= */
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+
+th {
+    padding: 12px;
+    border-bottom: 2px solid var(--border-table);
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-table);
+    text-align: left;
+    color: var(--text-primary);
+}
+
+tr:hover td { background: rgba(52,152,219,0.06); }
+
+/* =========================
+   VISOR
+========================= */
+.visor {
+    font-size: 50px;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: bold;
+    color: var(--visor-color);
+    transition: color 0.3s;
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+    background: var(--bg-nav);
+    color: white;
+    text-align: center;
+    padding: 30px;
+    border-top: 5px solid var(--accent);
+    transition: background 0.3s;
+}

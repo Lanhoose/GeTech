@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEtech - Comunidade Tech</title>
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/blog.css">
+</head>
+<body>
+    <div id="header"></div>
+
+    <main class="container">
+        <div class="blog-header">
+            <div>
+                <h1>Comunidade Tech GeTech</h1>
+                <p class="text-muted">Explore posts ou compartilhe seu conhecimento com a nossa fábrica.</p>
+            </div>
+            <button id="openModalBtn" class="btn-primary">✨ Criar Publicação</button>
+        </div>
+
+        <section class="feed-section">
+            <h2>🚀 Feed da Comunidade</h2>
+            <div id="feedContainer" class="feed-container">
+                </div>
+        </section>
+
+        <div id="postModal" class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>✨ Criar Nova Publicação</h2>
+                    <span id="closeModalBtn" class="close-modal">&times;</span>
+                </div>
+                <p class="text-muted mb-4">Preencha os dados abaixo para publicar no feed.</p>
+                
+                <form id="maintenanceForm">
+                    <input type="text" id="machineName" placeholder="Título da sua postagem..." required>
+                    
+                    <select id="type">
+                        <option value="❓ Dúvida">❓ Dúvida</option>
+                        <option value="📚 Tutorial">📚 Tutorial</option>
+                        <option value="📝 Artigo">📝 Artigo</option>
+                        <option value="🚀 Notícia">🚀 Notícia</option>
+                    </select>
+                    
+                    <textarea id="description" rows="5" placeholder="Escreva aqui o conteúdo do seu post..." required></textarea>
+                    
+                    <button type="submit" class="btn-submit">Publicar no Feed</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="../assets/js/blog.js"></script>
+    <script src="../assets/js/component.js"></script>
+    <script src="../assets/js/verificacaologin.js"></script>
+    <script src="../assets/js/acessibilidade.js"></script>
+</body>
+</html>

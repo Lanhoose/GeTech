@@ -1,0 +1,194 @@
+body {
+    background: var(--bg-page-gradient);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.features-section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.section-title span {
+    color: #007bff;
+}
+
+.section-subtitle {
+    color: #666;
+    margin-bottom: 50px;
+}
+
+/* Grid de 6 Cards */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* Container que define o palco tridimensional do efeito flip */
+.card-container {
+    perspective: 1200px;
+    height: 350px; /* Define altura constante e segura para os cards no Grid */
+    width: 100%;
+}
+
+.feature-card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+/* Classe dinâmica injetada via JavaScript */
+.feature-card.virado {
+    transform: rotateY(180deg);
+}
+
+/* Regras universais para ambas as faces de todos os cards */
+.face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 35px 25px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    
+    /* CORREÇÃO DO BUG: Transição de cor de fundo otimizada para evitar atrasos na virada */
+    transition: transform 0.6s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Estilização Avançada da Face Frontal (Glassmorphism Padrão) */
+.face.frente {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: background 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover .face.frente {
+    box-shadow: 0 15px 35px rgba(0, 123, 255, 0.15);
+    border-color: rgba(0, 123, 255, 0.3);
+}
+
+/* ==========================================================================
+   ESTILO CORRIGIDO COM SUPORTE INSTANTÂNEO A TEMAS PARA O VERSO
+   ========================================================================== */
+.face.verso {
+    transform: rotateY(180deg); /* Começa invertido no eixo Y */
+    
+    /* Configuração padrão limpa usando as variáveis globais do seu site */
+    background: var(--bg-header); 
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05), 0 15px 35px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
+    padding: 40px 30px;
+    position: relative;
+    overflow: hidden;
+    
+    /* Evita delay de transição de cor de fundo ao virar repentinamente */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Pequeno detalhe estético no topo do verso indicando a cor identidade da GeTech */
+.face.verso::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 4px;
+    background: #007bff; 
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.4);
+}
+
+/* Ajuste e tipografia do parágrafo explicativo interno do verso */
+.face.verso p {
+    color: var(--text-secondary);
+    font-size: 1.02rem;
+    line-height: 1.7;
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+}
+
+/* Elementos específicos quando o site estiver em TEMA ESCURO */
+[data-theme="dark"] .face.verso {
+    background: rgba(30, 41, 59, 0.85); /* Slate escuro semi-transparente estável */
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+[data-theme="dark"] .face.verso p {
+    color: #94a3b8; 
+}
+
+/* Elementos específicos quando o site estiver em TEMA CLARO */
+[data-theme="light"] .face.verso {
+    background: rgba(255, 255, 255, 0.92); /* Fundo claro translúcido com renderização imediata */
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+[data-theme="light"] .face.verso p {
+    color: #475569; 
+}
+
+/* Ícones e Componentes Auxiliares */
+.icon-box {
+    font-size: 3rem;
+    color: #007bff;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover .icon-box {
+    transform: scale(1.05);
+}
+
+/* Indicador visual de virada na parte inferior */
+.btn-flip-hint {
+    background: rgba(0, 123, 255, 0.06);
+    border: 1px solid rgba(0, 123, 255, 0.25);
+    color: #007bff;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    margin-top: 20px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .btn-flip-hint {
+    background: #007bff;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}

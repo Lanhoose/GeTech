@@ -1,0 +1,50 @@
+<!-- contato.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - GEtech</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/contato.css">
+</head>
+<body>
+
+    <!-- Seção de Contato -->
+    <div id="header"></div>
+    
+    <div class="main-wrapper">
+    <div class="contact-card">
+        <div class="header-logo">
+            <h1>Ge<span>Tech</span></h1>
+            <p>Soluções em Manutenção Industrial</p>
+        </div>
+
+        <form id="contactForm">
+            <div class="form-group">
+                <label for="name">Nome ou Empresa</label>
+                <input type="text" id="name" name="nome" placeholder="Ex: Seu Nome / Sua Empresa" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Telefone / WhatsApp</label>
+                <input type="tel" id="phone" name="telefone" placeholder="(00) 00000-0000" required>
+            </div>
+
+            <button type="submit" id="submitBtn" class="submit-btn">Solicitar Orçamento </button>
+        </form>
+    </div>
+</div>
+
+    <div id="footer"></div>
+
+    <!-- JavaScript -->
+    <script src="../assets/js/contato.js"></script>
+    <script src="../assets/js/component.js"></script>
+    <script src="../assets/js/verificacaologin.js"></script>
+    <script src="../assets/js/acessibilidade.js"></script>
+
+</body>
+</html>

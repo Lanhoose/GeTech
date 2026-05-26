@@ -1,0 +1,199 @@
+/* =========================
+   LOGIN / CADASTRO — ABAS
+========================= */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-page-gradient);
+    margin: 0;
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Card principal */
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--glass-border);
+    width: 100%;
+    max-width: 380px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: background 0.3s ease;
+}
+
+/* =========================
+   ABAS
+========================= */
+.tabs {
+    display: flex;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 14px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid var(--border-subtle);
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--text-muted);
+    transition: color 0.25s, border-color 0.25s;
+}
+
+.tab-btn:hover:not(.active) {
+    color: var(--text-secondary);
+}
+
+.tab-btn.active {
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--accent-cyan);
+}
+
+/* =========================
+   PAINÉIS (PANES)
+========================= */
+.pane {
+    display: none;
+}
+
+.pane.active {
+    display: block;
+}
+
+/* =========================
+   CORPO DO FORMULÁRIO
+========================= */
+.form-body {
+    padding: 28px 28px 24px;
+}
+
+.form-body h2 {
+    color: var(--text-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0 0 6px;
+}
+
+.form-body .subtitle {
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    margin: 0 0 22px;
+}
+
+/* Campos */
+.field {
+    margin-bottom: 14px;
+}
+
+.field label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.field input {
+    width: 100%;
+    padding: 10px 13px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    font-size: 0.93rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    transition: border-color 0.25s, box-shadow 0.25s;
+    box-sizing: border-box;
+}
+
+.field input::placeholder {
+    color: var(--text-muted);
+}
+
+.field input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.18);
+}
+
+/* Botões de ação */
+.btn-main {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-top: 6px;
+    font-family: inherit;
+    transition: filter 0.25s, transform 0.2s;
+}
+
+.btn-login-main {
+    background: var(--accent-cyan);
+    color: #ffffff;
+}
+
+.btn-login-main:hover {
+    background: var(--accent-cyan-hv);
+    transform: translateY(-1px);
+}
+
+.btn-cad-main {
+    background: linear-gradient(135deg, #22d3a5, #16a87e);
+    color: #ffffff;
+}
+
+.btn-cad-main:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Link de alternância */
+.footer-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.footer-link span {
+    color: var(--accent-cyan);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.footer-link span:hover {
+    text-decoration: underline;
+}
+
+/* Mensagem de retorno */
+#mensagem {
+    min-height: 20px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+@media (max-width: 480px) {
+    .card { max-width: 100%; border-radius: 12px; }
+    .form-body { padding: 20px; }
+}
