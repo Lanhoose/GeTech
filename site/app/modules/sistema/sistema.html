@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Manutenção</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ==========================================================================
+       VARIÁVEIS DE AMBIENTE E TEMAS (Design Premium Unificado)
+       ========================================================================== */
+    :root, [data-theme="light"] {
+      --bg-body: linear-gradient(135deg, #f4f7fb, #eaf2ff);
+      --bg-card: #ffffff;
+      --bg-nav: #ffffff;
+      --bg-input: #ffffff;
+      --text-primary: #1e293b;
+      --text-muted: #64748b;
+      --border-input: #dbe4ee;
+      --border-table: #e2e8f0;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 16px;
+      --mod-header-bg: linear-gradient(135deg, #1e293b, #334155);
+      --mod-accent: #3498db;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #f59e0b;
+    }
+
+    [data-theme="dark"] {
+      --bg-body: linear-gradient(135deg, #0f172a, #111c34);
+      --bg-card: #1e293b;
+      --bg-nav: #172033;
+      --bg-input: #243248;
+      --text-primary: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-input: #334155;
+      --border-table: #334155;
+      --accent: #60a5fa;
+      --accent-hover: #3b82f6;
+      --shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+      --mod-header-bg: linear-gradient(135deg, #0f172a, #1e293b);
+      --mod-accent: #3b82f6;
+      --green: #2ec4b6;
+      --red: #e63946;
+      --yellow: #ffb703;
+    }
+
+    /* ==========================================================================
+       RESET E LAYOUT PRINCIPAL (Fullscreen Inteligente)
+       ========================================================================== */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-body);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ==========================================================================
+       HEADER DO MÓDULO
+       ========================================================================== */
+    .header-modulo {
+      background: var(--mod-header-bg) !important;
+      color: white;
+      padding: 15px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid var(--mod-accent);
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+    }
+    .header-modulo h1 { 
+      margin: 0; 
+      font-size: 1.4rem; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      font-weight: 600; 
+    }
+    .header-modulo .status-meta { 
+      font-size: 0.85rem; 
+      opacity: 0.8; 
+      margin-top: 2px; 
+    }
+    .header-controls { 
+      display: flex; 
+      align-items: center; 
+      gap: 15px; 
+    }
+
+    /* Componentes Internos do Header */
+    .btn-erp {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: .25s ease;
+    }
+    .btn-erp:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .btn-logout {
+      background: #c0392b !important;
+      padding: 8px 16px !important;
+      font-size: 0.85rem;
+      border-radius: 12px !important;
+      width: auto !important;
+      cursor: pointer;
+      font-weight: bold;
+      color: white;
+      border: none;
+    }
+    .btn-logout:hover { 
+      filter: brightness(0.9); 
+      transform: translateY(-2px);
+    }
+
+    #themeToggle {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      width: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: white;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+    #themeToggle:hover { 
+      background: rgba(255,255,255,0.1); 
+    }
+
+    /* ==========================================================================
+       CONTAINER DA APLICAÇÃO
+       ========================================================================== */
+    .container-modulo {
+      flex: 1;
+      width: 100%;
+      margin: 0 !important;
+      padding: 24px !important;
+      min-height: calc(100vh - 140px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #app {
+      width: 100%;
+      min-height: calc(100vh - 180px);
+    }
+
+    /* ==========================================================================
+       COMPONENTE CARD CENTRALIZADO
+       ========================================================================== */
+    .card {
+      background: var(--bg-card) !important;
+      color: var(--text-primary);
+      border: 1px solid var(--border-table) !important;
+      border-radius: var(--radius) !important;
+      padding: 24px;
+      box-shadow: var(--shadow) !important;
+      backdrop-filter: blur(10px);
+      width: 100%;
+    }
+
+    /* ==========================================================================
+       TELA DE CARREGAMENTO (Pyodide Core)
+       ========================================================================== */
+    #loading-screen {
+      padding: 60px 40px;
+      text-align: center;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: auto;
+    }
+    .loader-bar-wrap {
+      width: 100%; 
+      max-width: 300px;
+      height: 6px;
+      background: var(--border-input);
+      border-radius: 4px;
+      margin: 20px auto;
+      overflow: hidden;
+    }
+    .loader-bar {
+      height: 100%; 
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4) !important;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+
+    /* ==========================================================================
+       SISTEMA DE ABAS (Navigation Menu)
+       ========================================================================== */
+    .nav-tabs {
+      background: var(--bg-nav);
+      display: flex;
+      padding: 0 24px;
+      gap: 5px;
+      overflow-x: auto;
+      border-radius: 0 0 16px 16px;
+      box-shadow: var(--shadow);
+    }
+    .nav-tabs button.tab-btn {
+      background: none;
+      border: none;
+      padding: 14px 20px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      border-radius: 0;
+      width: auto;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+    }
+    .nav-tabs button.tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.05);
+    }
+    .nav-tabs button.tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: rgba(59, 130, 246, 0.12) !important;
+      border-radius: 10px 10px 0 0;
+    }
+
+    /* Controle de Telas Ativas */
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ==========================================================================
+       TELA DE LOGIN
+       ========================================================================== */
+    #screen-login.screen.active {
+      max-width: 550px;
+      width: 100%;
+      margin: auto !important;
+      min-height: auto;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .login-hints {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+    .hint-card {
+      border: none;
+      background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(6,182,212,.08));
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .hint-card .hint-label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .hint-card .hint-val {
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+    .login-form {
+      width: 100%;
+    }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+    .field-pw { position: relative; }
+    .toggle-pw {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--text-muted); cursor: pointer;
+    }
+
+    /* ==========================================================================
+       FORMULÁRIOS & CAMPOS DE ENTRADA
+       ========================================================================== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      align-items: start;
+    }
+    .form-section { margin-bottom: 0; }
+    .form-section h3 { margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid var(--border-table); padding-bottom: 5px; }
+    .f-field { margin-bottom: 14px; }
+    .f-field label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; }
+    
+    input, select {
+      width: 100%;
+      padding: 11px;
+      background-color: var(--bg-input);
+      border: 1px solid var(--border-input);
+      border-radius: 12px !important;
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: .25s;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(59,130,246,.15);
+    }
+
+    /* Alinhamento de Botões Padrão */
+    button {
+      width: auto;
+      min-width: 160px;
+      padding: 11px 24px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .25s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    /* Filtros em Linha */
+    .filter-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      max-width: 500px;
+    }
+    .filter-row .f-field { margin-bottom: 0; flex: 1; }
+    .filter-row button { width: auto; white-space: nowrap; padding: 11px 20px; min-width: auto; }
+
+    /* ==========================================================================
+       TABELAS DE DADOS
+       ========================================================================== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+    thead {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: white;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-table);
+    }
+    th { font-weight: 600; }
+    tr:hover {
+      background: rgba(59,130,246,.05);
+    }
+
+    /* Status Badges */
+    .status-op { color: var(--green) !important; font-weight: 600; }
+    .status-man { color: var(--yellow) !important; font-weight: 600; }
+    .status-par { color: var(--red) !important; font-weight: 600; }
+
+    .empty-state { text-align: center; padding: 30px; color: var(--text-muted); font-weight: 500; }
+    .hidden { display: none !important; }
+
+    /* ==========================================================================
+       TOAST NOTIFICATIONS
+       ========================================================================== */
+    #toast {
+      position: fixed; bottom: 30px; right: 30px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-input);
+      border-radius: 14px !important;
+      padding: 14px 24px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      box-shadow: var(--shadow);
+      transform: translateY(80px); opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      z-index: 9999;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
+    #toast.success { border-left: 5px solid var(--green); color: var(--text-primary); }
+    #toast.error { border-left: 5px solid var(--red); color: var(--text-primary); }
+    #toast.info { border-left: 5px solid var(--accent); color: var(--text-primary); }
+
+    /* ==========================================================================
+       RODAPÉ
+       ========================================================================== */
+    footer {
+      padding: 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-table);
+      margin-top: 0 !important;
+      background: var(--bg-card);
+    }
+
+    /* Responsividade Dinâmica */
+    @media (max-width: 768px) {
+      #screen-login.screen.active { min-height: auto; }
+      .login-hints { grid-template-columns: 1fr; }
+      .filter-row { flex-direction: column; align-items: stretch; max-width: 100%; }
+      .filter-row button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-modulo">
+    <div>
+      <h1><i class="fas fa-screwdriver-wrench"></i> S.I.U. - Gestão de Manutenção</h1>
+      <div class="status-meta" id="status-user">Status: Inicializando ambiente de dados...</div>
+    </div>
+    <div class="header-controls">
+      <a href="GeTech/site/app/app.html" class="btn-erp"><i class="fas fa-arrow-left"></i> Voltar ao ERP</a>
+      <button class="btn-logout hidden" id="btn-logout" onclick="logout()">Sair</button>
+      <button id="themeToggle">
+        <span id="themeIcon">🌙</span> Tema
+      </button>
+    </div>
+  </header>
+
+  <nav class="nav-tabs hidden" id="nav-tabs">
+    <button class="tab-btn active" id="btn-tab-status" onclick="trocarAba('status')"><i class="fas fa-desktop"></i> Status Ativos</button>
+    <button class="tab-btn" id="btn-tab-os" onclick="trocarAba('os')"><i class="fas fa-file-signature"></i> Ordens de Serviço</button>
+    <button class="tab-btn" id="btn-tab-cadastros" onclick="trocarAba('cadastros')"><i class="fas fa-plus-circle"></i> Cadastros</button>
+    <button class="tab-btn" id="btn-tab-historico" onclick="trocarAba('historico')"><i class="fas fa-history"></i> Histórico Global</button>
+  </nav>
+
+  <main class="container-modulo">
+
+    <div id="loading-screen" class="card">
+      <h2 style="font-size: 1.2rem; margin-bottom: 10px;">Carregando Compilador Python (Pyodide)</h2>
+      <p class="text-muted">Por favor, aguarde enquanto configuramos o banco de dados em memória local.</p>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loader-bar"></div>
+      </div>
+      <div id="loading-status">Conectando ao core webassembly...</div>
+    </div>
+
+    <div id="app" style="display:none;">
+
+      <div id="screen-login" class="screen active card">
+        <h2 style="margin-bottom: 5px;"><i class="fas fa-lock"></i> Controle de Acesso</h2>
+        <p class="text-muted" style="margin-bottom: 25px;">Autentique-se utilizando uma das credenciais homologadas abaixo:</p>
+        
+        <div class="login-hints">
+          <div class="hint-card">
+            <span class="hint-label">Acesso Gestor</span>
+            <span class="hint-val">User: gestor / Pass: 123</span>
+          </div>
+          <div class="hint-card">
+            <span class="hint-label">Acesso Técnico</span>
+            <span class="hint-val">User: tecnico / Pass: 456</span>
+          </div>
+        </div>
+
+        <div class="login-form">
+          <div class="field">
+            <label for="login_user">Usuário / Matrícula</label>
+            <input type="text" id="login_user" placeholder="Ex: gestor">
+          </div>
+          <div class="field" style="margin-bottom: 25px;">
+            <label for="login_pass">Senha de Segurança</label>
+            <div class="field-pw">
+              <input type="password" id="login_pass" placeholder="••••••••">
+              <button type="button" class="toggle-pw" onclick="togglePasswordVisibility()"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          <button type="button" onclick="fazerLogin()">Autenticar no Sistema</button>
+          <div id="login-error" style="color:var(--red); font-size:0.85rem; margin-top:10px; font-weight:600;"></div>
+        </div>
+      </div>
+
+      <div id="screen-main" class="screen">
+        
+        <div id="panel-status" class="panel active card">
+          <h2 style="margin-bottom: 15px;"><i class="fas fa-industry"></i> Status Operacional dos Ativos</h2>
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID Ativo</th>
+                  <th>Nome do Equipamento</th>
+                  <th>Setor Alocado</th>
+                  <th>Condição Atual</th>
+                  <th>Freq. Revisão (Dias)</th>
+                </tr>
+              </thead>
+              <tbody id="table-maquinas"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="panel-os" class="panel card">
+          <h2><i class="fas fa-file-invoice"></i> Abertura de Ordem de Serviço (O.S.)</h2>
+          <p class="text-muted" style="margin-bottom: 20px;">Direcione requisições de reparos preventivos ou emergenciais corretivos.</p>
+          <div style="max-width: 500px;">
+            <div class="f-field">
+              <label for="os_maquina">Selecionar Código do Ativo</label>
+              <select id="os_maquina"></select>
+            </div>
+            <div class="f-field">
+              <label for="os_tipo">Classificação da Intervenção</label>
+              <select id="os_tipo">
+                <option value="Preventiva">Preventiva Programada</option>
+                <option value="Corretiva">Corretiva Emergencial</option>
+                <option value="Calibração">Calibração / Ajuste</option>
+              </select>
+            </div>
+            <div class="f-field" style="margin-bottom: 25px;">
+              <label for="os_tecnico">Técnico Operacional Vinculado</label>
+              <select id="os_tecnico"></select>
+            </div>
+            <button type="button" onclick="criarOS()">Registrar e Ativar O.S.</button>
+          </div>
+        </div>
+
+        <div id="panel-cadastros" class="panel form-grid">
+          <div class="form-section card">
+            <h3><i class="fas fa-box"></i> Novo Ativo Industrial</h3>
+            <div class="f-field"><label>ID Único</label><input type="text" id="cad_m_id" placeholder="Ex: M004"></div>
+            <div class="f-field"><label>Nome da Máquina</label><input type="text" id="cad_m_nome" placeholder="Ex: Torno CNC Hidráulico"></div>
+            <div class="f-field"><label>Setor Industrial</label><input type="text" id="cad_m_setor" placeholder="Ex: Estamparia"></div>
+            <div class="f-field" style="margin-bottom: 20px;"><label>Ciclo de Revisão (Dias)</label><input type="number" id="cad_m_freq" placeholder="45"></div>
+            <button type="button" onclick="adicionarMaquina()">Cadastrar Equipamento</button>
+          </div>
+
+          <div class="form-section card">
+            <h3><i class="fas fa-user-gear"></i> Novo Técnico de Campo</h3>
+            <div class="f-field"><label>Matrícula ID</label><input type="text" id="cad_t_mat" placeholder="Ex: T003"></div>
+            <div class="f-field"><label>Nome Completo</label><input type="text" id="cad_t_nome" placeholder="Ex: Ricardo Souza"></div>
+            <div class="f-field" style="margin-bottom: 20px;"><label>Especialidade Técnico</label><input type="text" id="cad_t_esp" placeholder="Ex: Eletromecânica"></div>
+            <button type="button" onclick="adicionarTecnico()">Cadastrar Colaborador</button>
+          </div>
+        </div>
+
+        <div id="panel-historico" class="panel card">
+          <h2><i class="fas fa-clock-rotate-left"></i> Histórico de Intervenções e Eventos</h2>
+          <p class="text-muted" style="margin-bottom: 15px;">Logs acumulados de todas as ordens executadas e despachadas no parque.</p>
+          
+          <div class="filter-row">
+            <div class="f-field">
+              <label for="filtro_id">Buscar por ID do Ativo</label>
+              <input type="text" id="filtro_id" placeholder="Digite o código (Ex: M001)">
+            </div>
+            <button type="button" onclick="renderizarHistorico()">Filtrar Linha</button>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID/Equipamento Ativo</th>
+                  <th>Data Registro</th>
+                  <th>Classificação</th>
+                  <th>Serviço Executado</th>
+                  <th>Técnico Responsável</th>
+                </tr>
+              </thead>
+              <tbody id="table-historico"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 S.I.U. - Sistema de Inventário Unificado & Gestão de Manutenção</p>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <script>
+    let pyodide;
+    let PERFIL_LOGADO = null;
+
+    async function boot() {
+      const loaderBar = document.getElementById('loader-bar');
+      const loadStatus = document.getElementById('loading-status');
+      
+      try {
+        loadStatus.innerText = "Carregando runtime do WebAssembly (1/3)...";
+        loaderBar.style.width = "30%";
+        
+        pyodide = await loadPyodide();
+        
+        loadStatus.innerText = "Instanciando interpretador Python (2/3)...";
+        loaderBar.style.width = "60%";
+        
+        await pyodide.runPythonAsync(`
+  MAQUINAS = [
+      {"ID": "M001", "Nome": "Prensa Hidráulica Industrial", "Setor": "Produção A", "Status": "✅ Operacional", "Freq": 30},
+      {"ID": "M002", "Nome": "Linha de Montagem Modular V2.3", "Setor": "Produção B", "Status": "🛠️ Em Manutenção", "Freq": 60},
+      {"ID": "M003", "Nome": "Compressor Central Estacionário", "Setor": "Utilidades", "Status": "❌ Parada", "Freq": 90},
+  ]
+
+  TECNICOS = [
+      {"Matricula": "T001", "Nome": "João Silva", "Especialidade": "Mecânica"},
+      {"Matricula": "T002", "Nome": "Maria Oliveira", "Especialidade": "Elétrica"},
+  ]
+
+  HISTORICO = [
+      {"ID": "M001", "Maquina": "Prensa Hidráulica Industrial", "Data": "01/10/2025", "Tipo": "Preventiva", "Servico": "Troca de óleo e filtros de precisão", "Tecnico": "João Silva"},
+      {"ID": "M002", "Maquina": "Linha de Montagem Modular V2.3", "Data": "25/09/2025", "Tipo": "Corretiva", "Servico": "Reparo no motor principal e realinhamento", "Tecnico": "Maria Oliveira"},
+      {"ID": "M001", "Maquina": "Prensa Hidráulica Industrial", "Data": "10/08/2025", "Tipo": "Corretiva", "Servico": "Ajuste de pressão pneumática", "Tecnico": "João Silva"},
+  ]
+
+  def fazer_login(u, p):
+      if u == "gestor" and p == "123": return (True, "gestor")
+      if u == "tecnico" and p == "456": return (True, "tecnico")
+      return (False, "Credenciais inválidas")
+
+  def adicionar_maquina(id_m, nome, setor, freq):
+      if not id_m or not nome or not setor or not freq: return (False, "Preencha todos os campos da máquina.")
+      MAQUINAS.append({"ID": id_m, "Nome": nome, "Setor": setor, "Status": "✅ Operacional", "Freq": int(freq)})
+      return (True, "Ativo industrial cadastrado com sucesso!")
+
+  def adicionar_tecnico(mat, nome, esp):
+      if not mat or not nome or not esp: return (False, "Preencha todos os campos do técnico.")
+      TECNICOS.append({"Matricula": mat, "Nome": nome, "Especialidade": esp})
+      return (True, "Técnico cadastrado com sucesso!")
+
+  def criar_os(maq_id, tipo, tec):
+      if not maq_id or not tipo or not tec: return (False, "Campos inválidos.")
+      nome_m = "Desconhecido"
+      for m in MAQUINAS:
+          if m["ID"].lower() == maq_id.lower():
+              nome_m = m["Nome"]
+              m["Status"] = "🛠️ Em Manutenção"
+              break
+      HISTORICO.append({"ID": maq_id.upper(), "Maquina": nome_m, "Data": "01/06/2026", "Tipo": tipo, "Servico": "Nova OS Aberta via Web", "Tecnico": tec})
+      return (True, f"OS despachada com sucesso para o ativo {nome_m}")
+        `);
+
+        loaderBar.style.width = "100%";
+        loadStatus.innerText = "Ambiente pronto.";
+        
+        setTimeout(() => {
+          document.getElementById('loading-screen').classList.add('hidden');
+          document.getElementById('app').style.display = 'block';
+          document.getElementById('status-user').innerText = "Status: Pronto para Autenticação";
+        }, 500);
+
+      } catch (err) {
+        loadStatus.innerHTML = `<span style="color:var(--red)">Falha crítica ao iniciar ambiente virtual.</span>`;
+        console.error(err);
+      }
+    }
+
+    function showToast(msg, type='info') {
+      const t = document.getElementById('toast');
+      t.className = `show ${type}`;
+      t.innerText = msg;
+      setTimeout(() => { t.classList.remove('show'); }, 3500);
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById('login_pass');
+      const icon = document.querySelector('.toggle-pw i');
+      if(input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type === 'password';
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    function fazerLogin() {
+      const u = document.getElementById('login_user').value.trim();
+      const p = document.getElementById('login_pass').value.trim();
+      const errEl = document.getElementById('login-error');
+      
+      errEl.innerText = "";
+      
+      const res = pyodide.runPython(`fazer_login("${u}", "${p}")`).toJs();
+      if(res[0]) {
+        PERFIL_LOGADO = res[1];
+        showToast("Autenticação efetuada com sucesso!", "success");
+        
+        document.getElementById('screen-login').classList.remove('active');
+        document.getElementById('screen-main').classList.add('active');
+        document.getElementById('nav-tabs').classList.remove('hidden');
+        document.getElementById('btn-logout').classList.remove('hidden');
+        
+        document.getElementById('status-user').innerText = `Operador: ${PERFIL_LOGADO.toUpperCase()}`;
+        
+        if(PERFIL_LOGADO === 'tecnico') {
+          document.getElementById('btn-tab-cadastros').classList.add('hidden');
+        } else {
+          document.getElementById('btn-tab-cadastros').classList.remove('hidden');
+        }
+        
+        popularSelects();
+        trocarAba('status');
+      } else {
+        errEl.innerText = "Falha no login: Usuário ou senha incorretos.";
+        showToast("Erro de acesso.", "error");
+      }
+    }
+
+    function logout() {
+      PERFIL_LOGADO = null;
+      document.getElementById('screen-main').classList.remove('active');
+      document.getElementById('nav-tabs').classList.add('hidden');
+      document.getElementById('btn-logout').classList.add('hidden');
+      document.getElementById('screen-login').classList.add('active');
+      document.getElementById('status-user').innerText = "Status: Pronto para Autenticação";
+      
+      document.getElementById('login_user').value = "";
+      document.getElementById('login_pass').value = "";
+      document.getElementById('filtro_id').value = "";
+    }
+
+    function trocarAba(aba) {
+      ['status', 'os', 'cadastros', 'historico'].forEach(a => {
+        const p = document.getElementById(`panel-${a}`);
+        const b = document.getElementById(`btn-tab-${a}`);
+        if(p) p.classList.remove('active');
+        if(b) b.classList.remove('active');
+      });
+      
+      document.getElementById(`panel-${aba}`).classList.add('active');
+      document.getElementById(`btn-tab-${aba}`).classList.add('active');
+      
+      if(aba === 'status') renderizarStatus();
+      if(aba === 'historico') renderizarHistorico();
+    }
+
+    function popularSelects() {
+      const maqs = pyodide.runPython(`MAQUINAS`).toJs();
+      const tecs = pyodide.runPython(`TECNICOS`).toJs();
+      
+      const sMaq = document.getElementById('os_maquina');
+      const sTec = document.getElementById('os_tecnico');
+      
+      sMaq.innerHTML = "";
+      sTec.innerHTML = "";
+      
+      maqs.forEach(m => {
+        sMaq.innerHTML += `<option value="${m.get('ID')}">${m.get('ID')} - ${m.get('Nome')}</option>`;
+      });
+      
+      tecs.forEach(t => {
+        sTec.innerHTML += `<option value="${t.get('Nome')}">${t.get('Nome')} (${t.get('Especialidade')})</option>`;
+      });
+    }
+
+    function renderizarStatus() {
+      const list = pyodide.runPython(`MAQUINAS`).toJs();
+      const tbody = document.getElementById('table-maquinas');
+      tbody.innerHTML = "";
+      
+      list.forEach(m => {
+        let stClass = "status-op";
+        if(m.get('Status').includes('Manutenção')) stClass = "status-man";
+        if(m.get('Status').includes('Parada')) stClass = "status-par";
+        
+        tbody.innerHTML += `<tr>
+          <td><b>${m.get('ID')}</b></td>
+          <td>${m.get('Nome')}</td>
+          <td>${m.get('Setor')}</td>
+          <td class="${stClass}">${m.get('Status')}</td>
+          <td>${m.get('Freq')} dias</td>
+        </tr>`;
+      });
+    }
+
+    function renderizarHistorico() {
+      const filterId = document.getElementById('filtro_id').value.trim().toLowerCase();
+      const list = pyodide.runPython(`HISTORICO`).toJs();
+      const tbody = document.getElementById('table-historico');
+      tbody.innerHTML = "";
+      
+      let count = 0;
+      list.forEach(h => {
+        const maqId = h.get('ID') ? h.get('ID').toLowerCase() : "";
+        
+        if(filterId === "" || maqId.includes(filterId)) {
+          tbody.innerHTML += `<tr>
+            <td><strong>[${h.get('ID') || 'M000'}]</strong> ${h.get('Maquina')}</td>
+            <td>${h.get('Data')}</td>
+            <td><span class="user-badge" style="background:rgba(59,130,246,0.1); padding:4px 8px; border-radius:6px; font-size:0.8rem; font-weight:600;">${h.get('Tipo')}</span></td>
+            <td>${h.get('Servico')}</td>
+            <td><strong>${h.get('Tecnico')}</strong></td>
+          </tr>`;
+          count++;
+        }
+      });
+      
+      if(count === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Nenhum histórico encontrado para o ativo pesquisado.</td></tr>`;
+      }
+    }
+
+    function adicionarMaquina() {
+      const id = document.getElementById('cad_m_id').value.trim();
+      const nome = document.getElementById('cad_m_nome').value.trim();
+      const setor = document.getElementById('cad_m_setor').value.trim();
+      const freq = document.getElementById('cad_m_freq').value.trim();
+      
+      const res = pyodide.runPython(`adicionar_maquina("${id}","${nome}","${setor}","${freq}")`).toJs();
+      if(res[0]) {
+        showToast(res[1], 'success');
+        ['cad_m_id','cad_m_nome','cad_m_setor','cad_m_freq'].forEach(i=>document.getElementById(i).value="");
+        popularSelects();
+      } else {
+        showToast(res[1], 'error');
+      }
+    }
+
+    function adicionarTecnico() {
+      const mat = document.getElementById('cad_t_mat').value.trim();
+      const nome = document.getElementById('cad_t_nome').value.trim();
+      const esp = document.getElementById('cad_t_esp').value.trim();
+      
+      const res = pyodide.runPython(`adicionar_tecnico("${mat}","${nome}","${esp}")`).toJs();
+      if(res[0]) {
+        showToast(res[1], 'success');
+        ['cad_t_mat','cad_t_nome','cad_t_esp'].forEach(i=>document.getElementById(i).value="");
+        popularSelects();
+      } else {
+        showToast(res[1], 'error');
+      }
+    }
+
+    function criarOS() {
+      const maq = document.getElementById('os_maquina').value;
+      const tipo = document.getElementById('os_tipo').value;
+      const tec = document.getElementById('os_tecnico').value;
+      
+      const res = pyodide.runPython(`criar_os("${maq}","${tipo}","${tec}")`).toJs();
+      if(res[0]) {
+        showToast(res[1], 'success');
+        renderizarStatus();
+      } else {
+        showToast(res[1], 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('login_pass').addEventListener('keydown', e => {
+        if (e.key === 'Enter') fazerLogin();
+      });
+    });
+
+    boot();
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn  = document.getElementById('themeToggle');
+        const icon = document.getElementById('themeIcon');
+        const aplicar = (tema) => {
+            document.documentElement.setAttribute('data-theme', tema);
+            localStorage.setItem('theme', tema);
+            if (icon) icon.textContent = tema === 'dark' ? '🌙' : '☀️';
+        };
+        aplicar(localStorage.getItem('theme') || 'dark');
+        if (btn) btn.addEventListener('click', () => {
+            aplicar(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        });
+    });
+  </script>
+</body>
+</html>
