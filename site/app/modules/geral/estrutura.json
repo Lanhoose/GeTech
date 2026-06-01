@@ -1,0 +1,184 @@
+{
+  "name": "raiz do projeto",
+  "type": "root",
+  "children": [
+    {
+      "name": "site",
+      "type": "folder",
+      "children": [
+        {
+          "name": "app",
+          "type": "folder",
+          "children": [
+            {
+              "name": "assets",
+              "type": "folder",
+              "children": [
+                {
+                  "name": "css",
+                  "type": "folder",
+                  "children": [
+                    { "name": "app.css", "type": "file" },
+                    { "name": "global.css", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "img",
+                  "type": "folder",
+                  "children": [
+                    { "name": "Getech.png", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "js",
+                  "type": "folder",
+                  "children": [
+                    { "name": "acessibilidade.js", "type": "file" },
+                    { "name": "app.js", "type": "file" },
+                    { "name": "estoque.js", "type": "file" },
+                    { "name": "manutencao.js", "type": "file" },
+                    { "name": "rh.js", "type": "file" }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "modules",
+              "type": "folder",
+              "children": [
+                {
+                  "name": "estoque",
+                  "type": "folder",
+                  "children": [
+                    { "name": "estoque.html", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "geral",
+                  "type": "folder",
+                  "children": [
+                    { "name": "geral.html", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "manutencao",
+                  "type": "folder",
+                  "children": [
+                    { "name": "manutencao.html", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "rh",
+                  "type": "folder",
+                  "children": [
+                    { "name": "rh.html", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "sistema",
+                  "type": "folder",
+                  "children": [
+                    { "name": "sistema.html", "type": "file" }
+                  ]
+                }
+              ]
+            },
+            { "name": "app.html", "type": "file" }
+          ]
+        },
+        {
+          "name": "public",
+          "type": "folder",
+          "children": [
+            {
+              "name": "assets",
+              "type": "folder",
+              "children": [
+                {
+                  "name": "css",
+                  "type": "folder",
+                  "children": [
+                    { "name": "ajuda.css", "type": "file" },
+                    { "name": "blog.css", "type": "file" },
+                    { "name": "contato.css", "type": "file" },
+                    { "name": "depoimentos.css", "type": "file" },
+                    { "name": "FAQ.css", "type": "file" },
+                    { "name": "funcionalidade.css", "type": "file" },
+                    { "name": "index.css", "type": "file" },
+                    { "name": "integração.css", "type": "file" },
+                    { "name": "layout.css", "type": "file" },
+                    { "name": "login.css", "type": "file" },
+                    { "name": "planos.css", "type": "file" },
+                    { "name": "privacidade.css", "type": "file" },
+                    { "name": "sobre.css", "type": "file" },
+                    { "name": "template.css", "type": "file" },
+                    { "name": "teste_aumentada.css", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "img",
+                  "type": "folder",
+                  "children": [
+                    { "name": "Getech.png", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "js",
+                  "type": "folder",
+                  "children": [
+                    { "name": "acessibilidade.js", "type": "file" },
+                    { "name": "ajuda.js", "type": "file" },
+                    { "name": "blog.js", "type": "file" },
+                    { "name": "component.js", "type": "file" },
+                    { "name": "contato.js", "type": "file" },
+                    { "name": "depoimentos.js", "type": "file" },
+                    { "name": "FAQ.js", "type": "file" },
+                    { "name": "funcionalidade.js", "type": "file" },
+                    { "name": "integração.js", "type": "file" },
+                    { "name": "login.js", "type": "file" },
+                    { "name": "planos.js", "type": "file" },
+                    { "name": "privacidade.js", "type": "file" },
+                    { "name": "sobre.js", "type": "file" },
+                    { "name": "teste_aumentada.js", "type": "file" },
+                    { "name": "verificacaologin.js", "type": "file" }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "components",
+              "type": "folder",
+              "children": [
+                { "name": "footer.html", "type": "file" },
+                { "name": "header.html", "type": "file" }
+              ]
+            },
+            {
+              "name": "pages",
+              "type": "folder",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "Site C",
+          "type": "folder",
+          "children": [
+            { "name": "cadastro.html", "type": "file" },
+            { "name": "Contato.html", "type": "file" },
+            { "name": "Getech.png", "type": "file" },
+            { "name": "home.html", "type": "file" },
+            { "name": "login.html", "type": "file" },
+            { "name": "loginreal.html", "type": "file" },
+            { "name": "material.html", "type": "file" },
+            { "name": "orçamento.html", "type": "file" },
+            { "name": "perfil.jpg", "type": "file" }
+          ]
+        },
+        { "name": "estrutura.json", "type": "file" },
+        { "name": "index.html", "type": "file" },
+        { "name": "README.md", "type": "file" }
+      ]
+    }
+  ]
+}

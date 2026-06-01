@@ -397,139 +397,18 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
         <div id="tela-estrutura" class="panel-card" style="display:none;">
             <div class="doc-section">
                 <h2><i class="fas fa-folder-tree"></i> Arquitetura e Mapeamento de Diretórios</h2>
-                <p>Três ambientes separados: <code>/public</code> para o site institucional, <code>/app</code> para o sistema interno e <code>/Site C</code> para o portal do cliente — todos no mesmo nível hierárquico.</p>
+                <p>Ambiente mapeado dinamicamente via automação com GitHub Actions. O arquivo <code>estrutura.json</code> alimenta o componente visual abaixo em tempo de execução.</p>
 
                 <div class="legend">
-                    <div class="legend-item"><div class="legend-dot" style="background:#2ecc71"></div><span>Zona Pública</span></div>
-                    <div class="legend-item"><div class="legend-dot" style="background:#3498db"></div><span>Zona App (protegida)</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#2ecc71"></div><span>Zona Pública (public)</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#3498db"></div><span>Zona App (app)</span></div>
                     <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div><span>Site C (portal cliente)</span></div>
                 </div>
 
-                <div class="folder-wrapper" style="margin-top:24px;">
-
-                    <div class="folder-title" onclick="toggleFolder(this)">
-                        <i class="fas fa-folder"></i>
-                        <span class="folder-label">versão préfinal <span class="zone-label zone-root">raiz</span></span>
-                        <i class="fas fa-chevron-down chevron"></i>
-                    </div>
-                    <div class="folder-content">
-                        <div class="file-item"><i class="fab fa-markdown" style="color:#42a5f5;"></i> README.md</div>
-
-                        <div class="folder-title" onclick="toggleFolder(this)">
-                            <i class="fas fa-folder"></i>
-                            <span class="folder-label" style="color:#3498db;">app <span class="zone-label zone-app">sistema ERP</span></span>
-                            <i class="fas fa-chevron-down chevron"></i>
-                        </div>
-                        <div class="folder-content">
-                            <div class="file-item"><i class="fab fa-html5" style="color:#e67e22;"></i> app.html <span class="comment-text">← Dashboard com cards dos módulos</span></div>
-                            <div class="folder-title" onclick="toggleFolder(this)">
-                                <i class="fas fa-folder"></i><span class="folder-label">assets</span><i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="folder-content">
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">css</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-css3-alt" style="color:#3498db;"></i> app.css</div>
-                                    <div class="file-item"><i class="fab fa-css3-alt" style="color:#3498db;"></i> global.css</div>
-                                </div>
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">img</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fas fa-image" style="color:#e67e22;"></i> Getech.png</div>
-                                </div>
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">js</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-js-square" style="color:#f1c40f;"></i> acessibilidade.js</div>
-                                    <div class="file-item"><i class="fab fa-js-square" style="color:#f1c40f;"></i> app.js</div>
-                                    <div class="file-item"><i class="fab fa-js-square" style="color:#f1c40f;"></i> estoque.js</div>
-                                    <div class="file-item"><i class="fab fa-js-square" style="color:#f1c40f;"></i> manutencao.js</div>
-                                    <div class="file-item"><i class="fab fa-js-square" style="color:#f1c40f;"></i> rh.js</div>
-                                </div>
-                            </div>
-                            <div class="folder-title" onclick="toggleFolder(this)">
-                                <i class="fas fa-folder"></i><span class="folder-label">modules</span><i class="fas fa-chevron-down chevron"></i>
-                            </div>
-                            <div class="folder-content">
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">estoque</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-html5"></i> estoque.html <span class="comment-text">← implementado</span></div>
-                                </div>
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">producao</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item" style="color:var(--priority-med);"><i class="fas fa-exclamation-triangle"></i> pasta vazia</div>
-                                </div>
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">manutencao</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-html5"></i> manutencao.html <span class="comment-text">← implementado</span></div>
-                                </div>
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">rh</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-html5"></i> rh.html <span class="comment-text">← implementado com Ponto</span></div>
-                                </div>
-                                <div class="file-item" style="color:var(--text-muted);font-style:italic;"><i class="fas fa-times" style="color:var(--priority-high);"></i> pedidos/ · qualidade/ · suprimentos/ · treinamento/ <span class="comment-text">← não criados</span></div>
-                            </div>
-                        </div>
-
-                        <div class="folder-title" onclick="toggleFolder(this)">
-                            <i class="fas fa-folder"></i>
-                            <span class="folder-label" style="color:#2ecc71;">public <span class="zone-label zone-public">site institucional</span></span>
-                            <i class="fas fa-chevron-down chevron"></i>
-                        </div>
-                        <div class="folder-content">
-                            <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">components <span class="comment-text">// fragmentos assíncronos</span></span><i class="fas fa-chevron-down chevron"></i></div>
-                            <div class="folder-content">
-                                <div class="file-item"><i class="fab fa-html5"></i> footer.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> header.html</div>
-                            </div>
-                            <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">pages</span><i class="fas fa-chevron-down chevron"></i></div>
-                            <div class="folder-content">
-                                <div class="file-item"><i class="fab fa-html5"></i> _template.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> ajuda.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> blog.html <span class="comment-text">← pronto</span></div>
-                                <div class="file-item"><i class="fab fa-html5"></i> contato.html <span class="comment-text">← pronto</span></div>
-                                <div class="file-item"><i class="fab fa-html5"></i> depoimentos.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> FAQ.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> funcionalidades.html</div>
-                                <div class="file-item"><i class="fab fa-html5" style="color:#e67e22;font-weight:bold;"></i> index.html <span class="comment-text">← Home do Site</span></div>
-                                <div class="file-item"><i class="fab fa-html5"></i> integração.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> login.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> planos.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> politica-privacidade.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> sobre.html</div>
-                                <div class="file-item"><i class="fab fa-html5"></i> teste_aumentada.html</div>
-                            </div>
-                            <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">assets</span><i class="fas fa-chevron-down chevron"></i></div>
-                            <div class="folder-content">
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">css</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-css3-alt" style="color:#3498db;"></i> ajuda.css · blog.css · contato.css · depoimentos.css · FAQ.css</div>
-                                    <div class="file-item"><i class="fab fa-css3-alt" style="color:#3498db;"></i> funcionalidade.css · index.css · integração.css · layout.css</div>
-                                    <div class="file-item"><i class="fab fa-css3-alt" style="color:#3498db;"></i> login.css · planos.css · privacidade.css · sobre.css · template.css</div>
-                                </div>
-                                <div class="folder-title" onclick="toggleFolder(this)"><i class="fas fa-folder"></i><span class="folder-label">js</span><i class="fas fa-chevron-down chevron"></i></div>
-                                <div class="folder-content">
-                                    <div class="file-item"><i class="fab fa-js-square" style="color:#f1c40f;"></i> login.js · planos.js · privacidade.js · sobre.js</div>
-                                    <div class="file-item"><i class="fab fa-js-square" style="color:#f1c40f;"></i> teste_aumentada.js · verificacaoLogin.js</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="folder-title" onclick="toggleFolder(this)">
-                            <i class="fas fa-folder"></i>
-                            <span class="folder-label" style="color:#9b59b6;">Site C <span class="zone-label zone-sitec">portal cliente</span></span>
-                            <i class="fas fa-chevron-down chevron"></i>
-                        </div>
-                        <div class="folder-content">
-                            <div class="file-item"><i class="fab fa-html5"></i> cadastro.html</div>
-                            <div class="file-item"><i class="fab fa-html5"></i> Contato.html</div>
-                            <div class="file-item"><i class="fas fa-image" style="color:#e67e22;"></i> Getech.png <span class="comment-text">← logo local</span></div>
-                            <div class="file-item"><i class="fab fa-html5" style="color:#e67e22;font-weight:bold;"></i> home.html <span class="comment-text">← entrada do Site C</span></div>
-                            <div class="file-item"><i class="fab fa-html5"></i> login.html</div>
-                            <div class="file-item"><i class="fab fa-html5"></i> loginreal.html</div>
-                            <div class="file-item"><i class="fab fa-html5"></i> material.html</div>
-                            <div class="file-item"><i class="fab fa-html5"></i> orçamento.html</div>
-                            <div class="file-item"><i class="fas fa-image" style="color:#e67e22;"></i> perfil.jpg <span class="comment-text">← asset de perfil</span></div>
-                        </div>
-
-                    </div></div></div>
+                <div class="folder-wrapper" style="margin-top:24px;" id="arvore-pastas">
+                    <p style="color: var(--text-muted); font-style: italic;"><i class="fas fa-spinner fa-spin"></i> Carregando mapeamento de diretórios...</p>
+                </div>
+            </div>
         </div>
 
         <div id="tela-modulos" class="panel-card" style="display:none;">
@@ -705,7 +584,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             });
         };
 
-        // TOGGLE PASTAS
+        // TOGGLE PASTAS (Otimizado para funcionar com elementos estáticos e dinâmicos)
         const toggleFolder = (el) => {
             const content = el.nextElementSibling;
             if (!content || !content.classList.contains('folder-content')) return;
@@ -718,8 +597,64 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             }
         };
 
-        // TEMA
+        // RENDERIZAÇÃO DINÂMICA DA ÁRVORE DE PASTAS (Gera a árvore com base no JSON do GitHub Actions)
+        function gerarHTMLEstrutura(item) {
+            // Tratamento caso a raiz retorne o nome do diretório do servidor (ex: "workspace" ou ".")
+            let nomeExibido = item.name;
+            let labelZona = '';
+
+            if (item.type === "root" || nomeExibido === "versão préfinal" || nomeExibido === "." || nomeExibido === "workspace") {
+                nomeExibido = "raiz do projeto";
+                labelZona = '<span class="zone-label zone-root">raiz</span>';
+            } else if (nomeExibido === "app") {
+                labelZona = '<span class="zone-label zone-app">sistema ERP</span>';
+            } else if (nomeExibido === "public") {
+                labelZona = '<span class="zone-label zone-public">site institucional</span>';
+            } else if (nomeExibido === "Site C") {
+                labelZona = '<span class="zone-label zone-sitec">portal cliente</span>';
+            }
+
+            if (item.type === "file") {
+                let icone = 'fa-file';
+                let cor = 'var(--text-muted)';
+                
+                // Atribuição de ícones inteligentes baseados na extensão
+                if (nomeExibido.endsWith('.html')) { icone = 'fab fa-html5'; cor = '#e67e22'; }
+                else if (nomeExibido.endsWith('.css')) { icone = 'fab fa-css3-alt'; cor = '#3498db'; }
+                else if (nomeExibido.endsWith('.js')) { icone = 'fab fa-js-square'; cor = '#f1c40f'; }
+                else if (nomeExibido.endsWith('.md')) { icone = 'fab fa-markdown'; cor = '#42a5f5'; }
+                else if (nomeExibido.endsWith('.png') || nomeExibido.endsWith('.jpg')) { icone = 'fas fa-image'; cor = '#e67e22'; }
+
+                return `<div class="file-item"><i class="${icone}" style="color: ${cor};"></i> ${nomeExibido}</div>`;
+            }
+
+            if (item.type === "folder" || labelZona !== '') {
+                let filhosHTML = '';
+                if (item.children && item.children.length > 0) {
+                    filhosHTML = item.children.map(gerarHTMLEstrutura).join('');
+                } else {
+                    filhosHTML = `<div class="file-item" style="color:var(--priority-med);"><i class="fas fa-exclamation-triangle"></i> pasta vazia</div>`;
+                }
+                
+                let estiloNome = (nomeExibido === 'app') ? 'color:#3498db;' : (nomeExibido === 'public') ? 'color:#2ecc71;' : (nomeExibido === 'Site C') ? 'color:#9b59b6;' : '';
+
+                return `
+                    <div class="folder-title" onclick="toggleFolder(this)">
+                        <i class="fas fa-folder"></i>
+                        <span class="folder-label" style="${estiloNome}">${nomeExibido} ${labelZona}</span>
+                        <i class="fas fa-chevron-down chevron"></i>
+                    </div>
+                    <div class="folder-content">
+                        ${filhosHTML}
+                    </div>
+                `;
+            }
+            return '';
+        }
+
+        // TEMA E INICIALIZAÇÃO DO FETCH
         document.addEventListener('DOMContentLoaded', () => {
+            // Gerenciador do Tema
             const btn  = document.getElementById('themeToggle');
             const icon = document.getElementById('themeIcon');
             const aplicar = (tema) => {
@@ -731,6 +666,31 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             if (btn) btn.addEventListener('click', () => {
                 aplicar(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
             });
+
+            // Carregamento Assíncrono do arquivo estrutura.json gerado pelo GitHub Actions
+            fetch('estrutura.json')
+                .then(res => {
+                    if (!res.ok) throw new Error("Arquivo json não encontrado");
+                    return res.json();
+                })
+                .then(dados => {
+                    const container = document.getElementById('arvore-pastas');
+                    if (container) {
+                        container.innerHTML = gerarHTMLEstrutura(dados);
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro ao carregar estrutura:", err);
+                    const container = document.getElementById('arvore-pastas');
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="alert-box" style="background: rgba(239,68,68,0.08); border-left: 4px solid var(--priority-high);">
+                                <span class="icon">❌</span>
+                                <span>Erro ao carregar <code>estrutura.json</code>. Certifique-se de que a Action do GitHub rodou com sucesso ou que está utilizando um servidor HTTP local (Live Server).</span>
+                            </div>
+                        `;
+                    }
+                });
         });
     </script>
 </body>
