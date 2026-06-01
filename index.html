@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
+  <title>GeTech - Redirecionando</title>
   <script>
-    window.location.href = "/GeTech/site/Site C/home.html";
+    // Aguarda 3 segundos (3000ms) antes de mudar de página
+    setTimeout(function() {
+      window.location.href = "./site/index.html";
+    }, 3000);
   </script>
 </head>
-<body><p>A carregar o GeTech...</p></body>
+<body>
+  <div style="text-align: center; margin-top: 50px; font-family: sans-serif; color: #333;">
+    <p>A carregar o GeTech...</p>
+    <small style="color: #888;">Você será redirecionado em 3 segundos.</small>
+  </div>
+</body>
 </html>
