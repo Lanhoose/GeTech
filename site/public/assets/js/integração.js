@@ -1,9 +1,16 @@
 const mockPartnersData = [
     {
+        nome: "Logistock",
+        descricao: "Soluções de logística e transporte.",
+        url: "https://jvap-bit.github.io/sistema_ERP/",
+        destaque: false,
+        beneficios: ["Rastreio em tempo real", "Segurança"]
+    },
+    {
         nome: "FedEx",
         descricao: "Integração completa de entrega e rastreio.",
         url: "https://www.fedex.com/pt-br/home.html?cmp=KNC-1009093-1-1-950-1000000-LAC-BR-PT-SearchPmaxBrand&gclsrc=aw.ds&gad_source=1&gad_campaignid=23350632180&gbraid=0AAAAADlsr1Y0obO2Lt7tHZ5BTQJhqC9xN&gclid=Cj0KCQjw_IXQBhCkARIsADqELbJ425llrGH-ek8_VaIcM27WywTnm2eHNH-e-CXkavUqhtGe7NpMSrkaAvfMEALw_wcB",
-        destaque: true,
+        destaque: false,
         beneficios: ["Rastreio em tempo real", "Segurança"]
     },
     {
@@ -19,13 +26,6 @@ const mockPartnersData = [
         url: "https://www.getninjas.com.br/",
         destaque: false,
         beneficios: ["Antifraude integrado", "Taxas reduzidas"]
-    },
-    {
-        nome: "Logistock",
-        descricao: "Soluções de logística e transporte.",
-        url: "https://jvap-bit.github.io/sistema_ERP/",
-        destaque: false,
-        beneficios: ["Rastreio em tempo real", "Segurança"]
     }
 ];
 
