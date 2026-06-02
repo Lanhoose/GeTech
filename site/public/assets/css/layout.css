@@ -131,6 +131,56 @@ body {
     transition: background 0.3s ease;
 }
 
+.header h2 { color: var(--accent-blue); }
+
+.header h2 span { color: var(--accent-blue-lt); }
+
+.header a { color: var(--text-nav); }
+
+.header a:hover, a > span { color: var(--accent-cyan); }
+
+a > span { transition: color 0.3s ease; }
+
+.header .logo a { color: var(--accent-blue); }
+
+.header .logo a:hover { color: var(--accent-blue-lt); }
+
+.header .menu a { color: #ffffff; }
+
+.header .menu a:hover { color: #ffffff; }
+
+.header .auth a { color: var(--text-nav); }
+
+.header .auth a:hover { color: var(--accent-cyan); }
+
+.header .theme-icon { color: rgba(255, 255, 255, 0.8); }
+
+.header .user-info { color: #ffffff; }
+
+.header .user-info strong { color: var(--accent-user); }
+
+.header .btn-logout { color: #ffffff; }
+
+.header .btn-logout:hover { color: #ffffff; }
+
+.header .theme-toggle { background: var(--toggle-track); }
+
+.header .theme-toggle::after { background: #ffffff; }
+
+.header .theme-toggle:hover { background: var(--accent-cyan); }
+
+.header .theme-toggle:hover::after { background: #ffffff; }
+
+.header .user-info { background: var(--bg-user-pill); border: 1px solid var(--border-pill); }
+
+.header .user-info .btn-logout { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); }
+
+.header .user-info .btn-logout:hover { background: var(--accent-logout-hv); border-color: var(--accent-logout-hv); }
+
+.header a > span:hover { color: var(--accent-cyan); }
+
+
+
 .header * { color: var(--text-nav); }
 .logo h2 { margin: 0; }
 
