@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LogiStock PRO - ERP Industrial</title>
+    <link rel="stylesheet" href="../../assets/css/ordens.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="user-info">
+            <h1>LogiStock PRO</h1>
+            <p id="usuario">Bem-vindo, Usuário!</p>
+        </div>
+        <div class="top-bar-extra">
+            <div class="theme-toggle-wrapper" title="Alternar tema claro/escuro">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="theme-toggle" onchange="alternarTema()">
+                    <span class="slider"></span>
+                </label>
+                <span class="theme-label" id="theme-label">Claro</span>
+            </div>
+            <button class="btn-sair" onclick="logout()">Sair</button>
+        </div>
+    </header>
+
+    <!-- BARRA DE PERFIL -->
+    <div class="perfil-bar">
+        <strong>Perfil:</strong>
+        <select id="select-perfil" onchange="trocarPerfil()">
+            <option value="PCP">PCP</option>
+            <option value="Producao">Produção</option>
+            <option value="Gestao">Gestão</option>
+            <option value="Entregador">Entregador</option>
+        </select>
+        <span id="perfil-label" style="color:#64748b;font-size:12px;">Acesso: PCP (cadastro e edição completa)</span>
+    </div>
+
+    <!-- MENU PRINCIPAL -->
+    <nav class="menu-nav" id="menu-principal">
+        <button class="nav-btn ativo" onclick="trocarTela('kanban',this)">📋 Kanban</button>
+        <button class="nav-btn" onclick="trocarTela('cadastro',this)">📥 Recebimento</button>
+        <button class="nav-btn" onclick="trocarTela('rastreio',this)">🚚 Rastreio</button>
+        <button class="nav-btn" onclick="trocarTela('frete',this)">💰 Frete</button>
+        <button class="nav-btn" onclick="trocarTela('tabela',this)">📊 Tabela</button>
+        <button class="nav-btn" onclick="trocarTela('logs',this)">📜 Auditoria</button>
+        <button class="nav-btn" id="btn-nova-op" onclick="abrirModalNovaOP()" style="background:var(--azul);color:white;">+ Nova Ordem</button>
+    </nav>
+
+    <!-- MENU ENTREGADOR -->
+    <nav class="menu-nav" id="menu-entregador" style="display:none;">
+        <button class="nav-btn ativo" onclick="trocarTelaEntregador('entregas',this)">📦 Minhas Entregas</button>
+        <button class="nav-btn" onclick="trocarTelaEntregador('rastreio-e',this)">🔍 Rastrear</button>
+    </nav>
+
+    <!-- SEARCH BAR -->
+    <div class="search-bar" id="search-bar">
+        <input type="text" id="pesquisa" placeholder="Pesquisar por OP, cliente ou produto..." oninput="renderizarKanban()">
+        <div class="stats-bar">
+            <span>A Fazer: <span id="stat-afazer" style="color:var(--azul)">0</span></span>
+            <span>Produção: <span id="stat-producao" style="color:#f39c12">0</span></span>
+            <span>Pronto: <span id="stat-pronto" style="color:var(--verde)">0</span></span>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- KANBAN -->
+        <div id="tela-kanban">
+            <div class="kanban-board">
+                <div class="kanban-col">
+                    <div class="kanban-col-header">A FAZER</div>
+                    <div class="kanban-col-body" id="col-afazer"></div>
+                </div>
+                <div class="kanban-col">
+                    <div class="kanban-col-header">EM ANDAMENTO</div>
+                    <div class="kanban-col-body" id="col-andamento"></div>
+                </div>
+                <div class="kanban-col">
+                    <div class="kanban-col-header">QUALIDADE</div>
+                    <div class="kanban-col-body" id="col-qualidade"></div>
+                </div>
+                <div class="kanban-col">
+                    <div class="kanban-col-header">FINALIZADO</div>
+                    <div class="kanban-col-body" id="col-finalizado"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CADASTRO -->
+        <section id="tela-cadastro" class="container" style="display:none;">
+            <section class="topo">
+                <div>
+                    <h2>Gestão de Pedidos de Produção</h2>
+                    <p>Controle completo de ordens industriais.</p>
+                </div>
+                <div class="acoes">
+                    <button class="btn-pdf" onclick="baixarPDF()">Baixar PDF</button>
+                    <button class="btn-excel" onclick="baixarExcel()">Baixar Excel</button>
+                    <button class="btn-excluir" onclick="excluirOrdem()">Excluir Ordem</button>
+                </div>
+            </section>
+            <section class="form-card">
+                <div class="form-grid">
+                    <div class="input-group"><label>Nº OP *</label><input type="text" id="numero-op" placeholder="Ex: OP-001"></div>
+                    <div class="input-group"><label>Cliente *</label><input type="text" id="cliente"></div>
+                    <div class="input-group"><label>Produto *</label><input type="text" id="produto"></div>
+                    <div class="input-group"><label>Quantidade *</label><input type="number" id="quantidade"></div>
+                    <div class="input-group"><label>Responsável</label><input type="text" id="responsavel"></div>
+                    <div class="input-group"><label>CEP</label><input type="text" id="cep" placeholder="00000-000" oninput="buscarCEP(this.value,'rua','bairro','cidade')"></div>
+                    <div class="input-group"><label>Rua</label><input type="text" id="rua"></div>
+                    <div class="input-group"><label>Nº Casa</label><input type="text" id="numero-casa"></div>
+                    <div class="input-group"><label>Bairro</label><input type="text" id="bairro"></div>
+                    <div class="input-group"><label>Cidade</label><input type="text" id="cidade"></div>
+                    <div class="input-group"><label>Status</label>
+                        <select id="status">
+                            <option value="A Fazer">A Fazer</option>
+                            <option value="Em Andamento">Em Andamento</option>
+                            <option value="Qualidade">Qualidade</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Prioridade</label>
+                        <select id="prioridade">
+                            <option value="Normal">Normal</option>
+                            <option value="Urgente">Urgente</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Prazo</label><input type="date" id="prazo"></div>
+                </div>
+                <div class="input-group" style="margin-top:16px;">
+                    <label>Descrição / Observações</label>
+                    <textarea id="descricao" rows="3" style="padding:10px;border:1px solid var(--cinza-borda);border-radius:10px;resize:vertical;font-size:14px;width:100%;box-sizing:border-box;"></textarea>
+                </div>
+                <button class="btn-salvar" onclick="salvarOrdem()">Registrar Ordem</button>
+            </section>
+            <section class="tabela-card">
+                <table><thead><tr><th>#</th><th>OP</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Bairro</th><th>Status</th><th>Prioridade</th><th>Prazo</th></tr></thead>
+                <tbody id="tabela-ordens"></tbody></table>
+            </section>
+        </section>
+
+        <!-- RASTREIO -->
+        <section id="tela-rastreio" class="container" style="display:none;">
+            <div class="rastreamento-card">
+                <h2>Área de Rastreio</h2>
+                <p>Consulte rapidamente uma ordem pelo nº OP ou nome do cliente.</p>
+                <div class="rastreio-box">
+                    <input type="text" id="codigo-rastreio" placeholder="Digite o nº OP ou nome do cliente">
+                    <button onclick="rastrearPedido()">Rastrear</button>
+                </div>
+                <div id="resultado-rastreio"></div>
+            </div>
+        </section>
+
+        <!-- FRETE -->
+        <section id="tela-frete" class="container" style="display:none;">
+            <div class="frete-card">
+                <h2>Cálculo de Frete</h2>
+                <p>Simule valores de transporte industrial.</p>
+                <div class="frete-grid">
+                    <div class="input-group"><label>Peso da carga (kg)</label><input type="number" id="peso"></div>
+                    <div class="input-group"><label>Distância (km)</label><input type="number" id="distancia"></div>
+                    <div class="input-group"><label>Tipo de entrega</label>
+                        <select id="tipo-entrega">
+                            <option value="1">Normal</option>
+                            <option value="1.4">Expressa</option>
+                            <option value="1.8">Urgente</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-acao" onclick="calcularFrete()" style="margin-top: 10px; width: 100%;">Calcular Frete</button>
+                <div class="resultado-frete" id="resultado-frete">R$ 0,00</div>
+            </div>
+        </section>
+
+        <!-- TABELA -->
+        <section id="tela-tabela" class="container" style="display:none;">
+            <section class="topo">
+                <div><h2>Tabela de Pedidos</h2><p>Visualização completa de todas as ordens.</p></div>
+                <div class="acoes">
+                    <button class="btn-excel" onclick="baixarExcel()">Exportar Excel</button>
+                    <button class="btn-pdf" onclick="baixarPDF()">Exportar PDF</button>
+                </div>
+            </section>
+            <section class="tabela-card">
+                <table><thead><tr><th>#</th><th>OP</th><th>Cliente</th><th>Produto</th><th>Qtd</th><th>Bairro</th><th>Status</th><th>Prioridade</th><th>Prazo</th></tr></thead>
+                <tbody id="tabela-ordens-2"></tbody></table>
+            </section>
+        </section>
+
+        <!-- LOGS / AUDITORIA -->
+        <section id="tela-logs" class="container" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <h2 style="color:var(--azul);">📜 Histórico de Auditoria</h2>
+                <button onclick="limparLogs()" style="background:var(--vermelho);color:white;border:none;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:700;">Limpar Logs</button>
+            </div>
+            <div class="logs-container" id="lista-logs"></div>
+        </section>
+
+        <!-- PAINEL ENTREGADOR -->
+        <section id="tela-entregador" class="container" style="display:none;">
+            <div style="margin-bottom:20px;">
+                <h2 style="color:var(--azul);">📦 Painel de Logística</h2>
+                <p style="color:var(--texto-leve);">Gerencie as entregas das ordens finalizadas.</p>
+            </div>
+            <div id="lista-entregas"></div>
+        </section>
+
+        <!-- RASTREIO ENTREGADOR -->
+        <section id="tela-rastreio-e" class="container" style="display:none;">
+            <div class="rastreamento-card">
+                <h2>Rastrear Pedido</h2>
+                <p>Consulte o status de uma ordem pelo nº OP.</p>
+                <div class="rastreio-box">
+                    <input type="text" id="codigo-rastreio-e" placeholder="Digite o nº OP">
+                    <button onclick="rastrearEntregador()">Rastrear</button>
+                </div>
+                <div id="resultado-rastreio-e"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL NOVA OP -->
+    <div class="modal-overlay" id="modal-nova-op">
+        <div class="modal-content">
+            <h3>+ Nova Ordem de Produção</h3>
+            <div class="form-grid">
+                <div class="input-group"><label>Nº OP *</label><input type="text" id="m-numero" placeholder="Ex: OP-001"></div>
+                <div class="input-group"><label>Cliente *</label><input type="text" id="m-cliente"></div>
+                <div class="input-group"><label>Produto *</label><input type="text" id="m-produto"></div>
+                <div class="input-group"><label>Quantidade *</label><input type="number" id="m-quantidade"></div>
+                <div class="input-group"><label>CEP</label><input type="text" id="m-cep" placeholder="00000-000" oninput="buscarCEP(this.value,'m-rua','m-bairro','m-cidade')"></div>
+                <div class="input-group"><label>Bairro</label><input type="text" id="m-bairro"></div>
+                <div class="input-group"><label>Rua</label><input type="text" id="m-rua"></div>
+                <div class="input-group"><label>Nº Casa</label><input type="text" id="m-casa"></div>
+            </div>
+            <input type="hidden" id="m-cidade">
+            <div class="input-group" style="margin-top:12px;">
+                <label>Prioridade</label>
+                <div class="priority-toggle">
+                    <button id="btn-normal" class="active" onclick="setPrioridade('Normal')">Normal</button>
+                    <button id="btn-urgente" onclick="setPrioridade('Urgente')">🔴 Urgente</button>
+                </div>
+            </div>
+            <div class="input-group" style="margin-top:12px;">
+                <label>Descrição / Observações</label>
+                <textarea id="m-descricao" rows="3"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:16px;">
+                <button class="btn-salvar" style="margin-top:0;flex:1;" onclick="salvarNovaOP()">Salvar Ordem</button>
+                <button class="modal-close" onclick="fecharModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALHES -->
+    <div class="modal-overlay" id="modal-detalhes">
+        <div class="modal-content">
+            <h3 id="det-titulo">Detalhes da Ordem</h3>
+            <div id="det-corpo"></div>
+            <button class="modal-close" onclick="fecharModalDetalhes()">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+    /* ============================================================
+       LOGISTOCK PRO — ENGINE COMPLETA (portado do sistema Python)
+    ============================================================ */
+
+    // ---- STORAGE ----
+    function getOrdens() { return JSON.parse(localStorage.getItem('lsp_ordens') || '[]'); }
+    function setOrdens(arr) { localStorage.setItem('lsp_ordens', JSON.stringify(arr)); }
+    function getLogs() { return JSON.parse(localStorage.getItem('lsp_logs') || '[]'); }
+    function registrarLog(msg) {
+        const logs = getLogs();
+        logs.unshift({ data: new Date().toLocaleString('pt-BR'), acao: msg });
+        localStorage.setItem('lsp_logs', JSON.stringify(logs.slice(0, 500)));
+    }
+
+    // ---- ESTADO ----
+    let perfilAtual = 'PCP';
+    let prioridadeModal = 'Normal';
+    const fluxo = ['A Fazer', 'Em Andamento', 'Qualidade', 'Finalizado'];
+    const colMap = { 'A Fazer':'col-afazer', 'Em Andamento':'col-andamento', 'Qualidade':'col-qualidade', 'Finalizado':'col-finalizado' };
+
+    // ---- TEMA ----
+    function alternarTema() {
+        const toggle = document.getElementById("theme-toggle");
+        const label  = document.getElementById("theme-label");
+        const isDark = toggle.checked;
+        document.body.classList.toggle('dark-mode', isDark);
+        if (label) label.textContent = isDark ? "Escuro" : "Claro";
+        localStorage.setItem('tema', isDark ? 'dark' : 'light');
+    }
+    // Aplicar tema salvo ao carregar
+    (function() {
+        if (localStorage.getItem('tema') === 'dark') {
+            document.body.classList.add('dark-mode');
+            const toggle = document.getElementById("theme-toggle");
+            const label  = document.getElementById("theme-label");
+            if (toggle) toggle.checked = true;
+            if (label)  label.textContent = "Escuro";
+        }
+    })();
+
+    // ---- PERFIL ----
+    function trocarPerfil() {
+        perfilAtual = document.getElementById('select-perfil').value;
+        const desc = { PCP:'PCP (cadastro e edição completa)', Producao:'Produção (visualização)', Gestao:'Gestão (visualização e exclusão)', Entregador:'Entregador (painel de logística)' };
+        document.getElementById('perfil-label').textContent = 'Acesso: ' + desc[perfilAtual];
+
+        const isEntregador = perfilAtual === 'Entregador';
+        document.getElementById('menu-principal').style.display = isEntregador ? 'none' : 'flex';
+        document.getElementById('menu-entregador').style.display = isEntregador ? 'flex' : 'none';
+        document.getElementById('search-bar').style.display = isEntregador ? 'none' : 'flex';
+        document.getElementById('btn-nova-op').style.display = perfilAtual === 'PCP' ? 'inline-block' : 'none';
+
+        ocultarTodasTelas();
+        if (isEntregador) {
+            document.getElementById('tela-entregador').style.display = 'block';
+            renderizarEntregador();
+        } else {
+            document.getElementById('tela-kanban').style.display = 'block';
+            document.querySelectorAll('#menu-principal .nav-btn').forEach((b,i) => b.classList.toggle('ativo', i===0));
+            renderizarKanban();
+        }
+    }
+
+    // ---- NAVEGAÇÃO ----
+    function ocultarTodasTelas() {
+        ['tela-kanban','tela-cadastro','tela-rastreio','tela-frete','tela-tabela','tela-logs','tela-entregador','tela-rastreio-e']
+            .forEach(id => { const e = document.getElementById(id); if(e) e.style.display='none'; });
+    }
+
+    function trocarTela(tela, botao) {
+        ocultarTodasTelas();
+        document.querySelectorAll('#menu-principal .nav-btn').forEach(b => b.classList.remove('ativo'));
+        if (botao) botao.classList.add('ativo');
+        document.getElementById('search-bar').style.display = (tela==='kanban'||tela==='tabela') ? 'flex' : 'none';
+        const mapa = { kanban:'tela-kanban', cadastro:'tela-cadastro', rastreio:'tela-rastreio', frete:'tela-frete', tabela:'tela-tabela', logs:'tela-logs' };
+        if (mapa[tela]) document.getElementById(mapa[tela]).style.display = 'block';
+        if (tela==='kanban') renderizarKanban();
+        if (tela==='cadastro') renderizarTabelaGen('tabela-ordens');
+        if (tela==='tabela') renderizarTabelaGen('tabela-ordens-2');
+        if (tela==='logs') renderizarLogs();
+    }
+
+    function trocarTelaEntregador(tela, botao) {
+        ['tela-entregador','tela-rastreio-e'].forEach(id => document.getElementById(id).style.display='none');
+        document.querySelectorAll('#menu-entregador .nav-btn').forEach(b => b.classList.remove('ativo'));
+        if (botao) botao.classList.add('ativo');
+        if (tela==='entregas') { document.getElementById('tela-entregador').style.display='block'; renderizarEntregador(); }
+        if (tela==='rastreio-e') document.getElementById('tela-rastreio-e').style.display='block';
+    }
+
+    // ---- KANBAN ----
+    function renderizarKanban() {
+        const termo = (document.getElementById('pesquisa')?.value || '').toLowerCase();
+        let ordens = getOrdens();
+
+        // Urgentes primeiro
+        ordens.sort((a,b) => (a.prioridade==='Urgente' && b.prioridade!=='Urgente') ? -1 : (b.prioridade==='Urgente' && a.prioridade!=='Urgente') ? 1 : 0);
+
+        if (termo) ordens = ordens.filter(o =>
+            (o.numero||'').toLowerCase().includes(termo) ||
+            (o.cliente||'').toLowerCase().includes(termo) ||
+            (o.produto||'').toLowerCase().includes(termo)
+        );
+
+        Object.values(colMap).forEach(id => document.getElementById(id).innerHTML='');
+
+        // Stats
+        const todos = getOrdens();
+        document.getElementById('stat-afazer').textContent = todos.filter(o=>o.status==='A Fazer').length;
+        document.getElementById('stat-producao').textContent = todos.filter(o=>o.status==='Em Andamento').length;
+        document.getElementById('stat-pronto').textContent = todos.filter(o=>['Finalizado','Em Rota','Entregue'].includes(o.status)).length;
+
+        ordens.forEach(o => {
+            let destino = ['Finalizado','Em Rota','Entregue'].includes(o.status) ? 'Finalizado' : o.status;
+            if (!colMap[destino]) return;
+
+            let badge = '';
+            if (o.status==='Em Rota') badge='<span class="badge badge-rota">EM ROTA</span>';
+            else if (o.status==='Entregue') badge='<span class="badge badge-entregue-tag">ENTREGUE</span>';
+            else if (o.prioridade==='Urgente') badge='<span class="badge badge-urgente">URGENTE</span>';
+
+            const podeMover = !['Finalizado','Em Rota','Entregue'].includes(o.status);
+            const btnAvancar = (podeMover && perfilAtual==='PCP') ? `<button class="btn-avancar" onclick="avancarOrdem(${o.id})">AVANÇAR →</button>` : '';
+            const podeExcluir = destino==='Finalizado' && ['PCP','Gestao'].includes(perfilAtual);
+            const btnExcluir = podeExcluir ? `<button class="btn-excluir-reg" onclick="excluirPorId(${o.id})">Remover Registro</button>` : '';
+
+            const card = document.createElement('div');
+            card.className = 'card-ordem';
+            card.innerHTML = `
+                ${badge}
+                <div class="card-op">OP: ${o.numero||'—'}</div>
+                <div class="card-info">${o.produto} | Qtd: ${o.quantidade}</div>
+                <div class="card-info" style="font-weight:600;color:var(--texto);">${o.cliente}</div>
+                <div class="card-btns">
+                    <button class="btn-ver" onclick="verDetalhes(${o.id})">VER</button>
+                    <button class="btn-pdf-card" onclick="gerarPDFOrdem(${o.id})">PDF</button>
+                    ${btnAvancar}
+                </div>
+                ${btnExcluir}`;
+            document.getElementById(colMap[destino]).appendChild(card);
+        });
+    }
+
+    function avancarOrdem(id) {
+        const ordens = getOrdens();
+        const idx = ordens.findIndex(o=>o.id===id);
+        if (idx===-1) return;
+        const next = fluxo[fluxo.indexOf(ordens[idx].status)+1];
+        if (!next) return;
+        ordens[idx].status = next;
+        setOrdens(ordens);
+        registrarLog(`OP ${ordens[idx].numero} avançou para "${next}"`);
+        renderizarKanban();
+    }
+
+    function excluirPorId(id) {
+        if (!confirm('Deseja remover permanentemente esta ordem?')) return;
+        let ordens = getOrdens();
+        const op = ordens.find(o=>o.id===id);
+        setOrdens(ordens.filter(o=>o.id!==id));
+        if (op) registrarLog(`OP ${op.numero} excluída.`);
+        renderizarKanban();
+    }
+
+    // ---- DETALHES ----
+    function verDetalhes(id) {
+        const o = getOrdens().find(x=>x.id===id);
+        if (!o) return;
+        document.getElementById('det-titulo').textContent = `Detalhes: ${o.numero}`;
+        document.getElementById('det-corpo').innerHTML = `
+            <p><strong>OP:</strong> ${o.numero||'—'}</p>
+            <p><strong>Produto:</strong> ${o.produto}</p>
+            <p><strong>Quantidade:</strong> ${o.quantidade}</p>
+            <p><strong>Cliente:</strong> ${o.cliente}</p>
+            <p><strong>Endereço:</strong> ${o.rua||''}, ${o.casa||''} – ${o.bairro||''} – ${o.cidade||''}</p>
+            <p><strong>CEP:</strong> ${o.cep||'—'}</p>
+            <p><strong>Prioridade:</strong> <span style="color:${o.prioridade==='Urgente'?'var(--vermelho)':'inherit'}">${o.prioridade}</span></p>
+            <p><strong>Status:</strong> ${o.status}</p>
+            <p><strong>Prazo:</strong> ${o.prazo||'—'}</p>
+            <p style="margin-top:12px;font-weight:600;">Descrição:</p>
+            <textarea readonly rows="4" style="width:100%;padding:10px;border:1px solid var(--cinza-borda);border-radius:8px;background:var(--cinza-fundo);color:var(--texto);">${o.descricao||'Sem descrição.'}</textarea>`;
+        document.getElementById('modal-detalhes').classList.add('open');
+    }
+    function fecharModalDetalhes() { document.getElementById('modal-detalhes').classList.remove('open'); }
+
+    // ---- MODAL NOVA OP ----
+    function abrirModalNovaOP() {
+        prioridadeModal = 'Normal';
+        document.getElementById('btn-normal').classList.add('active');
+        document.getElementById('btn-urgente').classList.remove('active','urgente');
+        ['m-numero','m-cliente','m-produto','m-quantidade','m-cep','m-bairro','m-rua','m-casa','m-descricao','m-cidade'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value=''; });
+        document.getElementById('modal-nova-op').classList.add('open');
+    }
+    function fecharModal() { document.getElementById('modal-nova-op').classList.remove('open'); }
+    function setPrioridade(p) {
+        prioridadeModal = p;
+        document.getElementById('btn-normal').classList.toggle('active', p==='Normal');
+        const bu = document.getElementById('btn-urgente');
+        bu.classList.toggle('active', p==='Urgente');
+        bu.classList.toggle('urgente', p==='Urgente');
+    }
+
+    function salvarNovaOP() {
+        const numero = document.getElementById('m-numero').value.trim();
+        const cliente = document.getElementById('m-cliente').value.trim();
+        const produto = document.getElementById('m-produto').value.trim();
+        const quantidade = document.getElementById('m-quantidade').value.trim();
+        if (!numero||!cliente||!produto||!quantidade) { alert('Preencha os campos obrigatórios (*).'); return; }
+        const ordens = getOrdens();
+        const id = Date.now();
+        ordens.push({ id, numero, cliente, produto, quantidade,
+            cep:document.getElementById('m-cep').value.trim(),
+            bairro:document.getElementById('m-bairro').value.trim(),
+            rua:document.getElementById('m-rua').value.trim(),
+            casa:document.getElementById('m-casa').value.trim(),
+            cidade:document.getElementById('m-cidade').value.trim(),
+            responsavel:'', prazo:'',
+            prioridade:prioridadeModal, status:'A Fazer',
+            descricao:document.getElementById('m-descricao').value.trim() });
+        setOrdens(ordens);
+        registrarLog(`Nova OP ${numero} cadastrada para ${cliente}.`);
+        fecharModal();
+        renderizarKanban();
+    }
+
+    // ---- SALVAR ORDEM (cadastro) ----
+    function salvarOrdem() {
+        const cliente = document.getElementById('cliente').value.trim();
+        const produto = document.getElementById('produto').value.trim();
+        if (!cliente||!produto) { alert('Preencha os campos obrigatórios.'); return; }
+        const ordens = getOrdens();
+        const id = Date.now();
+        const numero = document.getElementById('numero-op').value.trim() || `OP-${id}`;
+        ordens.push({ id, numero, cliente, produto,
+            quantidade:document.getElementById('quantidade').value.trim(),
+            responsavel:document.getElementById('responsavel').value.trim(),
+            cep:document.getElementById('cep').value.trim(),
+            rua:document.getElementById('rua').value.trim(),
+            casa:document.getElementById('numero-casa').value.trim(),
+            bairro:document.getElementById('bairro').value.trim(),
+            cidade:document.getElementById('cidade').value.trim(),
+            status:document.getElementById('status').value,
+            prioridade:document.getElementById('prioridade').value,
+            prazo:document.getElementById('prazo').value,
+            descricao:document.getElementById('descricao').value.trim() });
+        setOrdens(ordens);
+        registrarLog(`Nova OP ${numero} cadastrada via formulário.`);
+        renderizarTabelaGen('tabela-ordens');
+        limparCampos();
+        alert('Ordem registrada com sucesso!');
+    }
+
+    function limparCampos() {
+        ['numero-op','cliente','produto','quantidade','responsavel','cep','rua','numero-casa','bairro','cidade','prazo','descricao']
+            .forEach(id => { const e=document.getElementById(id); if(e) e.value=''; });
+        document.getElementById('status').value='A Fazer';
+        document.getElementById('prioridade').value='Normal';
+    }
+
+    function excluirOrdem() {
+        const numero = prompt('Digite o número da OP a excluir (ex: OP-001):');
+        if (!numero) return;
+        let ordens = getOrdens();
+        const antes = ordens.length;
+        ordens = ordens.filter(o=>o.numero!==numero.trim());
+        if (ordens.length===antes) { alert('Ordem não encontrada.'); return; }
+        setOrdens(ordens);
+        registrarLog(`OP ${numero} excluída via tabela.`);
+        renderizarTabelaGen('tabela-ordens');
+        renderizarKanban();
+    }
+
+    // ---- TABELA ----
+    function statusCor(s) {
+        return {'A Fazer':'#64748b','Em Andamento':'#f39c12','Qualidade':'#8e44ad','Finalizado':'#27ae60','Em Rota':'#f39c12','Entregue':'#27ae60'}[s]||'inherit';
+    }
+    function renderizarTabelaGen(tbodyId) {
+        const tbody = document.getElementById(tbodyId);
+        if (!tbody) return;
+        tbody.innerHTML = getOrdens().map((o,i) => `<tr>
+            <td>${i+1}</td><td>${o.numero||'—'}</td><td>${o.cliente}</td><td>${o.produto}</td>
+            <td>${o.quantidade}</td><td>${o.bairro||'—'}</td>
+            <td><span style="font-weight:700;color:${statusCor(o.status)}">${o.status}</span></td>
+            <td><span style="color:${o.prioridade==='Urgente'?'var(--vermelho)':'inherit'}">${o.prioridade}</span></td>
+            <td>${o.prazo||'—'}</td></tr>`).join('');
+    }
+
+    // ---- RASTREIO ----
+    function rastrearPedido() {
+        const codigo = document.getElementById('codigo-rastreio').value.trim().toLowerCase();
+        const resultado = document.getElementById('resultado-rastreio');
+        if (!codigo) { resultado.innerHTML=''; return; }
+        const o = getOrdens().find(x=>(x.numero||'').toLowerCase()===codigo||(x.cliente||'').toLowerCase().includes(codigo));
+        if (o) {
+            let txt=o.status, cls='';
+            if (o.status==='Em Rota') { txt='SAIU PARA ENTREGA'; cls='em-rota'; }
+            else if (o.status==='Entregue') { txt='ENTREGUE AO CLIENTE'; cls='entregue'; }
+            else if (o.status==='Finalizado') txt='PRONTO PARA COLETA';
+            resultado.innerHTML=`<div class="rastreio-resultado-card ${cls}">
+                <h4>📦 Pedido Encontrado</h4>
+                <span class="status-label ${cls}">${txt}</span>
+                <p><strong>OP:</strong> ${o.numero||'—'}</p>
+                <p><strong>Produto:</strong> ${o.produto}</p>
+                <p><strong>Cliente:</strong> ${o.cliente}</p>
+                <p><strong>Prioridade:</strong> ${o.prioridade}</p>
+                <p><strong>Prazo:</strong> ${o.prazo||'—'}</p></div>`;
+        } else {
+            resultado.innerHTML=`<div class="form-card" style="color:var(--vermelho);font-weight:700;">❌ Ordem não encontrada.</div>`;
+        }
+    }
+
+    function rastrearEntregador() {
+        const codigo = document.getElementById('codigo-rastreio-e').value.trim().toLowerCase();
+        const resultado = document.getElementById('resultado-rastreio-e');
+        const o = getOrdens().find(x=>(x.numero||'').toLowerCase()===codigo);
+        if (o) {
+            let txt=o.status, cls='';
+            if (o.status==='Em Rota') { txt='EM ROTA'; cls='em-rota'; }
+            else if (o.status==='Entregue') { txt='ENTREGUE'; cls='entregue'; }
+            resultado.innerHTML=`<div class="rastreio-resultado-card ${cls}">
+                <h4>OP: ${o.numero}</h4>
+                <span class="status-label ${cls}">${txt}</span>
+                <p><strong>Produto:</strong> ${o.produto}</p>
+                <p><strong>Cliente:</strong> ${o.cliente}</p>
+                <p><strong>Bairro:</strong> ${o.bairro||'—'}</p></div>`;
+        } else {
+            resultado.innerHTML=`<div class="form-card" style="color:var(--vermelho);">❌ OP não encontrada.</div>`;
+        }
+    }
+
+    // ---- FRETE ----
+    function calcularFrete() {
+        const peso=Number(document.getElementById('peso').value);
+        const distancia=Number(document.getElementById('distancia').value);
+        const tipo=Number(document.getElementById('tipo-entrega').value);
+        if (!peso||!distancia) { alert('Preencha os dados.'); return; }
+        const valor=((peso*0.45)+(distancia*0.12))*tipo;
+        document.getElementById('resultado-frete').innerHTML=`R$ ${valor.toFixed(2).replace('.',',')}`;
+    }
+
+    // ---- PAINEL ENTREGADOR ----
+    function renderizarEntregador() {
+        const ordens = getOrdens().filter(o=>['Finalizado','Em Rota','Entregue'].includes(o.status));
+        const lista = document.getElementById('lista-entregas');
+        if (!lista) return;
+        if (!ordens.length) { lista.innerHTML='<p style="color:var(--texto-leve);text-align:center;padding:40px;">Nenhuma ordem pronta para entrega.</p>'; return; }
+        lista.innerHTML=ordens.map(o=>{
+            let botao='';
+            if (o.status==='Finalizado') botao=`<button class="btn-entrega btn-rota" onclick="mudarStatusEntrega(${o.id},'Em Rota')">SAIR PARA ENTREGA</button>`;
+            else if (o.status==='Em Rota') botao=`<button class="btn-entrega btn-entregue-btn" onclick="mudarStatusEntrega(${o.id},'Entregue')">MARCAR COMO ENTREGUE</button>`;
+            else botao=`<span class="badge-entregue-txt">✅ ENTREGUE</span>`;
+            return `<div class="entrega-card">
+                <div class="entrega-info">
+                    <h4>OP: ${o.numero||'—'}</h4>
+                    <p>Entregar para: <strong>${o.cliente}</strong></p>
+                    <p>Bairro: ${o.bairro||'—'}</p>
+                    <p>Produto: ${o.produto} | Qtd: ${o.quantidade}</p>
+                </div>
+                <div>${botao}</div></div>`;
+        }).join('');
+    }
+
+    function mudarStatusEntrega(id, novoStatus) {
+        const ordens=getOrdens();
+        const idx=ordens.findIndex(o=>o.id===id);
+        if (idx===-1) return;
+        ordens[idx].status=novoStatus;
+        setOrdens(ordens);
+        registrarLog(`OP ${ordens[idx].numero} atualizada para "${novoStatus}" pelo entregador.`);
+        renderizarEntregador();
+    }
+
+    // ---- LOGS ----
+    function renderizarLogs() {
+        const logs=getLogs();
+        const lista=document.getElementById('lista-logs');
+        if (!lista) return;
+        lista.innerHTML=logs.length
+            ? logs.map(l=>`<div class="log-item">[${l.data}] — ${l.acao}</div>`).join('')
+            : '<p style="color:var(--texto-leve);text-align:center;padding:30px;">Nenhum log registrado.</p>';
+    }
+    function limparLogs() {
+        if (!confirm('Apagar todos os logs?')) return;
+        localStorage.removeItem('lsp_logs');
+        renderizarLogs();
+    }
+
+    // ---- PDF INDIVIDUAL (por OP, portado do gerar_pdf_simples) ----
+    function gerarPDFOrdem(id) {
+        const o=getOrdens().find(x=>x.id===id);
+        if (!o) return;
+        const {jsPDF}=window.jspdf;
+        const doc=new jsPDF();
+        doc.setFontSize(18); doc.setTextColor(52,152,219);
+        doc.text(`ORDEM DE PRODUCAO: ${o.numero||'—'}`,20,25);
+        doc.setFontSize(12); doc.setTextColor(0,0,0);
+        [`Produto: ${o.produto}`,`Quantidade: ${o.quantidade}`,`Cliente: ${o.cliente}`,
+         `Endereco: ${o.rua||''}, ${o.casa||''} - ${o.bairro||''} - ${o.cidade||''}`,
+         `CEP: ${o.cep||'—'}`,`Prioridade: ${o.prioridade}`,`Status: ${o.status}`,
+         `Prazo: ${o.prazo||'—'}`,'',`Descricao: ${o.descricao||'Sem descricao.'}`]
+            .forEach((l,i)=>doc.text(l,20,45+i*10));
+        doc.save(`OP_${o.numero||o.id}.pdf`);
+        registrarLog(`PDF gerado para OP ${o.numero}.`);
+    }
+
+    // ---- PDF / EXCEL GERAL ----
+    function baixarPDF() { window.print(); }
+
+    function baixarExcel() {
+        const ordens=getOrdens();
+        if (!ordens.length) { alert('Nenhuma ordem para exportar.'); return; }
+        const dados=ordens.map(o=>({
+            'Nº OP':o.numero||'','Cliente':o.cliente,'Produto':o.produto,'Quantidade':o.quantidade,
+            'Responsável':o.responsavel||'','CEP':o.cep||'','Rua':o.rua||'','Nº Casa':o.casa||'',
+            'Bairro':o.bairro||'','Cidade':o.cidade||'','Status':o.status,'Prioridade':o.prioridade,
+            'Prazo':o.prazo||'','Descrição':o.descricao||'' }));
+        const ws=XLSX.utils.json_to_sheet(dados);
+        const wb=XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb,ws,'Ordens');
+        XLSX.writeFile(wb,`Relatorio_Ordens_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'_')}.xlsx`);
+        registrarLog('Relatório Excel exportado.');
+    }
+
+    // ---- API CEP (portado do buscar_cep_api) ----
+    async function buscarCEP(cep, idRua, idBairro, idCidade) {
+        const c=cep.replace(/\D/g,'');
+        if (c.length!==8) return;
+        try {
+            const res=await fetch(`https://viacep.com.br/ws/${c}/json/`);
+            const data=await res.json();
+            if (data.erro) return;
+            const r=document.getElementById(idRua); if(r) r.value=data.logradouro||'';
+            const b=document.getElementById(idBairro); if(b) b.value=data.bairro||'';
+            const ci=document.getElementById(idCidade); if(ci) ci.value=data.localidade||'';
+        } catch(e){}
+    }
+
+    // ---- LOGOUT ----
+    function logout() { if(confirm('Deseja sair do sistema?')) window.location.href='../../app.html'; }
+
+    // ---- FECHAR MODAL AO CLICAR FORA ----
+    document.getElementById('modal-nova-op').addEventListener('click',function(e){ if(e.target===this) fecharModal(); });
+    document.getElementById('modal-detalhes').addEventListener('click',function(e){ if(e.target===this) fecharModalDetalhes(); });
+
+    // ---- INIT ----
+    renderizarKanban();
+    </script>
+        <script defer src="../../assets/js/acessibilidade.js"></script>
+
+
+</body>
+</html>
