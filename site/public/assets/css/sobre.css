@@ -1,6 +1,6 @@
-/* =========================
-   SOBRE
-========================= */
+/* ==========================================
+   CONFIGURAÇÕES GERAIS DA PÁGINA SOBRE
+   ========================================== */
 body {
     background: var(--bg-page-gradient);
     color: var(--text-primary);
@@ -8,14 +8,20 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
+/* Container Principal - Organiza os blocos verticalmente */
 .container {
     min-height: calc(100vh - 160px);
     display: flex;
+    flex-direction: column;    /* Garante que a seção de parcerias fique embaixo do card */
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
+    gap: 40px;                 /* Espaçamento elegante entre o Card e as Parcerias */
 }
 
+/* ==========================================
+   CARD SOBRE NÓS
+   ========================================== */
 .container .card {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
@@ -58,8 +64,11 @@ body {
     color: var(--text-secondary);
 }
 
-.container p:last-of-type { text-align: justify; }
+.container p:last-of-type { 
+    text-align: justify; 
+}
 
+/* Botões da Página */
 .container button {
     background: var(--accent-cyan);
     color: #ffffff;
@@ -77,7 +86,65 @@ body {
     transform: scale(1.05);
 }
 
-/* Modal */
+/* ==========================================
+   SEÇÃO DE PARCERIAS (MELHORADA)
+   ========================================== */
+.parcerias-section {
+    width: 100%;
+    max-width: 700px;         /* Mantém a simetria com a largura do card superior */
+    text-align: center;
+    opacity: 0;
+    animation: subirSuave 1s ease-out 0.2s forwards; /* Surge logo após o card principal */
+}
+
+.parcerias-section h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: var(--accent-cyan);
+}
+
+.parcerias-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Novo visual do Card do Parceiro */
+.parceiro-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.parceiro-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.parceiro-card h3 {
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.parceiro-card p {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 0;
+}
+
+/* ==========================================
+   MODAL INTERATIVO
+   ========================================== */
 #modal-overlay {
     backdrop-filter: blur(8px);
     position: fixed;
@@ -93,7 +160,10 @@ body {
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-#modal-overlay.active { visibility: visible; opacity: 1; }
+#modal-overlay.active { 
+    visibility: visible; 
+    opacity: 1; 
+}
 
 .modal-content {
     background: var(--bg-card);
@@ -124,11 +194,54 @@ body {
     transition: 0.3s;
 }
 
-#btn-fechar-modal:hover { background: var(--accent-cyan-hv); }
+#btn-fechar-modal:hover { 
+    background: var(--accent-cyan-hv); 
+}
 
-#modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
+#modal-overlay.active .modal-content { 
+    transform: scale(1); 
+    opacity: 1; 
+}
 
+/* Estilização do botão de visitar o site do parceiro */
+.btn-visitar {
+    display: inline-block;
+    background: transparent;
+    color: var(--accent-cyan);
+    border: 2px solid var(--accent-cyan);
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-decoration: none; /* Remove o sublinhado padrão do link */
+    margin-top: 15px;
+    transition: 0.3s ease;
+}
+
+.btn-visitar:hover {
+    background: var(--accent-cyan);
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 191, 165, 0.3); /* Um leve brilho baseado na cor cyan */
+}
+
+/* ==========================================
+   RESPONSIVIDADE (MOBILE)
+   ========================================== */
 @media (max-width: 600px) {
-    .container .card { padding: 25px; }
-    .container h1 { font-size: 28px; }
+    .container {
+        gap: 25px;
+        padding: 20px 15px;
+    }
+    .container .card { 
+        padding: 25px; 
+    }
+    .container h1 { 
+        font-size: 28px; 
+    }
+    .parcerias-section h2 { 
+        font-size: 24px; 
+    }
+    .parceiro-card { 
+        padding: 20px; 
+    }
 }
