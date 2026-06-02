@@ -19,6 +19,13 @@ const mockPartnersData = [
         url: "https://www.getninjas.com.br/",
         destaque: false,
         beneficios: ["Antifraude integrado", "Taxas reduzidas"]
+    },
+    {
+        nome: "Logistock",
+        descricao: "Soluções de logística e transporte.",
+        url: "https://github.com/jvap-bit/sistema_ERP/",
+        destaque: false,
+        beneficios: ["Rastreio em tempo real", "Segurança"]
     }
 ];
 
