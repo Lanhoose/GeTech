@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeTech | Caixa de Mensagens</title>
+    <link rel="shortcut icon" href="Getech.png" type="image/x-icon">
+    
+    <style>
+        :root {
+            --azul-industrial: #0664d7;
+            --azul-alerta: #3d92ff ;
+            --cinza-claro: #f4f4f4;
+            --branco: #ffffff;
+            --vermelho-remover: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            line-height: 1.6;
+            color: #333;
+            background-color: #e9ecef;
+        }
+
+        header {
+            background-color: var(--azul-industrial);
+            color: var(--branco);
+            padding: 0.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%; 
+            box-sizing: border-box; 
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
+        .logo-img {
+            height: 50px; 
+            display: block;
+            border-radius: 40px;
+        }
+
+        .logo-texto {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Container Principal */
+        .main-container {
+            max-width: 1000px;
+            margin: 100px auto 40px auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--branco);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: var(--azul-industrial);
+            font-size: 1.8rem;
+        }
+
+        .btn-limpar {
+            background-color: var(--vermelho-remover);
+            color: var(--branco);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-limpar:hover {
+            background-color: #bd2130;
+        }
+
+        /* Lista de Mensagens */
+        .mensagens-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card-mensagem {
+            background: var(--branco);
+            border-left: 5px solid var(--azul-industrial);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: relative;
+            transition: 0.2s;
+        }
+
+        .card-mensagem:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-header-msg {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .card-body-msg p {
+            margin: 5px 0;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .problema-texto {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            border-left: 3px solid var(--azul-alerta);
+            margin-top: 10px !important;
+        }
+
+        .btn-deletar-unica {
+            background: none;
+            border: none;
+            color: var(--vermelho-remover);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .btn-deletar-unica:hover {
+            text-decoration: underline;
+        }
+
+        /* Estado Vazio */
+        .sem-mensagens {
+            text-align: center;
+            background: var(--branco);
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            color: #777;
+        }
+
+        .sem-mensagens h3 {
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="Getech.png" alt="Logo GeTech" class="logo-img">
+        <span class="logo-texto"><strong>GE</strong>TECH</span>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="Contato.html">Contato</a></li>
+            <li><a href="orçamento.html">Orçamento</a></li>
+            <li><a href="loginreal.html">Sistema</a></li>
+            <li><a href="mensagem.html">Caixa de Mensagem</a></li>
+            <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="main-container">
+    <div class="page-header">
+        <h1>Caixa de Mensagens Recebidas</h1>
+        <button class="btn-limpar" id="btnLimparTudo" onclick="limparTodasMensagens()">Limpar Caixa</button>
+    </div>
+
+    <div id="containerMensagens" class="mensagens-lista"></div>
+</div>
+
+<footer>
+    <p>&copy; 2026 GeTech Soluções Industriais</p>
+</footer>
+
+<script>
+    const containerMensagens = document.getElementById('containerMensagens');
+    const btnLimparTudo = document.getElementById('btnLimparTudo');
+
+    // Função para renderizar as mensagens na tela
+    function carregarMensagens() {
+        // Busca a lista salva no localStorage do navegador
+        const chamados = JSON.parse(localStorage.getItem('chamadosChatbot')) || [];
+
+        // Se não houver chamados
+        if (chamados.length === 0) {
+            btnLimparTudo.style.display = 'none'; // Esconde botão de limpar
+            containerMensagens.innerHTML = `
+                <div class="sem-mensagens">
+                    <h3>Sua caixa está limpa!</h3>
+                    <p>Nenhuma mensagem ou ordem de serviço foi enviada pelo assistente virtual até o momento.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Se houver chamados, exibe o botão e renderiza cada um deles
+        btnLimparTudo.style.display = 'block';
+        containerMensagens.innerHTML = ''; // Limpa o container antes de renderizar
+
+        // Renderiza de trás para frente (as mais recentes aparecem primeiro no topo)
+        chamados.reverse().forEach((chamado, indexOriginal) => {
+            // Como revertemos a array para exibição, precisamos recuperar o index real correto para deletar
+            const indexReal = (chamados.length - 1) - indexOriginal;
+
+            const card = document.createElement('div');
+            card.classList.add('card-mensagem');
+            card.innerHTML = `
+                <div class="card-header-msg">
+                    <span><strong>ID Chamado:</strong> #${indexReal + 1}</span>
+                    <span>${chamado.data || 'Data não registrada'}</span>
+                </div>
+                <div class="card-body-msg">
+                    <p><span class="label">Cliente:</span> ${chamado.nome}</p>
+                    <p><span class="label">E-mail de Contato:</span> <a href="mailto:${chamado.email}">${chamado.email}</a></p>
+                    <p class="problema-texto"><span class="label">Descrição do Problema:</span><br>${chamado.problema}</p>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button class="btn-deletar-unica" onclick="deletarMensagem(${indexReal})">Excluir Registro</button>
+                </div>
+            `;
+            containerMensagens.appendChild(card);
+        });
+    }
+
+    // Função para deletar uma mensagem específica
+    function deletarMensagem(index) {
+        if(confirm("Tem certeza que deseja apagar este registro de atendimento?")) {
+            let chamados = JSON.parse(localStorage.getItem('chamadosChatbot')) || [];
+            chamados.splice(index, 1); // Remove o item da array pelo index
+            localStorage.setItem('chamadosChatbot', JSON.stringify(chamados)); // Atualiza o localStorage
+            carregarMensagens(); // Recarrega a tela
+        }
+    }
+
+    // Função para limpar toda a caixa
+    function limparTodasMensagens() {
+        if(confirm("ATENÇÃO: Você tem certeza que deseja apagar TODAS as mensagens recebidas? Esta ação não pode ser desfeita.")) {
+            localStorage.removeItem('chamadosChatbot');
+            carregarMensagens();
+        }
+    }
+
+    // Executa automaticamente ao carregar a página
+    document.addEventListener('DOMContentLoaded', carregarMensagens);
+</script>
+
+</body>
+</html>

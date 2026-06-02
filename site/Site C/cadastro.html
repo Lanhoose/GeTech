@@ -182,11 +182,15 @@
         <img src="Getech.png" alt="Logo GeTech" class="logo-img">
         <span class="logo-texto"><strong>GE</strong>TECH</span>
     </div>
+
     <nav>
         <ul>
             <li><a href="index.html">Início</a></li>
             <li><a href="Contato.html">Contato</a></li>
             <li><a href="orçamento.html">Orçamento</a></li>
+            <li><a href="loginreal.html">Sistema</a></li>
+            <li><a href="mensagem.html">Caixa de Mensagem</a></li>
+            <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
         </ul>
     </nav>
 </header>
@@ -196,7 +200,7 @@
         <h2>Criar Nova Conta</h2>
         <p style="text-align: center; color: #666; margin-bottom: 20px;">Selecione seu perfil para acessar as ferramentas corretas.</p>
         
-        <form id="cadastroForm">
+        <form id="cadastroForm" action="processa_cadastro.php">
             <div class="form-grid">
                 <div class="form-group full-width">
                     <label for="tipo_usuario">Eu sou um:</label>
@@ -288,7 +292,7 @@
         // LÓGICA DE REDIRECIONAMENTO
         if (tipoUsuario === 'gestor') {
             alert("✅ Perfil GESTOR identificado! Redirecionando para o Painel Administrativo...");
-            window.location.href = "painel_gestor.html"; // Nome da sua página de gestor
+            window.location.href = "login.html"; // Nome da sua página de gestor
         } else {
             alert("✅ Cadastro de CLIENTE concluído! Bem-vindo à sua área de orçamentos.");
             window.location.href = "area_cliente.html"; // Nome da sua página de cliente
