@@ -23,7 +23,7 @@ const mockPartnersData = [
     {
         nome: "Logistock",
         descricao: "Soluções de logística e transporte.",
-        url: "https://github.com/jvap-bit/sistema_ERP/",
+        url: "https://jvap-bit.github.io/sistema_ERP/",
         destaque: false,
         beneficios: ["Rastreio em tempo real", "Segurança"]
     }
