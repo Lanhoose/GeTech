@@ -27,7 +27,7 @@
                 </label>
                 <span class="theme-label" id="theme-label">Claro</span>
             </div>
-            <button class="btn-sair" onclick="logout()">Sair</button>
+            <button class="btn-sair" onclick="logout()">← Voltar ao Menu</button>
         </div>
     </header>
 
@@ -710,7 +710,7 @@
     }
 
     // ---- LOGOUT ----
-    function logout() { if(confirm('Deseja sair do sistema?')) window.location.href='../../app.html'; }
+    function logout() { onclick="window.location.href='../../app.html'"; }
 
     // ---- FECHAR MODAL AO CLICAR FORA ----
     document.getElementById('modal-nova-op').addEventListener('click',function(e){ if(e.target===this) fecharModal(); });
