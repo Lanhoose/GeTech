@@ -19,7 +19,12 @@
                   "type": "folder",
                   "children": [
                     { "name": "app.css", "type": "file" },
-                    { "name": "global.css", "type": "file" }
+                    { "name": "global.css", "type": "file" },
+                    { "name": "estoque.css", "type": "file" },
+                    { "name": "manutencao.css", "type": "file" },
+                    { "name": "rh.css", "type": "file" },
+                    { "name": "pedidos.css", "type": "file" },
+                    { "name": "sistema.css", "type": "file" }
                   ]
                 },
                 {
@@ -72,6 +77,13 @@
                   "type": "folder",
                   "children": [
                     { "name": "rh.html", "type": "file" }
+                  ]
+                },
+                {
+                  "name": "pedidos",
+                  "type": "folder",
+                  "children": [
+                    { "name": "pedidos.html", "type": "file" }
                   ]
                 },
                 {
