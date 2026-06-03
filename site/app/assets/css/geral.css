@@ -194,25 +194,142 @@
         .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); }
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 
-        @media (max-width: 768px) {
-            .topbar { padding: 12px 20px; }
-            .nav-tabs { padding: 0 16px; }
-            .main-content { padding: 0 12px; }
-            .panel-card { padding: 24px 20px; }
-            .intro-grid { grid-template-columns: 1fr; }
-            .map-grid { grid-template-columns: 1fr; }
-        }
-
         .btn-topbar {
-            background-color: var(--mod-btn-bg);
-            color: #ffffff;
-            padding: 6px 16px;
+            display: block; /* Garante o comportamento de bloco para respeitar paddings */
+            width: 100%; /* Ocupa a largura total disponível na coluna mobile */
+            text-align: center;
+            padding: 10px 16px;
+            background-color: var(--mod-btn-bg) !important; /* Força o fundo azul correto */
+            color: #ffffff !important; /* Força o texto branco para contraste absoluto */
             border-radius: 20px;
-            text-decoration: none;
             font-size: 14px;
             font-weight: 600;
-            transition: background-color 0.2s;
+            text-decoration: none;
+            box-shadow: var(--shadow-sm);
         }
         .btn-topbar:hover {
-            background-color: var(--mod-btn-hover);
+            background-color: var(--mod-btn-hover) !important;
+        }
+       /* ==========================================================================
+           RESPONSIVIDADE & ADAPTAÇÕES PARA DISPOSITIVOS MÓVEIS
+           ========================================================================== */
+
+        /* Ajuste para telas menores (Tablets e Celulares Grandes) */
+        @media (max-width: 768px) {
+            .topbar { 
+                padding: 15px 20px; 
+                flex-direction: column; 
+                gap: 12px; 
+                text-align: center; 
+                position: relative; /* Evita fixar no topo em telas muito pequenas para poupar espaço de tela */
+            }
+            .topbar-right { 
+                flex-wrap: wrap; 
+                justify-content: center; 
+                gap: 10px; 
+            }
+            .nav-tabs { 
+                padding: 0 15px; 
+                scrollbar-width: none; /* Oculta barra de rolagem no Firefox */
+            }
+            .nav-tabs::-webkit-scrollbar { 
+                display: none; /* Oculta barra de rolagem no Chrome/Safari */
+            }
+            .tab-btn { 
+                padding: 12px 16px; 
+                font-size: 14px; 
+            }
+            .main-content { 
+                margin: 20px auto; 
+                padding: 0 15px; 
+            }
+            .panel-card { 
+                padding: 24px 16px; 
+                border-radius: 8px;
+            }
+            .intro-grid { 
+                grid-template-columns: 1fr; 
+                gap: 12px;
+            }
+            .map-grid { 
+                grid-template-columns: 1fr; 
+                gap: 12px;
+            }
+
+            /* Tornando tabelas legíveis no mobile (Scroll horizontal suave) */
+            .tech-table, .auth-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Ajuste de padding nas tabelas para telas menores */
+            .tech-table th, .tech-table td,
+            .auth-table th, .auth-table td {
+                padding: 10px;
+            }
+            
+            /* Ajuste da árvore de pastas */
+            .folder-content {
+                padding-left: 14px;
+                margin-left: 6px;
+            }
+            .comment-text {
+                display: block; /* Quebra o comentário para a linha de baixo se não couber */
+                margin-left: 28px;
+                margin-top: 2px;
+            }
+        }
+
+        /* Ajuste fino para telas muito pequenas (Celulares verticais) */
+        /* Ajuste fino para telas muito pequenas (Celulares verticais) */
+        @media (max-width: 480px) {
+            .topbar h1 { 
+                font-size: 18px; 
+            }
+            .topbar-meta {
+                font-size: 12px;
+            }
+            .badge-version, .badge-status {
+                padding: 2px 8px;
+                font-size: 11px;
+            }
+            .theme-toggle-wrap {
+                padding: 4px 10px;
+            }
+            .theme-toggle {
+                font-size: 12px;
+            }
+            
+            /* CORREÇÃO DO BOTÃO "VOLTAR AO INÍCIO" */
+            .btn-topbar {
+                display: block; /* Garante o comportamento de bloco para respeitar paddings */
+                width: 100%; /* Ocupa a largura total disponível na coluna mobile */
+                text-align: center;
+                padding: 10px 16px;
+                background-color: var(--mod-btn-bg) !important; /* Força o fundo azul correto */
+                color: #ffffff !important; /* Força o texto branco para contraste absoluto */
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: 600;
+                text-decoration: none;
+                box-shadow: var(--shadow-sm);
+            }
+            .btn-topbar:hover {
+                background-color: var(--mod-btn-hover) !important;
+            }
+
+            .doc-section h2 {
+                font-size: 18px;
+            }
+            .doc-section p {
+                font-size: 14px;
+            }
+            .zone-label {
+                display: block;
+                margin-left: 0;
+                margin-top: 5px;
+                width: max-content;
+            }
         }

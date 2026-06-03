@@ -421,9 +421,116 @@
     }
 
     /* Responsividade Dinâmica */
+   /* ==========================================================================
+       RESPONSIVIDADE E ADAPTAÇÃO MOBILE
+       ========================================================================== */
+
+    /* Suporte para telas menores/Tablets (Menos de 992px) */
+    @media (max-width: 992px) {
+      .form-grid {
+        grid-template-columns: 1fr; /* Transforma o grid em coluna única */
+        gap: 20px;
+      }
+    }
+
+    /* Suporte para Smartphones (Menos de 768px) */
     @media (max-width: 768px) {
-      #screen-login.screen.active { min-height: auto; }
-      .login-hints { grid-template-columns: 1fr; }
-      .filter-row { flex-direction: column; align-items: stretch; max-width: 100%; }
-      .filter-row button { width: 100%; }
+      /* Header adaptável */
+      .header-modulo {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+        padding: 15px;
+      }
+      .header-modulo h1 {
+        flex-direction: column;
+        gap: 5px;
+      }
+      .header-controls {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .header-controls .btn-erp,
+      .header-controls .btn-logout,
+      .header-controls #themeToggle {
+        width: 100% !important; /* Botões ocupam largura total no mobile */
+        justify-content: center;
+      }
+
+      /* Container e Espaçamentos */
+      .container-modulo {
+        padding: 12px !important;
+      }
+      .card {
+        padding: 16px;
+      }
+
+      /* Sistema de Abas com Scroll Lateral Suave */
+      .nav-tabs {
+        padding: 0 12px;
+        scrollbar-width: none; /* Oculta barra no Firefox */
+      }
+      .nav-tabs::-webkit-scrollbar {
+        display: none; /* Oculta barra no Chrome/Safari */
+      }
+      .nav-tabs button.tab-btn {
+        padding: 12px 16px;
+        font-size: 0.85rem;
+      }
+
+      /* Tela de Login */
+      #screen-login.screen.active {
+        min-height: auto;
+        padding: 0 10px;
+      }
+      .login-hints {
+        grid-template-columns: 1fr; /* Hints empilhados */
+        gap: 10px;
+      }
+
+      /* Filtros em Linha */
+      .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 100%;
+        gap: 10px;
+      }
+      .filter-row button {
+        width: 100%;
+      }
+
+      /* Responsividade de Tabelas (Garante que a tabela não quebre a tela) */
+      table {
+        display: block;
+        width: 100%;
+        overflow-x: auto; /* Cria uma rolagem horizontal apenas na tabela */
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap; /* Evita que o texto quebre linhas de forma estranha */
+      }
+
+      /* Ajustes de Botões Gerais */
+      button {
+        width: 100%; /* Botões normais passam a ocupar a largura do container */
+        min-width: none;
+      }
+
+      /* Toast Notification centralizado no mobile */
+      #toast {
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        text-align: center;
+      }
+    }
+
+    /* Ajuste para telas muito pequenas (Smartphones antigos / menos de 480px) */
+    @media (max-width: 480px) {
+      .header-modulo h1 {
+        font-size: 1.2rem;
+      }
+      th, td {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+      }
     }

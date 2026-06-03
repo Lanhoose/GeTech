@@ -369,3 +369,137 @@
     background: #0ea5e9 !important; /* Caixa de mensagens do usuário sólida em azul destacado */
     color: #ffffff !important;
 }
+
+/* ==========================================================================
+   RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================================== */
+
+/* Dispositivos Médios e Tablets (Até 768px) */
+@media (max-width: 768px) {
+    .help-page {
+        padding: 40px 16px;
+    }
+
+    .help-hero {
+        margin-bottom: 35px;
+    }
+
+    .help-hero h1 {
+        font-size: 2rem;
+    }
+
+    .help-hero p {
+        font-size: 1rem;
+    }
+
+    /* Ajuste na barra de busca para não esmagar os elementos */
+    .search-wrapper {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 24px;
+        padding: 6px;
+    }
+
+    .search-wrapper input {
+        padding: 8px 12px;
+        font-size: 0.95rem;
+    }
+
+    .search-wrapper button {
+        padding: 8px 18px;
+        border-radius: 20px;
+    }
+
+    /* Grid de categorias se adapta automaticamente pelo minmax antigo, 
+       mas reduzimos o padding interno dos cards */
+    .category-card {
+        padding: 20px;
+    }
+
+    .category-card .icon {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+    }
+}
+
+/* Dispositivos Pequenos e Celulares (Até 480px) */
+@media (max-width: 480px) {
+    .help-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    /* Transforma a barra de busca em blocos empilhados para dar mais espaço de digitação */
+    .search-wrapper {
+        flex-direction: column;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        gap: 12px;
+    }
+
+    .search-wrapper input {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        box-shadow: var(--shadow-sm);
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 16px; /* Evita o zoom automático do Safari no iOS */
+    }
+
+    .search-wrapper button {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Otimização do Chatbot para Mobile (Tela Cheia) */
+    .chat-window {
+        bottom: 0;
+        right: 0;
+        width: 100vw !important;  /* Força ocupar toda a largura da tela */
+        height: 100vh !important; /* Força ocupar toda a altura da tela */
+        border-radius: 0;
+        border: none;
+    }
+
+    .chat-header {
+        border-radius: 0; /* Remove os cantos arredondados no topo */
+        cursor: default;  /* Desativa o cursor de redimensionamento manual no mobile */
+        padding: 16px;
+    }
+
+    .chat-messages {
+        padding: 12px;
+    }
+
+    .msg {
+        max-width: 90%; /* Permite que o balão de texto aproveite melhor a tela estreita */
+        padding: 10px 14px;
+    }
+
+    .chat-input {
+        padding: 12px;
+        /* Garante que o input fique visível acima do teclado do sistema */
+        padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
+    }
+
+    .chat-input input {
+        font-size: 16px; /* Evita zoom indesejado ao focar no campo de texto */
+        padding: 10px 14px;
+    }
+
+    /* Ajuste fino nas sugestões (chips) para rolagem lateral fluida */
+    .chat-suggestions {
+        flex-wrap: nowrap; /* Em vez de quebrar linha, vira um carrossel horizontal */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-height: 50px;
+        padding: 8px;
+    }
+
+    .chip-btn {
+        padding: 6px 14px;
+    }
+}

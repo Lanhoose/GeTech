@@ -7,194 +7,274 @@
     <style>
         /* CSS - Estilização Visual */
         :root {
-            --azul-industrial: #003366;
-            --azul-action: #0664d7;
-            --cinza-fundo: #f4f7f6;
-            --branco: #ffffff;
-            --verde-whatsapp: #25d366;
-        }
+    --azul-industrial: #003366;
+    --azul-action: #0664d7;
+    --cinza-fundo: #f4f7f6;
+    --branco: #ffffff;
+    --verde-whatsapp: #25d366;
+}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--cinza-fundo);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--cinza-fundo);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-        /* --- CABEÇALHO --- */
-        header {
-            background-color: var(--azul-action);
-            color: var(--branco);
-            padding: 0.5rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%; 
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
+/* --- CABEÇALHO --- */
+header {
+    background-color: var(--azul-action);
+    color: var(--branco);
+    padding: 0.8rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%; 
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px; 
-        }
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+}
 
-        .logo-img {
-            height: 40px; 
-            border-radius: 50%;
-        }
+.logo-img {
+    height: 40px; 
+    width: 40px;
+    object-fit: cover;
+    border-radius: 50%;
+}
 
-        .logo-texto {
-            font-size: 1.4rem;
-            letter-spacing: 1px;
-            color: white;
-            font-weight: bold;
-        }
+.logo-texto {
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    color: white;
+    font-weight: bold;
+}
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: opacity 0.2s;
+}
 
-        /* --- CONTEÚDO PRINCIPAL --- */
-        .main-wrapper {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 100px 20px 40px 20px;
-        }
+nav a:hover {
+    opacity: 0.8;
+}
 
-        .contact-card {
-            background: var(--branco);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-top: 8px solid var(--azul-industrial);
-            position: relative;
-        }
+/* --- CONTEÚDO PRINCIPAL --- */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 20px 60px 20px; /* Aumentado o padding superior para evitar que o header cubra o card */
+}
 
-        .header-logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+.contact-card {
+    background: var(--branco);
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-top: 8px solid var(--azul-industrial);
+    position: relative;
+}
 
-        .header-logo h1 {
-            color: var(--azul-industrial);
-            margin: 0;
-            font-size: 2rem;
-            letter-spacing: 1px;
-        }
+.header-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-        .header-logo span {
-            color: var(--azul-action);
-        }
+.header-logo h1 {
+    color: var(--azul-industrial);
+    margin: 0;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
 
-        .header-logo p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
+.header-logo span {
+    color: var(--azul-action);
+}
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+.header-logo p {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
+.form-group {
+    margin-bottom: 20px;
+}
 
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e1e1;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
 
-        input:focus {
-            outline: none;
-            border-color: var(--azul-industrial);
-        }
+input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e1e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
 
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--azul-action);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            margin-top: 10px;
-        }
+input:focus {
+    outline: none;
+    border-color: var(--azul-industrial);
+}
 
-        button.submit-btn:hover {
-            background-color: #0023e6;
-            transform: translateY(-2px);
-        }
+button.submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: var(--azul-action);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    margin-top: 10px;
+}
 
-        /* Botão WhatsApp Flutuante */
-        .chatbot-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: var(--verde-whatsapp);
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-decoration: none;
-            transition: transform 0.3s;
-            z-index: 1000;
-        }
+button.submit-btn:hover {
+    background-color: #0023e6;
+    transform: translateY(-2px);
+}
 
-        .chatbot-btn:hover { transform: scale(1.1); }
+button.submit-btn:active {
+    transform: translateY(0);
+}
 
-        .chatbot-label {
-            position: fixed;
-            bottom: 40px;
-            right: 100px;
-            background: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            color: #333;
-        }
+/* Botão WhatsApp Flutuante */
+.chatbot-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--verde-whatsapp);
+    color: white;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-decoration: none;
+    transition: transform 0.3s;
+    z-index: 1000;
+}
 
-        @media (max-width: 600px) {
-            header { flex-direction: column; padding: 10px; }
-            nav ul { margin-top: 10px; }
-            .main-wrapper { padding-top: 130px; }
-        }
+.chatbot-btn:hover { 
+    transform: scale(1.1); 
+}
+
+.chatbot-label {
+    position: fixed;
+    bottom: 30px;
+    right: 90px;
+    background: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    color: #333;
+    pointer-events: none; /* Evita bloquear cliques abaixo dela */
+    white-space: nowrap;
+}
+
+/* --- MEDIA QUERIES (RESPONSIVIDADE) --- */
+
+/* Tablets e Celulares Grandes */
+@media (max-width: 768px) {
+    header { 
+        padding: 1rem 5%;
+    }
+    
+    .contact-card {
+        padding: 30px; /* Reduz espaço interno para ganhar área útil */
+    }
+}
+
+/* Celulares Médios e Pequenos */
+@media (max-width: 600px) {
+    header { 
+        flex-direction: column; 
+        gap: 12px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    nav ul { 
+        width: 100%;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .main-wrapper { 
+        padding-top: 150px; /* Compensa o cabeçalho que ficou mais alto no mobile */
+        padding-bottom: 100px; /* Garante que o botão do WhatsApp não cubra o botão do formulário */
+    }
+
+    .contact-card {
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .header-logo h1 {
+        font-size: 1.6rem;
+    }
+
+    /* Esconde a label de texto do WhatsApp no mobile para não poluir a tela */
+    .chatbot-label {
+        display: none;
+    }
+
+    .chatbot-btn {
+        bottom: 15px;
+        right: 15px;
+        width: 55px;
+        height: 55px;
+    }
+}
+
+/* Telas Extremamente Pequenas (ex: iPhone SE antigo) */
+@media (max-width: 360px) {
+    .logo-texto {
+        font-size: 1.1rem;
+    }
+    
+    nav a {
+        font-size: 0.8rem;
+    }
+}
     </style>
 </head>
 <body>

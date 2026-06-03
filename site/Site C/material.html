@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Materiais Escolares</title>
     <style>
-        /* Definições Básicas */
+/* Definições Básicas */
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -92,6 +92,29 @@ footer {
     margin-top: 40px;
     border-top: 1px solid #ccc;
     color: #111;
+}
+
+/* ==========================================
+   REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================== */
+
+/* Ajustes para telas menores (Celulares) */
+@media (max-width: 576px) {
+    main {
+        margin: 15px auto; /* Reduz a margem superior em telas pequenas */
+    }
+
+    .documento {
+        flex-direction: column; /* Muda o alinhamento de linha para coluna */
+        align-items: flex-start; /* Alinha o texto à esquerda */
+        gap: 15px; /* Cria um espaçamento seguro entre o texto e o botão */
+    }
+
+    .documento a {
+        width: 100%; /* O botão passa a ocupar toda a largura do card */
+        text-align: center; /* Centraliza o texto "Download" dentro do botão */
+        box-sizing: border-box; /* Garante que o padding não quebre a largura */
+    }
 }
     </style>
 <body>

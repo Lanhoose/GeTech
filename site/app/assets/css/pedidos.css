@@ -766,62 +766,142 @@ body.dark-mode .frete-card { box-shadow: 0 4px 15px rgba(0,0,0,0.35); }
 /* ══════════════════════════════
    RESPONSIVO
 ══════════════════════════════ */
-@media (max-width: 700px) {
-    .container        { padding: 16px 16px 40px; }
-    .topo             { flex-direction: column; }
-    .acoes            { width: 100%; }
-    .menu-nav         { padding: 10px 16px; }
-    .search-bar       { padding: 10px 16px; flex-wrap: wrap; }
-    .kanban-board     { padding: 16px; }
-    .frete-card,
-    .rastreamento-card { max-width: 100%; }
-    .header           { padding: 0 4%; }
-    .perfil-bar       { padding: 6px 4%; }
-}
+/* ==========================================================================
+   MELHORIAS DE RESPONSIVIDADE E ADAPTAÇÃO DIRETAS (MOBILE-FIRST / BREAKPOINTS)
+   ========================================================================== */
 
-/* Garante que o botão de frete e outros botões genéricos de formulário herdem o estilo padrão */
-.form-card button:not(.btn-entrega) {
-    background-color: var(--mod-accent);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s;
+/* Ajuste na tabela para não quebrar o layout físico da página */
+.tabela-card {
     width: 100%;
-    margin-top: 10px;
+    overflow-x: auto; /* Cria um scroll horizontal suave na tabela se ela for maior que a tela */
+    -webkit-overflow-scrolling: touch;
+}
+.tabela-card table {
+    min-width: 600px; /* Garante que os dados mantenham leitura legível */
 }
 
-.form-card button:not(.btn-entrega):hover {
-    background-color: var(--mod-accent-dark);
+/* Ajustes finos para elementos flexíveis que precisam quebrar linha no mobile */
+.search-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.stats-bar {
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%; /* Força ir para baixo se o input ocupar muito espaço */
 }
 
 /* ══════════════════════════════
-   ESTILO PARA O BOTÃO CALCULAR FRETE
-══════════════════════════════ */
-.btn-acao {
-    background-color: var(--mod-accent);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+   MEDIA QUERIES (RESPONSIVIDADE)
+   ══════════════════════════════ */
+
+/* Telas Médias e Tablets (Até 768px) */
+@media (max-width: 768px) {
+    :root {
+        --header-height: auto; /* Permite o header crescer se os elementos quebrarem linha */
+    }
+
+    .header {
+        padding: 12px 4%;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .top-bar-extra {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .top-bar-extra > * + * {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none; /* Remove divisórias no mobile */
+    }
+
+    .perfil-bar {
+        padding: 10px 4%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .perfil-bar select {
+        width: 100%; /* Select ocupa largura total para facilitar o toque */
+    }
+
+    .menu-nav {
+        padding: 10px 4%;
+        gap: 6px;
+    }
+
+    .nav-btn {
+        flex: 1 1 calc(50% - 6px); /* Botões viram duas colunas iguais */
+        text-align: center;
+        padding: 10px 12px;
+    }
+
+    .search-bar input {
+        max-width: 100%; /* Input de busca passa a ocupar tudo */
+    }
+
+    .topo {
+        flex-direction: column;
+        align-items: fill;
+    }
+
+    .acoes {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Botões de ação em grade 2x2 */
+        gap: 8px;
+    }
+
+    .acoes button, .btn-pdf, .btn-excel, .btn-excluir {
+        width: 100%;
+        text-align: center;
+    }
+
+    .rastreio-box {
+        flex-direction: column; /* Input e botão de rastreio empilhados */
+    }
+
+    .rastreio-box button {
+        width: 100%;
+    }
 }
 
-/* Efeito ao passar o mouse */
-.btn-acao:hover {
-    background-color: var(--mod-accent-dark);
-}
+/* Telas Pequenas e Smartphones (Até 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 12px 12px 30px;
+        margin: 15px auto;
+    }
 
-/* Efeito de clique */
-.btn-acao:active {
-    transform: scale(0.98);
+    .form-card {
+        padding: 20px 16px; /* Menos padding interno para ganhar área útil */
+    }
+
+    .nav-btn {
+        flex: 1 1 100%; /* Botões do menu empilham 100% no celular pequeno */
+    }
+
+    .acoes {
+        grid-template-columns: 1fr; /* Ações 100% uma embaixo da outra */
+    }
+
+    .kanban-board {
+        padding: 12px;
+    }
+
+    .entrega-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-entrega, .badge-entregue-txt {
+        width: 100%;
+        text-align: center;
+    }
 }

@@ -1,70 +1,110 @@
 :root,
-        [data-theme="light"] {
-            --mod-header-bg:  #2c3e50;
-            --mod-accent:     #3498db;
-            --mod-btn-bg:     #3498db;
-            --mod-btn-hover:  #2980b9;
-        }
+[data-theme="light"] {
+    --mod-header-bg:  #2c3e50;
+    --mod-accent:     #3498db;
+    --mod-btn-bg:     #3498db;
+    --mod-btn-hover:  #2980b9;
+}
 
-        [data-theme="dark"] {
-            --mod-header-bg:  #1e293b;
-            --mod-accent:     #3b82f6;
-            --mod-btn-bg:     #3b82f6;
-            --mod-btn-hover:  #2563eb;
-        }
+[data-theme="dark"] {
+    --mod-header-bg:  #1e293b;
+    --mod-accent:     #3b82f6;
+    --mod-btn-bg:     #3b82f6;
+    --mod-btn-hover:  #2563eb;
+}
 
-        body { padding: 0; }
+body { 
+    padding: 0; 
+    margin: 0; /* Garante que não haja margens indesejadas nas bordas da tela */
+}
 
-        .header-modulo {
-            background-color: var(--mod-header-bg);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 4px solid var(--mod-accent);
-            transition: background 0.3s;
-        }
+.header-modulo {
+    background-color: var(--mod-header-bg);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Permite que os elementos quebrem a linha em telas muito pequenas */
+    gap: 15px;       /* Adiciona um espaçamento caso os elementos quebrem linha */
+    border-bottom: 4px solid var(--mod-accent);
+    transition: background 0.3s;
+}
 
-        .header-modulo h2 { margin: 0; color: #fff; }
-        .header-modulo small { opacity: 0.7; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+/* Agrupador do título e subtítulo para manter a estrutura alinhada */
+.header-title-group {
+    display: flex;
+    flex-direction: column;
+}
 
-        .header-actions { display: flex; align-items: center; gap: 10px; }
+.header-modulo h2 { margin: 0; color: #fff; }
+.header-modulo small { opacity: 0.7; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
 
-        .btn-voltar {
-            background: var(--mod-btn-bg);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn-voltar:hover { background: var(--mod-btn-hover); transform: scale(1.04); }
+.header-actions { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    flex-wrap: wrap; /* Garante que o botão e o toggle não esmaguem um ao outro */
+}
 
-        /* Toggle */
-        .theme-toggle-wrap { display: flex; align-items: center; gap: 6px; }
-        .theme-icon { font-size: 1rem; color: rgba(255,255,255,0.8); }
-        .theme-toggle {
-            position: relative; width: 44px; height: 24px;
-            background: #334155; border-radius: 12px; border: none;
-            cursor: pointer; transition: background 0.3s; flex-shrink: 0;
-        }
-        .theme-toggle::after {
-            content: ''; position: absolute; top: 3px; left: 3px;
-            width: 18px; height: 18px; background: #fff;
-            border-radius: 50%; transition: transform 0.3s;
-        }
-        [data-theme="light"] .theme-toggle { background: var(--mod-accent); }
-        [data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
+.btn-voltar {
+    background: var(--mod-btn-bg);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    white-space: nowrap; /* Impede que o texto do botão quebre em duas linhas */
+}
+.btn-voltar:hover { background: var(--mod-btn-hover); transform: scale(1.04); }
 
-        nav {
-            margin: 0;
-            border-radius: 0;
-            padding: 12px 20px;
-        }
+/* Toggle */
+.theme-toggle-wrap { display: flex; align-items: center; gap: 6px; }
+.theme-icon { font-size: 1rem; color: rgba(255,255,255,0.8); }
+.theme-toggle {
+    position: relative; width: 44px; height: 24px;
+    background: #334155; border-radius: 12px; border: none;
+    cursor: pointer; transition: background 0.3s; flex-shrink: 0;
+}
+.theme-toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; background: #fff;
+    border-radius: 50%; transition: transform 0.3s;
+}
+[data-theme="light"] .theme-toggle { background: var(--mod-accent); }
+[data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
 
-        .main-content { padding: 20px; }
+nav {
+    margin: 0;
+    border-radius: 0;
+    padding: 12px 20px;
+}
 
-        footer { margin-top: auto; }
+.main-content { 
+    padding: 20px; 
+    box-sizing: border-box; /* Garante que o padding não estoure a largura da tela */
+}
+
+footer { margin-top: auto; }
+
+/* ==========================================================================
+   MEDIA QUERIES (Responsividade para dispositivos móveis)
+   ========================================================================== */
+@media (max-width: 576px) {
+    .header-modulo {
+        flex-direction: column;   /* Alinha o título e as ações verticalmente */
+        align-items: flex-start;  /* Alinha tudo à esquerda */
+        padding: 15px;
+    }
+
+    .header-actions {
+        width: 100%;             /* Faz a área de ações ocupar toda a largura */
+        justify-content: space-between; /* Afasta o botão e o toggle para as extremidades */
+    }
+
+    .main-content {
+        padding: 15px;           /* Reduz ligeiramente o espaçamento lateral em telas pequenas */
+    }
+}
