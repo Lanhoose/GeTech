@@ -16,6 +16,7 @@ body {
     text-align: center;
     max-width: 1200px;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .pricing-container h1 {
@@ -36,6 +37,7 @@ body {
     gap: 30px;
     flex-wrap: wrap;
     margin-top: 50px;
+    width: 100%;
 }
 
 /* 4. ESTILO DO CARD (AGORA HORIZONTAL) */
@@ -53,6 +55,7 @@ body {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     text-align: left; /* Alinhamento à esquerda combina melhor com cards deitados */
+    box-sizing: border-box;
 }
 
 /* Ajuste do conteúdo interno */
@@ -124,7 +127,6 @@ body {
     font-size: 14px;
 }
 
-
 /* 8. BOTÃO ESTILIZADO (ESTILO GETECH TECH-PREMIUM) */
 .plan-card button {
     background: linear-gradient(45deg, #00c6ff, #0072ff); /* Gradiente azul */
@@ -157,7 +159,7 @@ body {
     box-shadow: 0 4px 10px rgba(0, 198, 255, 0.4);
 }
 
-/* Reflexo Shimmer (Opcional - Adiciona um brilho passando) */
+/* Reflexo Shimmer */
 .plan-card button::after {
     content: '';
     position: absolute;
@@ -174,15 +176,70 @@ body {
     left: 120%; /* Faz o brilho atravessar o botão */
 }
 
-/* 9. RESPONSIVIDADE (VOLTA PARA VERTICAL NO CELULAR) */
+/* --- 9. REGRAS DE RESPONSIVIDADE --- */
+
+/* Tablets e Telas Médias (Até 992px) */
+@media (max-width: 992px) {
+    .pricing-container {
+        padding: 40px 15px;
+    }
+    
+    .pricing-container h1 {
+        font-size: 30px;
+    }
+    
+    .plan-card {
+        max-width: 100%; /* Permite que o card use melhor o espaço lateral */
+        gap: 20px;
+        padding: 20px;
+    }
+}
+
+/* Smartphones (Até 768px) - Volta para o formato vertical */
 @media (max-width: 768px) {
     .plan-card {
         flex-direction: column;
         text-align: center;
-        max-width: 90%;
+        align-items: center;
+    }
+    
+    .plan-info {
+        width: 100%;
     }
     
     .plan-card ul {
         justify-content: center;
+        flex-direction: column; /* Lista vertical fica mais organizada no celular */
+        gap: 8px;
+    }
+    
+    .plan-card button {
+        width: 100%; /* Botão ocupa a largura total disponível no mobile, facilitando o clique */
+        max-width: 280px;
+    }
+
+    /* Remove o efeito de levantar no hover para touchscreens (evita bugs visuais) */
+    .plan-card:hover {
+        transform: none;
+    }
+}
+
+/* Smartphones Pequenos (Até 480px) */
+@media (max-width: 480px) {
+    .pricing-container h1 {
+        font-size: 24px;
+    }
+    
+    .plan-card h3 {
+        font-size: 22px;
+    }
+    
+    .price {
+        font-size: 28px;
+    }
+    
+    .badge {
+        font-size: 11px;
+        padding: 4px 12px;
     }
 }

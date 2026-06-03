@@ -112,11 +112,10 @@ body {
     align-items: center;
     padding: 120px 20px 60px 20px;
     overflow: hidden;
-    /* Adicionado para garantir perspectiva fluida */
     perspective: 1000px; 
+    text-align: center;
 }
 
-/* Garante que o Canvas ocupe tudo e ignore cliques diretos para não atrapalhar botões */
 #heroCanvas {
     position: absolute;
     top: 0;
@@ -124,7 +123,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 0;
-    pointer-events: none; /* Deixa o mouse passar para os botões funcionarem */
+    pointer-events: none;
 }
 
 .ar-hero-grid {
@@ -178,6 +177,7 @@ body {
     color: var(--ar-heading);
     margin-bottom: 18px;
     text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    max-width: 900px;
 }
 
 .ar-hero h1 em {
@@ -214,36 +214,6 @@ body {
     background: var(--ar-accent-hv);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px var(--ar-glow-strong);
-}
-
-.ar-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 9px 14px;
-    background: var(--ar-accent);
-    color: #fff;
-    border: none;
-    font-family: 'Segoe UI', sans-serif;
-    font-weight: 600;
-    font-size: 0.82rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px var(--ar-glow);
-}
-
-.ar-btn:hover {
-    background: var(--ar-accent-hv);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px var(--ar-glow-strong);
-}
-
-.ar-btn-secondary:hover {
-    border-color: var(--ar-accent);
-    color: var(--ar-accent);
-    background: var(--ar-glow);
 }
 
 /* =========================
@@ -728,20 +698,57 @@ body {
 }
 
 /* =========================
-   RESPONSIVO
+   OTIMIZAÇÕES DE RESPONSIVIDADE
 ========================= */
-@media (max-width: 768px) {
-    .ar-hero     { padding: 70px 20px 50px; }
-    .ar-section  { padding: 40px 20px; }
-    .ar-how      { padding: 40px 20px; }
-    .ar-modal-canvas-wrap { height: 300px; }
-    .ar-modal-instructions { grid-template-columns: 1fr; }
-    .ar-modal-hint { display: none; }
-    .ar-steps    { grid-template-columns: 1fr 1fr; }
+
+/* Desktop Médio / Tablets deitados */
+@media (max-width: 1024px) {
+    .ar-section { padding: 50px 30px; }
+    .ar-how { padding: 50px 30px; }
+    .ar-machines-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 }
 
-@media (max-width: 480px) {
-    .ar-steps { grid-template-columns: 1fr; }
-    .ar-card-specs { grid-template-columns: 1fr 1fr; }
+/* Tablets em pé (Portrait) */
+@media (max-width: 768px) {
+    .ar-hero { padding: 100px 24px 50px 24px; min-height: 60vh; }
+    .ar-hero p { font-size: 1rem; margin-bottom: 30px; }
+    
+    .ar-section { padding: 40px 20px; }
+    .ar-section-header { margin-bottom: 30px; }
+    .ar-section-header h2 { font-size: 1.4rem; }
+    
+    .ar-machines-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .ar-card-viewer { height: 200px; }
+    
+    .ar-how { padding: 40px 20px; }
+    .ar-steps { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+    /* Modal adaptado para visualização mobile */
+    .ar-modal-header { padding: 12px 16px; }
+    .ar-modal-body { padding: 16px; gap: 12px; }
+    .ar-modal-canvas-wrap { height: 320px; }
+    .ar-modal-instructions { grid-template-columns: 1fr; gap: 8px; }
+    .ar-modal-hint { display: none; } /* Oculta dicas redundantes em touchscreens */
+}
+
+/* Smartphones Grandes e Médios */
+@media (max-width: 576px) {
     .ar-hero h1 { font-size: 1.8rem; }
+    .ar-hero-badge { letter-spacing: 1px; font-size: 0.65rem; padding: 4px 12px; }
+    .ar-cta { width: 100%; justify-content: center; padding: 14px 24px; }
+    
+    .ar-section-header h2 { font-size: 1.25rem; }
+    .ar-line { display: none; } /* Remove a linha decorativa para dar espaço ao título */
+    
+    .ar-machines-grid { grid-template-columns: 1fr; }
+    .ar-steps { grid-template-columns: 1fr; }
+}
+
+/* Smartphones Muito Pequenos (Dispositivos antigos ou telas compactas) */
+@media (max-width: 380px) {
+    .ar-hero h1 { font-size: 1.5rem; }
+    .ar-card-specs { grid-template-columns: 1fr; } /* Transforma as especificações em lista única */
+    .ar-card-actions { flex-direction: column; } /* Botões empilhados verticalmente */
+    .ar-btn, .ar-btn-secondary { width: 100%; text-align: center; }
+    .ar-modal-canvas-wrap { height: 260px; }
 }

@@ -1,25 +1,34 @@
+/* ==========================================================================
+   CONFIGURAÇÕES GLOBAIS E ESTRUTURA (ATUALIZADO)
+   ========================================================================== */
+   *, *::before, *::after {
+    box-sizing: border-box; /* Garante que padding não quebre a largura em telas menores */
+}
+
 body {
     background: var(--bg-page-gradient);
     color: var(--text-primary);
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.features-section {
-    padding: 60px 20px;
-    text-align: center;
+    overflow-x: hidden; /* Evita rolagem horizontal acidental */
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 20px; /* Margem interna de segurança para as laterais em telas mobile */
+}
+
+.features-section {
+    padding: 60px 0; /* Ajustado para usar o padding do container */
+    text-align: center;
 }
 
 .section-title {
     font-size: 2.5rem;
     margin-bottom: 10px;
+    line-height: 1.2;
 }
 
 .section-title span {
@@ -29,6 +38,7 @@ body {
 .section-subtitle {
     color: #666;
     margin-bottom: 50px;
+    padding: 0 15px; /* Evita que o texto encoste nas bordas em celulares */
 }
 
 /* Grid de 6 Cards */
@@ -68,7 +78,6 @@ body {
     -webkit-backface-visibility: hidden;
     border-radius: 16px;
     padding: 35px 25px;
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,29 +104,22 @@ body {
 }
 
 /* ==========================================================================
-   ESTILO CORRIGIDO COM SUPORTE INSTANTÂNEO A TEMAS PARA O VERSO
+   VERSO DO CARD
    ========================================================================== */
 .face.verso {
-    transform: rotateY(180deg); /* Começa invertido no eixo Y */
-    
-    /* Configuração padrão limpa usando as variáveis globais do seu site */
+    transform: rotateY(180deg); 
     background: var(--bg-header); 
     color: var(--text-primary);
     border: 1px solid var(--glass-border);
-    
     box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05), 0 15px 35px rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    
     padding: 40px 30px;
     position: relative;
     overflow: hidden;
-    
-    /* Evita delay de transição de cor de fundo ao virar repentinamente */
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Pequeno detalhe estético no topo do verso indicando a cor identidade da GeTech */
 .face.verso::before {
     content: '';
     position: absolute;
@@ -131,7 +133,6 @@ body {
     box-shadow: 0 2px 10px rgba(0, 123, 255, 0.4);
 }
 
-/* Ajuste e tipografia do parágrafo explicativo interno do verso */
 .face.verso p {
     color: var(--text-secondary);
     font-size: 1.02rem;
@@ -141,27 +142,22 @@ body {
     letter-spacing: 0.2px;
 }
 
-/* Elementos específicos quando o site estiver em TEMA ESCURO */
+/* TEMAS (DARK/LIGHT) */
 [data-theme="dark"] .face.verso {
-    background: rgba(30, 41, 59, 0.85); /* Slate escuro semi-transparente estável */
+    background: rgba(30, 41, 59, 0.85); 
     border-color: rgba(255, 255, 255, 0.08);
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 15px 35px rgba(0, 0, 0, 0.3);
 }
-[data-theme="dark"] .face.verso p {
-    color: #94a3b8; 
-}
+[data-theme="dark"] .face.verso p { color: #94a3b8; }
 
-/* Elementos específicos quando o site estiver em TEMA CLARO */
 [data-theme="light"] .face.verso {
-    background: rgba(255, 255, 255, 0.92); /* Fundo claro translúcido com renderização imediata */
+    background: rgba(255, 255, 255, 0.92); 
     border-color: rgba(0, 0, 0, 0.08);
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 10px 25px rgba(0, 0, 0, 0.05);
 }
-[data-theme="light"] .face.verso p {
-    color: #475569; 
-}
+[data-theme="light"] .face.verso p { color: #475569; }
 
-/* Ícones e Componentes Auxiliares */
+/* ÍCONES E COMPONENTES */
 .icon-box {
     font-size: 3rem;
     color: #007bff;
@@ -173,7 +169,6 @@ body {
     transform: scale(1.05);
 }
 
-/* Indicador visual de virada na parte inferior */
 .btn-flip-hint {
     background: rgba(0, 123, 255, 0.06);
     border: 1px solid rgba(0, 123, 255, 0.25);
@@ -191,4 +186,61 @@ body {
     background: #007bff;
     color: #fff;
     box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* ==========================================================================
+   MEDIA QUERIES - RESPONSIVIDADE ADICIONADA
+   ========================================================================== */
+
+/* Tablets e Celulares deitados */
+@media (max-width: 768px) {
+    .features-section {
+        padding: 40px 0;
+    }
+    
+    .section-title {
+        font-size: 2rem; /* Reduz ligeiramente o título principal */
+    }
+    
+    .section-subtitle {
+        margin-bottom: 35px;
+    }
+
+    .features-grid {
+        gap: 20px; /* Reduz o espaçamento entre cards em telas menores */
+    }
+}
+
+/* Celulares verticais (Abaixo de 480px) */
+@media (max-width: 480px) {
+    .features-grid {
+        /* Permite que o card reduza um pouco mais caso a tela seja muito estreita (como iPhones antigos) */
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+    }
+
+    .card-container {
+        height: 320px; /* Reduz levemente a altura do card para não ocupar a tela inteira */
+    }
+
+    .face {
+        padding: 25px 15px; /* Reduz o padding interno do card para ganhar espaço de texto */
+    }
+
+    .face.verso {
+        padding: 30px 20px;
+    }
+
+    .face.verso p {
+        font-size: 0.95rem; /* Diminui suavemente a fonte do texto para caber na nova altura */
+        line-height: 1.5;
+    }
+
+    .section-title {
+        font-size: 1.75rem;
+    }
+
+    .icon-box {
+        font-size: 2.5rem; /* Ícones ligeiramente menores */
+        margin-bottom: 15px;
+    }
 }

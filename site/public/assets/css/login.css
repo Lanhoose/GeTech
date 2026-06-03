@@ -10,11 +10,13 @@ body {
 }
 
 .container {
-    min-height: calc(100vh - 160px);
+    /* Melhor flexibilidade de altura para evitar quebras em telas curtas */
+    min-height: calc(100vh - 160px); 
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
 }
 
 /* Card principal */
@@ -50,6 +52,8 @@ body {
     font-family: inherit;
     color: var(--text-muted);
     transition: color 0.25s, border-color 0.25s;
+    /* Evita que o texto quebre em duas linhas em telas muito estreitas */
+    white-space: nowrap; 
 }
 
 .tab-btn:hover:not(.active) {
@@ -107,11 +111,13 @@ body {
 
 .field input {
     width: 100%;
-    padding: 10px 13px;
+    /* 12px de padding vertical melhora a área de toque (touch) em celulares */
+    padding: 12px 13px; 
     background: var(--bg-input);
     border: 1px solid var(--border-input);
     border-radius: 8px;
-    font-size: 0.93rem;
+    /* Importante: 16px (1rem) impede que o iOS (iPhone) dê zoom automático indesejado ao focar no input */
+    font-size: 1rem; 
     font-family: inherit;
     color: var(--text-primary);
     transition: border-color 0.25s, box-shadow 0.25s;
@@ -131,7 +137,7 @@ body {
 /* Botões de ação */
 .btn-main {
     width: 100%;
-    padding: 12px;
+    padding: 14px; /* Aumentado levemente para melhor usabilidade mobile */
     border: none;
     border-radius: 8px;
     font-weight: 600;
@@ -166,7 +172,7 @@ body {
 .footer-link {
     text-align: center;
     margin-top: 16px;
-    font-size: 0.82rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
 }
 
@@ -174,6 +180,7 @@ body {
     color: var(--accent-cyan);
     cursor: pointer;
     font-weight: 600;
+    padding: 4px; /* Aumenta a área de clique em telas touch */
 }
 
 .footer-link span:hover {
@@ -191,9 +198,33 @@ body {
 }
 
 /* =========================
-   RESPONSIVO
+   RESPONSIVO (Melhorado)
 ========================= */
+
+/* Para smartphones em geral (telas menores que 480px) */
 @media (max-width: 480px) {
-    .card { max-width: 100%; border-radius: 12px; }
-    .form-body { padding: 20px; }
+    .container {
+        padding: 10px; /* Menos margem nas bordas para aproveitar o espaço */
+        min-height: 100vh; /* Ocupa a tela inteira se necessário */
+    }
+
+    .card { 
+        max-width: 100%; 
+        border-radius: 12px; 
+    }
+    
+    .form-body { 
+        padding: 24px 20px; /* Redução sutil das laterais internas */
+    }
+}
+
+/* Ajuste extra para celulares muito antigos ou muito pequenos (ex: iPhone SE antigo - max-width: 340px) */
+@media (max-width: 340px) {
+    .form-body {
+        padding: 16px 14px;
+    }
+    .tab-btn {
+        font-size: 0.85rem; /* Diminui o texto da aba para não espremer */
+        padding: 10px;
+    }
 }

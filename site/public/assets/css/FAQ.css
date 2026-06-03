@@ -23,12 +23,15 @@ body {
     align-items: center;
     padding: 60px 20px;
     flex: 1;
+    width: 100%; /* Garante que o container ocupe a largura correta em telas menores */
+    box-sizing: border-box;
 }
 
 .container h1 {
     font-size: 36px;
     margin-bottom: 30px;
     color: var(--text-heading);
+    text-align: center; /* Centraliza o título em qualquer tamanho de tela */
 }
 
 .faq-item {
@@ -45,6 +48,7 @@ body {
     transition: background 0.3s ease, border-color 0.3s ease;
     opacity: 0;
     animation: subirSuave 1s ease-out forwards;
+    box-sizing: border-box;
 }
 
 .faq-item:hover {
@@ -69,6 +73,7 @@ body {
     font-size: 1.1rem;
     color: var(--text-primary);
     transition: color 0.3s;
+    gap: 15px; /* Evita que o texto encoste no ícone em telas pequenas */
 }
 
 .faq-question::after {
@@ -76,6 +81,7 @@ body {
     font-size: 1.5rem;
     color: var(--accent-cyan);
     transition: transform 0.3s ease;
+    flex-shrink: 0; /* Impede que o ícone esmague se a pergunta for longa */
 }
 
 .faq-answer {
@@ -93,7 +99,7 @@ body {
 .faq-answer p { padding: 0 25px 25px 25px; margin: 0; }
 
 .faq-input:checked ~ .faq-answer {
-    max-height: 500px;
+    max-height: 800px; /* Aumentado para prevenir cortes caso o texto quebre em muitas linhas no celular */
     padding-top: 15px;
 }
 
@@ -105,9 +111,37 @@ body {
 
 .faq-input:checked ~ .faq-question { color: var(--accent-cyan); }
 
+/* ========================================================
+   RESPONSIVIDADE (Ajustes para Tablets e Smartphones)
+=========================================================== */
+@media (max-width: 768px) {
+    .container h1 {
+        font-size: 28px; /* Título ligeiramente menor para tablets */
+        margin-bottom: 20px;
+    }
+}
+
 @media (max-width: 600px) {
-    .container { padding: 40px 15px; }
-    .faq-item { max-width: 100%; }
-    .faq-question { font-size: 1rem; padding: 15px 20px; }
-    .faq-answer p { font-size: 0.9rem; }
+    .container { 
+        padding: 40px 15px; 
+    }
+    
+    .container h1 {
+        font-size: 24px; /* Título mais amigável para celulares */
+    }
+
+    .faq-item { 
+        max-width: 100%; 
+        border-radius: 12px; /* Cantos levemente mais suaves em telas pequenas */
+    }
+    
+    .faq-question { 
+        font-size: 1rem; 
+        padding: 15px 18px; 
+    }
+    
+    .faq-answer p { 
+        font-size: 0.9rem; 
+        padding: 0 18px 18px 18px; /* Ajuste fino nas margens internas */
+    }
 }

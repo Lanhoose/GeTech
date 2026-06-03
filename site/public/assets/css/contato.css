@@ -18,7 +18,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 100px 20px 40px;
+    padding: 100px 20px 40px; /* Um respiro confortável nas laterais */
 }
 
 .contact-card {
@@ -106,6 +106,38 @@ button.submit-btn:hover {
     transform: translateY(-2px);
 }
 
-@media (max-width: 600px) {
-    .main-wrapper { padding-top: 130px; }
+/* =========================
+   MEDIA QUERIES (RESPONSIVIDADE)
+========================= */
+
+/* Tablets e Telas Médias */
+@media (max-width: 768px) {
+    .contact-card {
+        padding: 30px; /* Reduz levemente o padding interno do card */
+    }
+}
+
+/* Smartphones e Telas Pequenas */
+@media (max-width: 480px) {
+    .main-wrapper { 
+        padding: 80px 15px 30px; /* Ajusta o espaçamento do wrapper para telas pequenas */
+    }
+
+    .contact-card {
+        padding: 24px 20px; /* Reduz o padding para aproveitar melhor o espaço da tela */
+        border-radius: 8px; /* Bordas levemente mais suaves em telas menores */
+    }
+
+    .header-logo {
+        margin-bottom: 20px;
+    }
+
+    .header-logo h1 {
+        font-size: 1.7rem; /* Diminui o título para não quebrar linha de forma estranha */
+    }
+
+    input, button.submit-btn {
+        padding: 12px; /* Mantém uma área de toque boa, mas sem exageros */
+        font-size: 1rem; /* Evita que o iOS dê zoom automático no input */
+    }
 }

@@ -272,3 +272,73 @@ textarea { resize: vertical; min-height: 120px; }
     .btn-primary { width: 100%; text-align: center; }
     .container { margin: 20px auto; }
 }
+
+/* =========================
+   RESPONSIVIDADE AJUSTADA
+========================= */
+
+/* Dispositivos Médios (Tablets - até 768px) */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px auto;
+        padding: 0 16px; /* Reduz ligeiramente o recuo lateral */
+    }
+
+    .blog-header {
+        flex-direction: column;
+        align-items: stretch; /* Faz os elementos ocuparem a largura total */
+        text-align: center;
+        gap: 16px;
+    }
+
+    .blog-header h1 {
+        font-size: 1.8rem; /* Diminui o título para não quebrar feio */
+    }
+
+    .btn-primary {
+        width: 100%;
+        text-align: center;
+        padding: 14px 20px; /* Toque mais fácil em telas menores */
+    }
+
+    .feed-container {
+        /* Ajusta o grid para garantir que os cards fiquem em coluna única se a tela for muito estreita */
+        grid-template-columns: 1fr; 
+        gap: 18px;
+    }
+
+    /* Modal mais confortável no mobile */
+    .modal-content {
+        padding: 20px;
+        border-radius: 16px;
+    }
+}
+
+/* Dispositivos Pequenos (Celulares antigos/pequenos - até 480px) */
+@media (max-width: 480px) {
+    .blog-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .post-card {
+        padding: 18px; /* Menos padding interno para sobrar espaço para o texto */
+    }
+
+    .post-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px; /* Badges empilhados se o título do badge for grande */
+    }
+
+    .modal-overlay {
+        padding: 10px; /* Maximiza o espaço do formulário na tela */
+    }
+    
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+
+    input, select, textarea {
+        font-size: 16px; /* Evita o zoom automático chato do iOS (Safari) ao focar em inputs */
+    }
+}

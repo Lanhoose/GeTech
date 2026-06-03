@@ -16,11 +16,14 @@ body {
     padding: 60px 20px;
 }
 
-.testimonials-wrapper { text-align: center; }
+.testimonials-wrapper { 
+    text-align: center; 
+}
 
 .titulo-sessao {
     color: var(--accent-cyan);
-    font-size: 2.8rem;
+    /* Usando clamp para a fonte diminuir fluidamente em telas menores */
+    font-size: clamp(2rem, 5vw, 2.8rem); 
     margin-bottom: 10px;
 }
 
@@ -35,6 +38,7 @@ body {
     margin-bottom: 30px;
     backdrop-filter: blur(5px);
     transition: 0.3s;
+    max-width: 100%; /* Garante que não estoure em telas minúsculas */
 }
 
 .btn-primario:hover {
@@ -51,6 +55,9 @@ body {
     border-radius: 20px;
     margin: 0 auto 40px;
     max-width: 500px;
+    /* Ajuste para largura total em telas mobile */
+    width: 100%; 
+    box-sizing: border-box; 
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -67,6 +74,8 @@ body {
     color: var(--text-primary);
     font-family: inherit;
     transition: border-color 0.25s;
+    width: 100%; /* Garante que os campos ocupem todo o espaço interno */
+    box-sizing: border-box;
 }
 
 .form-card input::placeholder,
@@ -90,7 +99,8 @@ body {
 /* Grid de cards */
 .testimonials-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    /* Alterado de auto-fill para auto-fit e minmax ajustado para 280px para evitar quebras em telas pequenas (como iPhone SE) */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 30px;
     justify-content: center;
 }
@@ -109,10 +119,13 @@ body {
     text-align: left;
 }
 
-.card:hover {
-    transform: translateY(-10px);
-    background: var(--bg-card-hover);
-    box-shadow: var(--shadow-card);
+/* Desativa o efeito de translação em hover para telas touch (evita bugs visuais no celular) */
+@media (hover: hover) {
+    .card:hover {
+        transform: translateY(-10px);
+        background: var(--bg-card-hover);
+        box-shadow: var(--shadow-card);
+    }
 }
 
 .stars { color: var(--accent-yellow); margin-bottom: 15px; }
@@ -142,8 +155,16 @@ body {
     letter-spacing: 1px;
 }
 
+/* Área de botões do Form */
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
 .form-actions button {
-    padding: 8px 20px;
+    flex: 1; /* Faz os botões dividirem o espaço igualmente no mobile */
+    padding: 12px 20px; /* Um pouco mais de padding para facilitar o clique no celular */
     border-radius: 20px;
     border: none;
     cursor: pointer;
@@ -158,10 +179,35 @@ body {
     background-color: var(--glass-bg);
     color: var(--text-primary);
     border: 1px solid var(--glass-border);
-    margin-left: 10px;
+    margin-left: 0; /* Resetado para funcionar melhor com o flexbox */
 }
 
+/* =========================
+    MEDIA QUERIES (Responsividade)
+========================= */
+
+/* Tablets e Celulares deitados */
 @media (max-width: 768px) {
-    .titulo-sessao { font-size: 2rem; }
-    .testimonials-grid { grid-template-columns: 1fr; }
+    .container {
+        padding: 40px 15px;
+    }
+}
+
+/* Celulares verticais pequenos (Abaixo de 480px) */
+@media (max-width: 480px) {
+    .form-card {
+        padding: 20px 15px; /* Reduz o recuo interno para ganhar espaço na tela */
+    }
+
+    .card {
+        padding: 20px; /* Reduz padding dos cards de depoimentos */
+    }
+
+    .form-actions {
+        flex-direction: column; /* Coloca os botões um embaixo do outro para não espremer o texto */
+    }
+    
+    #btn-cancelar {
+        order: 2; /* Garante que o cancelar fique abaixo do salvar se necessário */
+    }
 }

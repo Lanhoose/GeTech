@@ -8,12 +8,14 @@ body {
 }
 
 .container {
-    min-height: calc(100vh - 160px);
+    /* Troca de altura fixa para min-height flexível, garantindo que o rodapé não quebre */
+    min-height: min(100vh - 160px, auto); 
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 20px;
+    padding: clamp(15px, 4vw, 40px); /* Padding fluido baseado na largura da tela */
+    box-sizing: border-box;
 }
 
 .container .card {
@@ -21,24 +23,29 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    padding: 40px;
+    padding: clamp(25px, 5vw, 40px); /* Ajusta o padding interno dinamicamente */
     border-radius: 16px;
     max-width: 400px;
     width: 100%;
     box-shadow: var(--shadow-card);
     transition: background 0.3s ease;
+    box-sizing: border-box;
 }
 
 .container h1 {
     color: var(--text-heading);
     margin-bottom: 10px;
-    font-size: 32px;
+    /* Fonte fluida: min 24px, ideal 3.5vw, max 32px */
+    font-size: clamp(24px, 3.5vw, 32px); 
+    line-height: 1.2;
 }
 
 .container p {
     color: var(--text-secondary);
     margin-bottom: 20px;
-    font-size: 16px;
+    /* Fonte fluida: min 14px, ideal 2vw, max 16px */
+    font-size: clamp(14px, 2vw, 16px);
+    line-height: 1.5;
 }
 
 .container button {
@@ -53,18 +60,45 @@ body {
     display: inline-block;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-sm);
+    
+    /* Garante que em telas muito pequenas o botão não estoure o card */
+    max-width: 100%; 
+    width: auto;
 }
 
+/* Interações por toque/mouse */
 .container button:hover {
     background: var(--accent-cyan-hv);
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-.container button:active { transform: translateY(-1px); }
+.container button:active { 
+    transform: translateY(-1px); 
+}
 
-@media (max-width: 600px) {
-    .container .card { padding: 25px; }
-    .container h1 { font-size: 24px; }
-    .container p { font-size: 14px; }
+/* ==========================================================
+   MEDIA QUERIES (Ajustes finos para telas específicas)
+========================================================== */
+
+/* Telas ultra-pequenas (Smartphones menores que 360px de largura) */
+@media (max-width: 360px) {
+    .container {
+        padding: 10px;
+    }
+    .container .card {
+        padding: 15px;
+    }
+    .container button {
+        width: 100%; /* Botão vira bloco inteiro para facilitar o toque */
+        padding: 12px 16px;
+    }
+}
+
+/* Evita que o card quebre ou fique bizarro se o usuário deitar o celular (Landscape) */
+@media (max-height: 500px) and (orientation: landscape) {
+    .container {
+        min-height: auto;
+        padding: 40px 20px; /* Dá espaço para rolar a página verticalmente */
+    }
 }
