@@ -62,7 +62,8 @@
                   "name": "geral",
                   "type": "folder",
                   "children": [
-                    { "name": "geral.html", "type": "file" }
+                    { "name": "geral.html", "type": "file" },        
+                    { "name": "estrutura.json", "type": "file" }
                   ]
                 },
                 {
@@ -236,7 +237,6 @@
             { "name": "perfil.jpg", "type": "file" }
           ]
         },
-        { "name": "estrutura.json", "type": "file" },
         { "name": "index.html", "type": "file" },
         { "name": "README.md", "type": "file" }
       ]
