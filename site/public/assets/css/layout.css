@@ -56,53 +56,51 @@
 
 [data-theme="light"] {
     /* Backgrounds */
-    --bg-body:           #f8fafc;
-    --bg-header:         rgba(255, 255, 255, 0.8);
-    --bg-footer:         #0f172a;
+    --bg-body:           #f0f6ff;
+    --bg-header:         #1e3a6e;
+    --bg-footer:         #1e3a6e; /* Azul Escuro */
     --bg-card:           #ffffff;
-    --bg-card-hover:     #f1f5f9;
+    --bg-card-hover:     #f8faff;
     --bg-input:          #ffffff;
-    --bg-login-btn:      #e2e8f0;
-    --bg-user-pill:      rgba(2, 132, 199, 0.06);
-    --bg-modal:          rgba(15, 23, 42, 0.6);
-    --bg-page-gradient:  linear-gradient(135deg, #edf2f7, #f8fafc);
+    --bg-login-btn:      #2d5192;
+    --bg-user-pill:      rgba(255, 255, 255, 0.15);
+    --bg-modal:          rgba(0, 0, 0, 0.55);
+    --bg-page-gradient:  linear-gradient(135deg, #c8d8f0, #a0bcdf);
 
     /* Texto */
-    --text-primary:      #0f172a;
+    --text-primary:      #1e293b;
     --text-secondary:    #475569;
-    --text-heading:      #1e3a8a;
-    --text-nav:          #334155;
+    --text-heading:      #1e3a6e;
+    --text-nav:          #ffffff;
     --text-muted:        #64748b;
 
     /* Bordas */
-    --border-subtle:     rgba(0, 0, 0, 0.05);
+    --border-subtle:     rgba(0, 0, 0, 0.07);
     --border-card:       #e2e8f0;
     --border-input:      #cbd5e1;
-    --border-pill:       rgba(2, 132, 199, 0.2);
+    --border-pill:       rgba(255, 255, 255, 0.28);
 
-    /* Acentos */
-    --accent-cyan:       #0284c7; 
-    --accent-cyan-hv:    #0369a1;
-    --accent-green:      #10b981;
-    --accent-green-hv:   #059669;
-    --accent-blue:       #1e40af;
-    --accent-blue-lt:    #3b82f6;
-    --accent-yellow:     #d97706;
-    --accent-user:       #0284c7;
-    --accent-logout-hv:  #dc2626;
+    /* Acentos — Consistentes entre temas */
+    --accent-cyan:       #06b6d4;
+    --accent-cyan-hv:    #0891b2;
+    --accent-green:      #22c55e;
+    --accent-green-hv:   #16a34a;
+    --accent-blue:       #378add;
+    --accent-blue-lt:    #73a6e6;
+    --accent-yellow:     #f0b400;
+    --accent-user:       #60d4f5;
+    --accent-logout-hv:  #ff4757;
 
     /* Toggle */
-    --toggle-track:      #cbd5e1;
+    --toggle-track:      #0891b2;
 
     /* Shadows */
-    --shadow-card:       0 8px 32px 0 rgba(31, 38, 135, 0.05);
-    --shadow-sm:         0 4px 12px rgba(0, 0, 0, 0.03);
-    --glow-cyan:         0 0 12px rgba(2, 132, 199, 0.15);
-    --glow-green:        0 0 12px rgba(16, 185, 129, 0.2);
+    --shadow-card:       0 4px 20px rgba(30, 58, 110, 0.08);
+    --shadow-sm:         0 4px 15px rgba(30, 58, 110, 0.06);
 
     /* Glassmorphism */
-    --glass-bg:          rgba(255, 255, 255, 0.7);
-    --glass-border:      rgba(15, 23, 42, 0.08);
+    --glass-bg:          rgba(255, 255, 255, 0.65);
+    --glass-border:      rgba(30, 58, 110, 0.15);
 }
 
 /* =========================
@@ -114,7 +112,7 @@
 
 body {
     margin: 0;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif; /* Fonte mais moderna e clean */
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -138,7 +136,7 @@ body {
     background: var(--bg-header);
     padding: 12px 40px;
     border-bottom: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px); /* Efeito de vidro focado */
+    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -165,7 +163,7 @@ body {
 .menu a {
     text-decoration: none;
     padding: 8px 14px;
-    background: transparent; /* Remove o bloco azul pesado anterior */
+    background: transparent;
     border-radius: 8px;
     white-space: nowrap;
     color: var(--text-nav) !important;
@@ -211,7 +209,6 @@ body {
     color: #000000 !important;
 }
 .menu a[href="teste_aumentada.html"]::after { display: none; }
-
 
 /* Link Especial GeTech da Outra Pasta */
 .menu a[href="../../Site C/index.html"] span {
@@ -323,18 +320,31 @@ body {
     box-shadow: var(--glow-cyan);
 }
 
-.user-logged { color: var(--text-primary); font-size: 0.85rem; }
-.user-logged strong { color: var(--accent-cyan); text-transform: capitalize; font-weight: 600; }
+.user-logged { 
+    color: #ffffff; /* Força o texto base "Bem-vindo," a ficar sempre branco */
+    font-size: 0.85rem; 
+}
+
+.user-logged strong { 
+    color: var(--accent-cyan); 
+    text-transform: capitalize; 
+    font-weight: 600; 
+}
+
+/* Garante que no modo claro o nome do usuário use um azul-celeste de alto contraste */
+[data-theme="light"] .user-logged strong {
+    color: var(--accent-user); /* Carrega o #60d4f5 */
+}
 
 .btn-logout {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ff4757 !important; /* Vermelho vibrante de alta leitura sobre o azul-escuro */
     padding: 4px 12px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
     transition: all 0.2s ease;
 }
 
@@ -355,6 +365,7 @@ main { flex: 1; }
     padding: 40px 30px 20px 30px;
     margin-top: auto;
     border-top: 1px solid var(--border-subtle);
+    transition: background-color 0.3s ease;
 }
 
 .footer-container { 
@@ -414,7 +425,24 @@ main { flex: 1; }
     margin: 0; 
 }
 
-/* Remove chaves duplicadas acidentais do final do arquivo antigo */
+/* Sobrescritas para manter a legibilidade do texto claro sobre o fundo escuro do Footer no modo claro */
+[data-theme="light"] .footer h3,
+[data-theme="light"] .footer h4 {
+    color: #ffffff;
+}
+
+[data-theme="light"] .footer-nav a, 
+[data-theme="light"] .suporte a {
+    color: #cbd5e1;
+}
+
+[data-theme="light"] .footer-bottom .copy {
+    color: #94a3b8;
+}
+
+/* =========================
+   MEDIA QUERIES (Responsivo)
+========================= */
 
 /* Dispositivos Grandes e Desktops Médios (Até 1200px) */
 @media (max-width: 1200px) {
@@ -439,21 +467,17 @@ main { flex: 1; }
         align-items: center;
     }
 
-    /* Transforma o menu em uma esteira horizontal rolável com visual HUD */
     .menu {
         width: 100%;
         justify-content: flex-start;
         overflow-x: auto;
         padding: 8px 4px;
         gap: 8px;
-        
-        /* Esconde a barra de rolagem padrão para visual mais limpo */
         scrollbar-width: thin;
         scrollbar-color: var(--accent-cyan) transparent;
         -webkit-overflow-scrolling: touch;
     }
 
-    /* Estilização futurista da barra de rolagem horizontal do menu no Chrome/Safari */
     .menu::-webkit-scrollbar {
         height: 3px;
     }
@@ -496,7 +520,6 @@ main { flex: 1; }
         font-size: 1.2rem;
     }
 
-    /* Ajusta os botões de autenticação para ocuparem melhor o espaço */
     .auth {
         flex-wrap: wrap;
         gap: 8px;
@@ -515,7 +538,6 @@ main { flex: 1; }
         border-radius: 8px;
     }
 
-    /* Rodapé em coluna única perfeitamente alinhado */
     .footer {
         padding: 30px 15px 15px 15px;
     }
@@ -531,7 +553,7 @@ main { flex: 1; }
     }
 }
 
-/* Ajuste fino para telas ultra-pequenas (smartphones antigos ou relógios) */
+/* Ajuste fino para telas ultra-pequenas */
 @media (max-width: 360px) {
     .auth {
         flex-direction: column;

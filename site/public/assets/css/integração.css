@@ -1,4 +1,31 @@
-/* 1. CONFIGURAÇÃO GLOBAL DA PÁGINA */
+/* ==========================================================================
+   1. CONFIGURAÇÃO GLOBAL E VARIÁVEIS DE TEMA (INTEGRAÇÃO)
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+    --int-bg-card: rgba(255, 255, 255, 0.04);
+    --int-bg-card-hover: rgba(255, 255, 255, 0.08);
+    --int-text-title: #ffffff;
+    --int-text-muted: #94a3b8;
+    --int-border: rgba(255, 255, 255, 0.1);
+    --int-card-shadow: rgba(0, 0, 0, 0.4);
+    --int-main-title: #ffffff;
+    --int-main-subtitle: #94a3b8;
+    --int-bg-featured: rgba(6, 182, 212, 0.06);
+}
+
+[data-theme="light"] {
+    --int-bg-card: #ffffff;
+    --int-bg-card-hover: #f8fafc;
+    --int-text-title: #1e293b;
+    --int-text-muted: #64748b;
+    --int-border: #e2e8f0;
+    --int-card-shadow: rgba(30, 58, 110, 0.06);
+    --int-main-title: #1e3a6e;
+    --int-main-subtitle: #475569;
+    --int-bg-featured: #f0fdfa; /* Azul/verde clarinho de destaque para o modo claro */
+}
+
 body {
     background: var(--bg-page-gradient);
     color: var(--text-primary);
@@ -7,9 +34,12 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* 2. CONTAINER PRINCIPAL */
+/* ==========================================================================
+   2. CONTAINER PRINCIPAL
+   ========================================================================== */
 .pricing-container {
     flex: 1;
     padding: 60px 20px;
@@ -21,225 +51,199 @@ body {
 
 .pricing-container h1 {
     font-size: 36px;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 12px;
+    color: var(--int-main-title);
+    transition: color 0.3s ease;
+}
+
+.pricing-container p {
+    font-size: 1.1rem;
+    color: var(--int-main-subtitle);
+    margin: 0;
+    transition: color 0.3s ease;
 }
 
 .highlight {
-    color: #00c6ff; /* Azul neon da GeTech */
+    color: var(--accent-cyan, #06b6d4);
 }
 
-/* 3. GRID DE CARTÕES */
+/* ==========================================================================
+   3. GRID DE CARTÕES
+   ========================================================================== */
 .plans-grid {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    gap: 30px;
+    gap: 25px;
     flex-wrap: wrap;
     margin-top: 50px;
     width: 100%;
 }
 
-/* 4. ESTILO DO CARD (AGORA HORIZONTAL) */
+/* ==========================================================================
+   4. ESTILO DO CARD (LAYOUT HORIZONTAL REESTRUTURADO)
+   ========================================================================== */
 .plan-card {
-    background: rgba(0, 0, 0, 0.4);
-    padding: 25px;
+    background: var(--int-bg-card);
+    border: 1px solid var(--int-border);
     border-radius: 15px;
+    padding: 30px;
     width: 100%;
-    max-width: 800px; /* Aumentamos a largura para ele ficar "deitado" */
+    max-width: 950px;
     display: flex;
-    flex-direction: row; /* Altera de coluna para linha */
+    flex-direction: row;
     align-items: center;
-    gap: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    text-align: left; /* Alinhamento à esquerda combina melhor com cards deitados */
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 0 10px 25px var(--int-card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-sizing: border-box;
 }
 
-/* Ajuste do conteúdo interno */
+.plan-card:hover {
+    transform: translateY(-4px);
+    background: var(--int-bg-card-hover);
+    border-color: var(--accent-cyan, #06b6d4);
+    box-shadow: 0 15px 30px var(--int-card-shadow);
+}
+
+/* Bloco de informações interno */
 .plan-info {
     flex: 1;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.plan-card:hover {
-    transform: translateY(-12px);
-    background: rgba(0, 0, 0, 0.55);
-    border-color: rgba(0, 198, 255, 0.5);
-    box-shadow: 0 20px 40px rgba(0, 198, 255, 0.25);
+.plan-info h3 {
+    font-size: 26px;
+    margin: 0;
+    color: var(--int-text-title);
 }
 
-/* 5. CARD EM DESTAQUE */
+.partner-tag {
+    color: var(--accent-cyan, #06b6d4);
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.partner-desc {
+    font-size: 15px;
+    color: var(--int-text-muted);
+    margin: 4px 0 12px 0;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   5. LISTA DE BENEFÍCIOS (AJEITADA DE ACORDO COM O JS)
+   ========================================================================== */
+.partner-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row; /* Mantém os benefícios em linha no desktop */
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.partner-benefits li {
+    font-size: 14px;
+    color: var(--int-text-title);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.partner-benefits li::before {
+    content: "✓";
+    color: var(--accent-cyan, #06b6d4);
+    font-weight: 900;
+}
+
+/* ==========================================================================
+   6. CARD EM DESTAQUE (MERCADO PAGO / LOGISTOCK)
+   ========================================================================== */
 .plan-card.featured {
-    border: 2px solid #00c6ff;
-    background: rgba(0, 0, 0, 0.6);
     position: relative;
-    box-shadow: 0 0 30px rgba(0, 198, 255, 0.2);
+    border: 2px solid var(--accent-cyan, #06b6d4);
+    background: var(--int-bg-featured);
 }
 
 .badge {
     position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #00c6ff;
-    color: #000;
-    padding: 6px 18px;
+    top: -13px;
+    left: 30px;
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+    padding: 4px 14px;
     border-radius: 20px;
-    font-size: 13px;
-    font-weight: bold;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* 6. TEXTOS E PREÇOS */
-.plan-card h3 {
-    font-size: 26px;
-    margin-bottom: 15px;
-    color: #fff;
-}
-
-.price {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 25px;
-    color: #00c6ff;
-}
-
-.price span {
-    font-size: 16px;
-    color: #bbb;
-}
-
-/* 7. LISTA DE BENEFÍCIOS  */
-.plan-card ul {
-    display: flex; /* Lista também pode ficar na horizontal ou colunas curtas */
-    flex-wrap: wrap;
-    gap: 10px 20px;
-    list-style: none;
-    padding: 0;
-    margin: 15px 0;
-}
-
-.plan-card ul li {
-    border-bottom: none; /* Remove a linha para o visual horizontal */
-    padding: 5px 0;
-    font-size: 14px;
-}
-
-/* 8. BOTÃO ESTILIZADO (ESTILO GETECH TECH-PREMIUM) */
-.plan-card button {
-    background: linear-gradient(45deg, #00c6ff, #0072ff); /* Gradiente azul */
-    color: #fff; /* Texto branco para melhor contraste no gradiente */
-    padding: 14px 30px;
+/* ==========================================================================
+   7. BOTÃO DE CONECTAR
+   ========================================================================== */
+.connect-btn {
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+    padding: 14px 32px;
     border: none;
-    border-radius: 50px; /* Bordas arredondadas (estilo pílula) */
+    border-radius: 8px;
     font-weight: 700;
     font-size: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     cursor: pointer;
-    position: relative;
-    overflow: hidden; /* Necessário para o efeito de brilho */
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
-    min-width: 180px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
-/* Efeito de Brilho (Hover) */
-.plan-card button:hover {
-    transform: translateY(-3px); /* Levanta levemente */
-    box-shadow: 0 8px 25px rgba(0, 198, 255, 0.5); /* Brilho neon mais forte */
-    background: linear-gradient(45deg, #00e0ff, #00c6ff);
+.connect-btn:hover {
+    background: var(--accent-cyan-hv, #0891b2);
+    transform: scale(1.03);
 }
 
-/* Efeito de Clique */
-.plan-card button:active {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 198, 255, 0.4);
+/* Ajuste fino para os botões comuns ficarem corporativos no modo claro */
+[data-theme="light"] .connect-btn {
+    background: #1e3a6e;
+    color: #ffffff;
+}
+[data-theme="light"] .connect-btn:hover {
+    background: #2d5192;
 }
 
-/* Reflexo Shimmer */
-.plan-card button::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -60%;
-    width: 20%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(30deg);
-    transition: all 0.5s;
+/* Mantém o botão do card de destaque chamativo e ciano */
+[data-theme="light"] .plan-card.featured .connect-btn {
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+}
+[data-theme="light"] .plan-card.featured .connect-btn:hover {
+    background: var(--accent-cyan-hv, #0891b2);
 }
 
-.plan-card button:hover::after {
-    left: 120%; /* Faz o brilho atravessar o botão */
-}
-
-/* --- 9. REGRAS DE RESPONSIVIDADE --- */
-
-/* Tablets e Telas Médias (Até 992px) */
+/* ==========================================================================
+   8. RESPONSIVIDADE ADAPTATIVA
+   ========================================================================== */
 @media (max-width: 992px) {
-    .pricing-container {
-        padding: 40px 15px;
-    }
-    
-    .pricing-container h1 {
-        font-size: 30px;
-    }
-    
-    .plan-card {
-        max-width: 100%; /* Permite que o card use melhor o espaço lateral */
-        gap: 20px;
-        padding: 20px;
-    }
+    .pricing-container { padding: 40px 15px; }
+    .plan-card { padding: 25px; gap: 15px; }
+    .partner-benefits { flex-direction: column; gap: 6px; }
 }
 
-/* Smartphones (Até 768px) - Volta para o formato vertical */
 @media (max-width: 768px) {
     .plan-card {
         flex-direction: column;
         text-align: center;
-        align-items: center;
+        align-items: stretch;
     }
-    
-    .plan-info {
-        width: 100%;
-    }
-    
-    .plan-card ul {
-        justify-content: center;
-        flex-direction: column; /* Lista vertical fica mais organizada no celular */
-        gap: 8px;
-    }
-    
-    .plan-card button {
-        width: 100%; /* Botão ocupa a largura total disponível no mobile, facilitando o clique */
-        max-width: 280px;
-    }
-
-    /* Remove o efeito de levantar no hover para touchscreens (evita bugs visuais) */
-    .plan-card:hover {
-        transform: none;
-    }
-}
-
-/* Smartphones Pequenos (Até 480px) */
-@media (max-width: 480px) {
-    .pricing-container h1 {
-        font-size: 24px;
-    }
-    
-    .plan-card h3 {
-        font-size: 22px;
-    }
-    
-    .price {
-        font-size: 28px;
-    }
-    
-    .badge {
-        font-size: 11px;
-        padding: 4px 12px;
-    }
+    .plan-info { text-align: center; }
+    .partner-benefits { align-items: center; }
+    .badge { left: 50%; transform: translateX(-50%); }
+    .connect-btn { width: 100%; margin-top: 10px; }
 }

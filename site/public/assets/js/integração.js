@@ -16,7 +16,14 @@ const mockPartnersData = [
     {
         nome: "Tecfag",
         descricao: "Encomenda de maquinas e peças.",
-        url: "https://tecfagpersonnalite.com.br/landingpage/personnalite-top-5/?utm_source=google&utm_medium=cpc&utm_campaign={campaignname}&utm_term=maquina%20empacotadora%20automatica&utm_content=775207427211&adgroupid=192606386304&adposition=&device=c&matchtype=b&network=g&gad_source=1&gad_campaignid=23038287531&gbraid=0AAAAADd8NgvEGxccVHYoY4Exgo4-eYeFO&gclid=Cj0KCQjw_IXQBhCkARIsADqELbKxZrPc5FBHgmHVm8bw733LYM64MZbzGbeHf26w-VIlCgF77sOr27UaAj85EALw_wcB",
+        url: "https://tecfagpersonnalite.com.br/landing",
+        destaque: false,
+        beneficios: ["Desconto em peças de reposição", "Suporte prioritário"]
+    },
+    {
+        nome: "Mercado Pago",
+        descricao: "Processamento de pagamentos seguro.",
+        url: "https://www.mercadopago.com.br/",
         destaque: false,
         beneficios: ["Antifraude integrado", "Taxas reduzidas"]
     },
@@ -25,13 +32,13 @@ const mockPartnersData = [
         descricao: "Contratação de mecânicos industriais.",
         url: "https://www.getninjas.com.br/",
         destaque: false,
-        beneficios: ["Antifraude integrado", "Taxas reduzidas"]
+        beneficios: ["Mecânicos certificados", "Disponibilidade 24h"]
     }
 ];
 
 function renderPartners(partners) {
     const grid = document.getElementById('partners-grid');
-    if (!grid) return; // Segurança caso o elemento não exista no HTML
+    if (!grid) return; 
     
     grid.innerHTML = '';
 
@@ -39,25 +46,27 @@ function renderPartners(partners) {
         const card = document.createElement('div');
         card.className = `plan-card ${partner.destaque ? 'featured' : ''}`;
 
+        // Estrutura limpa: sem estilos inline fixos para não quebrar o modo claro
         card.innerHTML = `
             ${partner.destaque ? '<div class="badge">Destaque</div>' : ''}
             
             <div class="plan-info">
                 <h3>${partner.nome}</h3>
-                <p style="color: #00c6ff; font-weight: bold; margin: 5px 0;">GeTech Partner</p>
-                <p style="font-size: 14px; color: #ccc;">${partner.descricao}</p>
-                <ul>
-                    ${partner.beneficios.map(b => `<li>✔ ${b}</li>`).join('')}
+                <span class="partner-tag">GeTech Partner</span>
+                <p class="partner-desc">${partner.descricao}</p>
+                <ul class="partner-benefits">
+                    ${partner.beneficios.map(b => `<li>${b}</li>`).join('')}
                 </ul>
             </div>
 
-            <button onclick="window.open('${partner.url}', '_blank')">Visitar Site</button>
+            <button class="connect-btn" onclick=\"window.open('${partner.url}', '_blank')\">Conectar</button>
         `;
 
         grid.appendChild(card);
     });
 }
 
+// Inicializa a renderização assim que o script carregar
 window.onload = () => {
     setTimeout(() => {
         renderPartners(mockPartnersData);

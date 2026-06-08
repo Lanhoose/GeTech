@@ -1,6 +1,6 @@
-/* =========================
-   HOME (INDEX)
-========================= */
+/* ==========================================================
+   HOME (INDEX) - SUPORTE A TEMA INDUSTRIAL & LIGHT MODE
+========================================================== */
 body {
     background: var(--bg-page-gradient);
     color: var(--text-primary);
@@ -30,7 +30,7 @@ body {
     max-width: 400px;
     width: 100%;
     box-shadow: var(--shadow-card);
-    transition: background 0.3s ease;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     box-sizing: border-box;
 }
 
@@ -39,6 +39,11 @@ body {
     margin-bottom: 10px;
     font-size: clamp(24px, 3.5vw, 32px); 
     line-height: 1.2;
+}
+
+/* Ajuste específico de contraste para o H1 no tema claro baseado na paleta corporativa */
+[data-theme="light"] .container h1 {
+    color: var(--text-heading); /* Usa o #1e3a6e do layout.css para melhor leitura */
 }
 
 .container p {
@@ -64,10 +69,20 @@ body {
     width: auto;
 }
 
+/* Inversão de cor do texto do botão se necessário no Light Mode para acessibilidade */
+[data-theme="light"] .container button {
+    color: #ffffff;
+    background: var(--toggle-track); /* Usa o ciano corporativo escuro do layout */
+}
+
 .container button:hover {
     background: var(--accent-cyan-hv);
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .container button:hover {
+    background: var(--accent-blue);
 }
 
 .container button:active { 
@@ -107,7 +122,7 @@ body {
     min-width: 220px;
     flex: 1;
     
-    /* Visual Estilo Card Industrial Glassmorphism */
+    /* Visual Estilo Card Industrial Glassmorphism reativo às variáveis */
     background: var(--bg-card);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -125,7 +140,7 @@ body {
 .stat-number {
     font-size: clamp(32px, 4.5vw, 42px);
     font-weight: 800;
-    color: var(--accent-cyan); /* Cor neutra suave inicial */
+    color: var(--accent-cyan); /* Cor reativa do tema correspondente */
     line-height: 1.1;
     margin-bottom: 8px;
     transition: color 0.3s ease, text-shadow 0.3s ease;
@@ -144,12 +159,12 @@ body {
 ========================================================== */
 .stat-card:hover {
     transform: translateY(-8px); /* Eleva o card sutilmente */
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--accent-cyan); /* A borda acende com o ciano do tema */
-    box-shadow: var(--shadow-card), var(--glow-cyan); /* Brilho neon de fundo */
+    background: var(--bg-card-hover);
+    border-color: var(--accent-cyan); 
+    box-shadow: var(--shadow-card), var(--glow-cyan); /* Brilho neon de fundo herdado do layout */
 }
 
-/* O número acende em neon quando o card recebe hover */
+/* O número acende com efeito neon dinâmico no hover */
 .stat-card:hover .stat-number {
     color: var(--accent-cyan);
     text-shadow: var(--glow-cyan);
@@ -159,10 +174,19 @@ body {
     color: var(--text-primary);
 }
 
-/* Adaptação de contraste para o Tema Claro (Light Mode) */
+/* ==========================================================
+   ADAPTAÇÃO RESTRITA PARA O TEMA CLARO (LIGHT MODE)
+   Baseado estritamente na paleta limpa/corporativa do layout.css
+========================================================== */
 [data-theme="light"] .stat-card:hover {
-    background: var(--bg-card-hover);
-    box-shadow: var(--shadow-card);
+    background: var(--bg-card-hover); /* #f8faff */
+    border-color: var(--accent-blue-lt); /* Acendimento sutil em azul corporativo */
+    box-shadow: var(--shadow-card); /* Remove o glow neon forte que quebra o Clean Light */
+}
+
+[data-theme="light"] .stat-card:hover .stat-number {
+    color: var(--accent-blue); /* Transiciona para o azul escuro tecnológico em vez de ciano elétrico */
+    text-shadow: none; /* Sem vazamento de luz/glow no modo claro */
 }
 
 /* ==========================================================
