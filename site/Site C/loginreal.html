@@ -331,10 +331,11 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
-  
+    
+    const BASE_URL = "/GeTech/";
     // Aguarda 1 segundo (1000ms) antes de mudar de página
     function abrirLink() {
-      window.location.href = "/GeTech/site/public/pages/index.html";
+      window.location.href = BASE_URL + "site/public/pages/index.html";
     }
     // Configuração Firebase (Mantenha a sua configuração original)
     const firebaseConfig = {
