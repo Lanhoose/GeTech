@@ -168,7 +168,56 @@
             {
               "name": "pages",
               "type": "folder",
-              "children": []
+              "children": [
+                {
+                  "name": "index.html",
+                  "type": "file"
+                },
+                {
+                  "name": "ajuda.html",
+                  "type": "file"
+                },
+                {
+                  "name": "blog.html",
+                  "type": "file"
+                },
+                {
+                  "name": "contato.html",
+                  "type": "file"
+                },
+                {
+                  "name": "depoimentos.html",
+                  "type": "file"
+                },
+                {
+                  "name": "FAQ.html",
+                  "type": "file"
+                },
+                {
+                  "name": "funcionalidade.html",
+                  "type": "file"
+                },
+                {
+                  "name": "integração.html",
+                  "type": "file"
+                },
+                {
+                  "name": "login.html",
+                  "type": "file"
+                },
+                {
+                  "name": "planos.html",
+                  "type": "file"
+                },
+                {
+                  "name": "privacidade.html",
+                  "type": "file"
+                },
+                {
+                  "name": "sobre.html",
+                  "type": "file"
+                },
+              ]
             }
           ]
         },
