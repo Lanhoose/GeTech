@@ -231,7 +231,7 @@
   <section class="hero">
     <h1>Manutenção Industrial Especializada</h1>
     <p>Soluções completas em manutenção preventiva e corretiva para maximizar a produtividade da sua indústria.</p>
-    <a href="/public/pages/index.html"><button>Visitar Nossa ERP</button></a>
+    <a onclick="abrirLink()"><button>Visitar Nossa ERP</button></a>
   </section>
 
   <main>
@@ -327,10 +327,19 @@
     <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">Sistema de Gestão de Ativos v2.0</p>
   </footer>
 
+
+
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
+
+      const BASE_URL = window.location.origin + "/GeTech";
+  
+    // Aguarda 1 segundo (1000ms) antes de mudar de página
+    function abrirLink(){
+      window.location.href = BASE_URL + "/site/Site C/index.html";
+    }
     // Configuração Firebase (Mantenha a sua configuração original)
     const firebaseConfig = {
       apiKey: "AIzaSyClNzm5k4vFnGcpK_6pdnJyB6WkOhrgvlY",
