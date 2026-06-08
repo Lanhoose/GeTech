@@ -15,17 +15,27 @@
     text-align: center;
     margin-bottom: 50px;
     max-width: 700px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .help-hero h1 {
     color: var(--text-heading);
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 5vw, 2.5rem); /* Fonte fluida para nunca quebrar bizarramente */
     margin-bottom: 10px;
+    width: 100%;
 }
 
 .help-hero h1 span { color: var(--accent-blue); }
 
-.help-hero p { color: var(--text-secondary); font-size: 1.1rem; }
+.help-hero p { 
+    color: var(--text-secondary); 
+    font-size: clamp(0.95rem, 3vw, 1.1rem); 
+    width: 100%;
+}
 
 /* Barra de busca */
 .search-wrapper {
@@ -37,14 +47,18 @@
     border-radius: 50px;
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-card);
+    width: 100%;
+    max-width: 600px; 
+    box-sizing: border-box;
+    align-items: center;
 }
 
 .search-wrapper input {
+    flex: 1;
+    min-width: 0; /* Impede o input de empurrar o botão para fora da tela */
     border: none;
     outline: none;
-    padding: 10px 20px;
-    width: 100%;
-    border-radius: 50px;
+    padding: 10px 15px;
     font-size: 1rem;
     background: transparent;
     color: var(--text-primary);
@@ -56,11 +70,12 @@
     background: var(--accent-cyan);
     color: white;
     border: none;
-    padding: 10px 25px;
+    padding: 12px 25px;
     border-radius: 50px;
     cursor: pointer;
     font-weight: bold;
     transition: 0.3s;
+    white-space: nowrap; /* Evita que o texto "Buscar" quebre em duas linhas */
 }
 
 .search-wrapper button:hover { background: var(--accent-cyan-hv); }
@@ -68,10 +83,11 @@
 /* Cards de categoria */
 .help-categories {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 20px;
     width: 100%;
     max-width: 1100px;
+    box-sizing: border-box;
 }
 
 .category-card {
@@ -82,6 +98,11 @@
     border: 1px solid var(--border-card);
     transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s, background 0.3s;
     cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .category-card:hover {
@@ -126,9 +147,11 @@
     border: 1px solid var(--border-card);
     border-radius: 10px;
     max-width: 600px;
+    width: 100%;
     position: relative;
     color: var(--text-primary);
     transition: background 0.3s ease;
+    box-sizing: border-box;
 }
 
 [data-theme="light"] .answer-box {
@@ -153,8 +176,8 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 320px;   /* Largura inicial controlada */
-    height: 450px;  /* Altura inicial controlada */
+    width: 320px;   
+    height: 450px;  
     background: var(--bg-card);
     border-radius: 15px;
     box-shadow: var(--shadow-card);
@@ -162,8 +185,6 @@
     z-index: 1000;
     border: 1px solid var(--border-card);
     transition: background 0.3s ease;
-
-    /* Desativa o resize nativo debaixo e oculta vazamentos estruturais */
     resize: none;
     overflow: hidden;
 }
@@ -178,11 +199,7 @@
     align-items: center;
     font-weight: bold;
     user-select: none;
-    
-    /* Cursor de seta dupla indicando que o topo expande o chat */
     cursor: nwse-resize; 
-
-    /* Indicador visual superior na cor ciano neon */
     border-top: 5px solid var(--accent-cyan);
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
@@ -199,8 +216,8 @@
 .chat-messages {
     flex: 1;
     padding: 15px;
-    overflow-y: auto;   /* Mensagens longas criam rolagem vertical estável */
-    overflow-x: hidden;  /* Trava expansões laterais provocadas por fluxos textuais */
+    overflow-y: auto;   
+    overflow-x: hidden;  
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -208,14 +225,14 @@
     scroll-behavior: smooth;
 }
 
-/* Estilo estrito das mensagens para isolar o layout do tamanho do texto */
+/* Estilo estrito das mensagens */
 .msg {
     padding: 12px 16px;
     border-radius: 14px;
     font-size: 0.92rem;
     max-width: 85%;
     line-height: 1.5;
-    word-break: break-word; /* Links ou blocos gigantes quebram linha sem alargar o chat */
+    word-break: break-word; 
 }
 
 .bot {
@@ -296,30 +313,36 @@
     color: white;
 }
 
+/* Chips de Sugestões */
 /* ==========================================================================
-   BALÕES DE PERGUNTAS RÁPIDAS (CHIPS SUGGESTIONS)
+   BALÕES DE PERGUNTAS RÁPIDAS (CHIPS SUGGESTIONS) - CORRIGIDO
    ========================================================================== */
 .chat-suggestions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-wrap: nowrap;          /* Força os elementos a ficarem na mesma linha */
+    gap: 8px;
     padding: 10px 12px;
     background: var(--bg-card);
     border-top: 1px solid var(--border-subtle);
     max-height: 85px;
-    overflow-y: auto;
+    overflow-x: auto;           /* Ativa explicitamente a rolagem horizontal */
+    overflow-y: hidden;         /* Desativa qualquer quebra ou rolagem vertical */
+    width: 100%;                /* Garante que respeite o tamanho máximo da janela */
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch; /* Rolagem super fluida em dispositivos iOS */
 }
 
 .chip-btn {
     background: var(--bg-input);
     color: var(--text-primary);
     border: 1px solid var(--border-card);
-    padding: 5px 12px;
+    padding: 6px 14px;
     border-radius: 20px;
     font-size: 0.78rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap;
+    white-space: nowrap;        /* Impede terminantemente o texto interno de quebrar linha */
+    flex-shrink: 0;             /* CRITICO: Impede o Flexbox de esmagar o chip para caber na tela */
     font-family: inherit;
 }
 
@@ -331,50 +354,35 @@
     box-shadow: 0 2px 8px rgba(6, 182, 212, 0.25);
 }
 
-/* Ajuste de rolagem interna das sugestões */
+/* Deixar a barra de rolagem horizontal sutil e elegante */
 .chat-suggestions::-webkit-scrollbar {
-    width: 3px;
+    height: 4px;                /* Altura da barra horizontal */
 }
 .chat-suggestions::-webkit-scrollbar-thumb {
     background: var(--border-card);
     border-radius: 10px;
 }
 
-/* ==========================================================================
-   CORREÇÃO DO CHATBOT: FUNDO SÓLIDO NO TEMA ESCURO
-   ========================================================================== */
+.chat-suggestions::-webkit-scrollbar { width: 3px; }
+.chat-suggestions::-webkit-scrollbar-thumb { background: var(--border-card); border-radius: 10px; }
+
+/* Fundo sólido no Tema Escuro do Chat */
 [data-theme="dark"] .chat-window {
-    background: #1e293b !important; /* Cor sólida cinza-azulada escura (combina com o cabeçalho) */
-    border: 1px solid #334155;     /* Borda sólida discreta */
-    backdrop-filter: none !important; /* Remove qualquer transparência ou desfoque de vidro */
+    background: #1e293b !important;
+    border: 1px solid #334155;    
+    backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
-
-[data-theme="dark"] .chat-messages {
-    background: #0f172a !important; /* Fundo interno das mensagens sólido (mesmo tom do fundo do body) */
-}
-
-[data-theme="dark"] .chat-suggestions,
-[data-theme="dark"] .chat-input {
-    background: #1e293b !important; /* Base das sugestões e campo de texto também sólidos */
-    border-top: 1px solid #334155;
-}
-
-[data-theme="dark"] .msg.bot {
-    background: #334155 !important; /* Caixa de mensagens do robô sólida */
-    color: #f1f5f9 !important;
-}
-
-[data-theme="dark"] .msg.user {
-    background: #0ea5e9 !important; /* Caixa de mensagens do usuário sólida em azul destacado */
-    color: #ffffff !important;
-}
+[data-theme="dark"] .chat-messages { background: #0f172a !important; }
+[data-theme="dark"] .chat-suggestions, [data-theme="dark"] .chat-input { background: #1e293b !important; border-top: 1px solid #334155; }
+[data-theme="dark"] .msg.bot { background: #334155 !important; color: #f1f5f9 !important; }
+[data-theme="dark"] .msg.user { background: #0ea5e9 !important; color: #ffffff !important; }
 
 /* ==========================================================================
-   RESPONSIVIDADE (MEDIA QUERIES)
+   MEDIA QUERIES (RESPONSIVIDADE COMPLETA E SEM QUEBRAS)
    ========================================================================== */
 
-/* Dispositivos Médios e Tablets (Até 768px) */
+/* TABLETS E CELULARES EM PÉ (Até 768px) */
 @media (max-width: 768px) {
     .help-page {
         padding: 40px 16px;
@@ -384,19 +392,8 @@
         margin-bottom: 35px;
     }
 
-    .help-hero h1 {
-        font-size: 2rem;
-    }
-
-    .help-hero p {
-        font-size: 1rem;
-    }
-
-    /* Ajuste na barra de busca para não esmagar os elementos */
     .search-wrapper {
-        width: 100%;
-        max-width: 500px;
-        border-radius: 24px;
+        border-radius: 50px;
         padding: 6px;
     }
 
@@ -406,12 +403,10 @@
     }
 
     .search-wrapper button {
-        padding: 8px 18px;
-        border-radius: 20px;
+        padding: 10px 20px;
+        border-radius: 50px;
     }
 
-    /* Grid de categorias se adapta automaticamente pelo minmax antigo, 
-       mas reduzimos o padding interno dos cards */
     .category-card {
         padding: 20px;
     }
@@ -422,84 +417,63 @@
     }
 }
 
-/* Dispositivos Pequenos e Celulares (Até 480px) */
+/* SMARTPHONES PEQUENOS (Até 480px) */
 @media (max-width: 480px) {
-    .help-hero h1 {
-        font-size: 1.75rem;
-    }
-
-    /* Transforma a barra de busca em blocos empilhados para dar mais espaço de digitação */
+    /* Mantém a caixa estruturada, mudando para coluna de forma elegante */
     .search-wrapper {
         flex-direction: column;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-        gap: 12px;
+        background: var(--bg-card); /* Fundo preservado para manter a estrutura do card */
+        border: 1px solid var(--border-card);
+        box-shadow: var(--shadow-sm);
+        padding: 10px;
+        border-radius: 16px; /* Bordas levemente arredondadas para o formato vertical */
+        gap: 10px;
     }
 
     .search-wrapper input {
-        background: var(--bg-card);
-        border: 1px solid var(--border-card);
-        box-shadow: var(--shadow-sm);
-        border-radius: 12px;
-        padding: 14px;
-        font-size: 16px; /* Evita o zoom automático do Safari no iOS */
+        padding: 12px;
+        font-size: 16px; /* Impede o zoom forçado do iOS Safari */
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
     }
 
     .search-wrapper button {
         width: 100%;
-        padding: 14px;
-        border-radius: 12px;
+        padding: 12px;
+        border-radius: 10px; /* Alinha o design do botão interno com o wrapper */
         box-shadow: var(--shadow-sm);
     }
+    
+    .help-categories {
+        grid-template-columns: 1fr; /* Coluna única impecável */
+        gap: 16px;
+    }
 
-    /* Otimização do Chatbot para Mobile (Tela Cheia) */
+    /* Chatbot responsivo tela cheia no Mobile */
     .chat-window {
         bottom: 0;
         right: 0;
-        width: 100vw !important;  /* Força ocupar toda a largura da tela */
-        height: 100vh !important; /* Força ocupar toda a altura da tela */
+        width: 100vw !important;  
+        height: 100vh !important; 
         border-radius: 0;
         border: none;
     }
 
-    .chat-header {
-        border-radius: 0; /* Remove os cantos arredondados no topo */
-        cursor: default;  /* Desativa o cursor de redimensionamento manual no mobile */
-        padding: 16px;
-    }
+    .chat-header { border-radius: 0; cursor: default; padding: 16px; }
+    .chat-messages { padding: 12px; }
+    .msg { max-width: 90%; padding: 10px 14px; }
+    .chat-input { padding: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+    .chat-input input { font-size: 16px; padding: 10px 14px; }
 
-    .chat-messages {
-        padding: 12px;
-    }
-
-    .msg {
-        max-width: 90%; /* Permite que o balão de texto aproveite melhor a tela estreita */
-        padding: 10px 14px;
-    }
-
-    .chat-input {
-        padding: 12px;
-        /* Garante que o input fique visível acima do teclado do sistema */
-        padding-bottom: calc(12px + env(safe-area-inset-bottom)); 
-    }
-
-    .chat-input input {
-        font-size: 16px; /* Evita zoom indesejado ao focar no campo de texto */
-        padding: 10px 14px;
-    }
-
-    /* Ajuste fino nas sugestões (chips) para rolagem lateral fluida */
-    .chat-suggestions {
-        flex-wrap: nowrap; /* Em vez de quebrar linha, vira um carrossel horizontal */
+   .chat-suggestions {
+        flex-wrap: nowrap; 
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        max-height: 50px;
-        padding: 8px;
+        padding: 8px 12px;
     }
 
     .chip-btn {
-        padding: 6px 14px;
+        padding: 6px 12px;
+        flex-shrink: 0; /* Garante que mantém o tamanho correto no mobile */
     }
 }
