@@ -21,7 +21,7 @@ body {
 }
 
 .container .card {
-    background: var(--glass-bg);
+    background: var(--bg-card-dark);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);

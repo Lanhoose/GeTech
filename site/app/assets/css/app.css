@@ -1,201 +1,352 @@
-/* =========================
-   VARIÁVEIS DE TEMA
-========================= */
+/* ==========================================================================
+   1. VARIÁVEIS DE TEMA (SINCRONIZADAS COM LAYOUT.CSS)
+   ========================================================================== */
 :root,
-[data-theme="light"] {
-    --bg-body:       #f4f7f6;
-    --bg-header:     #2c3e50;
-    --bg-card:       #ffffff;
-    --bg-card-hover: #f9f9f9;
-    --text-primary:  #2c3e50;
-    --text-muted:    #7f8c8d;
-    --border-card:   #3498db;
-    --shadow:        0 4px 6px rgba(0,0,0,0.10);
-    --shadow-hover:  0 6px 12px rgba(0,0,0,0.15);
-    --toggle-bg:     #334155;
-    --toggle-icon:   "🌙";
-}
-
 [data-theme="dark"] {
-    --bg-body:       #0f172a;
-    --bg-header:     #1e293b;
-    --bg-card:       #1e293b;
-    --bg-card-hover: #263248;
-    --text-primary:  #e2e8f0;
-    --text-muted:    #94a3b8;
-    --border-card:   #3b82f6;
-    --shadow:        0 4px 6px rgba(0,0,0,0.35);
-    --shadow-hover:  0 6px 12px rgba(0,0,0,0.45);
-    --toggle-bg:     #3b82f6;
-    --toggle-icon:   "☀️";
+    /* Backgrounds e Superfícies */
+    --bg-body:           #090d16;
+    --bg-page-gradient:  linear-gradient(135deg, #0f172a, #050811);
+    --bg-header:         rgba(30, 41, 59, 0.7); /* Glassmorphism escuro */
+    --bg-card:           rgba(255, 255, 255, 0.04);
+    --bg-card-hover:     rgba(255, 255, 255, 0.08);
+    
+    /* Cores de Texto */
+    --text-primary:      #f8fafc;
+    --text-secondary:    #94a3b8;
+    --text-muted:        #64748b;
+    
+    /* Bordas e Linhas */
+    --border-card:       rgba(255, 255, 255, 0.1);
+    --border-subtle:     rgba(255, 255, 255, 0.05);
+    --border-pill:       rgba(0, 123, 255, 0.2);
+
+    /* Acentos e Identidade */
+    --accent-blue:       #007bff; /* Novo azul do modo escuro */
+    --accent-blue-hv:    #0056b3;
+    --accent-green:      #10b981;
+    --accent-green-hv:   #059669;
+    
+    /* Efeitos de Sombra e Brilhos Tech */
+    --shadow:            0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --shadow-hover:      0 10px 20px rgba(0, 0, 0, 0.5);
+    --glow-blue:         0 0 15px rgba(0, 123, 255, 0.25);
+    
+    /* Elementos Interativos e Botões */
+    --btn-action-bg:     rgba(51, 65, 85, 0.5);
+    --btn-action-text:   #f8fafc;
+    --btn-action-hover:  #007bff; /* Transiciona para o azul da marca */
+    --btn-sair-bg:       rgba(239, 68, 68, 0.15);
+    --btn-sair-border:   rgba(239, 68, 68, 0.3);
+    --btn-sair-text:     #ff4757;
+    --btn-sair-hover:    #ef4444;
+    
+    /* Elemento de Toggle */
+    --toggle-track:      #1e293b;
 }
 
-/* =========================
-   RESET / BASE
-========================= */
-*, *::before, *::after { box-sizing: border-box; }
+[data-theme="light"] {
+    /* Backgrounds e Superfícies */
+    --bg-body:           #f0f6ff;
+    --bg-page-gradient:  linear-gradient(135deg, #c8d8f0, #a0bcdf);
+    --bg-header:         #1e3a6e; /* Fundo sólido corporativo */
+    --bg-card:           #ffffff;
+    --bg-card-hover:     #f8faff;
+    
+    /* Cores de Texto */
+    --text-primary:      #1e293b;
+    --text-secondary:    #475569;
+    --text-muted:        #64748b;
+    
+    /* Bordas e Linhas */
+    --border-card:       #e2e8f0;
+    --border-subtle:     rgba(0, 0, 0, 0.07);
+    --border-pill:       rgba(255, 255, 255, 0.28);
 
+    /* Acentos e Identidade */
+    --accent-blue:       #378add;
+    --accent-blue-hv:    #73a6e6;
+    --accent-green:      #22c55e;
+    --accent-green-hv:   #16a34a;
+    
+    /* Efeitos de Sombra */
+    --shadow:            0 4px 20px rgba(30, 58, 110, 0.08);
+    --shadow-hover:      0 4px 15px rgba(30, 58, 110, 0.06);
+    --glow-blue:         none;
+    
+    /* Elementos Interativos e Botões */
+    --btn-action-bg:     #2d5192;
+    --btn-action-text:   #ffffff;
+    --btn-action-hover:  #1e3a6e;
+    --btn-sair-bg:       rgba(255, 61, 0, 0.1);
+    --btn-sair-border:   rgba(255, 71, 87, 0.3);
+    --btn-sair-text:     #ff4757;
+    --btn-sair-hover:    #ff4757;
+    
+    /* Elemento de Toggle */
+    --toggle-track:      #0891b2;
+}
+
+/* ==========================================================================
+   2. CONFIGURAÇÕES BASE E ESTRUTURA
+   ========================================================================== */
 body {
-    font-family: 'Segoe UI', Arial, sans-serif;
     background-color: var(--bg-body);
+    background-image: var(--bg-page-gradient);
     color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     margin: 0;
-    padding: 20px;
-    transition: background-color 0.3s, color 0.3s;
+    padding: 24px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* =========================
-   HEADER
-========================= */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   3. CABEÇALHO (HEADER COMPACTO COM GLASSMORPHISM)
+   ========================================================================== */
 .header {
+    background: var(--bg-header);
+    border: 1px solid var(--border-card);
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--bg-header);
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    gap: 16px; /* Aumentado levemente para melhor espaçamento no flex-wrap */
-    transition: background-color 0.3s;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.header .header-left { flex: 1; }
+/* Suporte ao Glassmorphism apenas no modo escuro conforme o layout.css original */
+[data-theme="dark"] .header {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
 
-.header h1 { margin: 0; color: #fff; font-size: 1.4rem; }
-.header p  { margin: 4px 0 0; color: rgba(255,255,255,0.7); font-size: 0.88rem; }
+.header .header-left h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+/* Tratamento de contraste para o texto interno do Header no modo Claro */
+[data-theme="light"] .header .header-left h1 {
+    color: #ffffff;
+}
+[data-theme="light"] .header .header-left p {
+    color: #cbd5e1;
+}
+
+.header .header-left p {
+    margin: 4px 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
-/* =========================
-   BOTÕES
-========================= */
-.btn-sair, .btn-voltar {
-    border: none;
+/* ==========================================================================
+   4. BOTÕES DE AÇÃO E GERENCIAMENTO
+   ========================================================================== */
+.btn-voltar, .btn-sair {
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s;
-    white-space: nowrap; /* Evita que o texto do botão quebre em duas linhas */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-sair { background-color: #e74c3c; color: white; }
-.btn-sair:hover { background-color: #c0392b; }
+.btn-voltar {
+    background: var(--btn-action-bg);
+    color: var(--btn-action-text);
+    border: 1px solid var(--border-subtle);
+}
 
-.btn-voltar { background-color: #3498db; color: white; }
-.btn-voltar:hover { background-color: #2980b9; }
+.btn-voltar:hover {
+    background: transparent;
+    border-color: var(--accent-blue);
+    box-shadow: var(--glow-blue);
+    color: var(--accent-blue);
+    transform: translateY(-1px);
+}
 
-/* =========================
-   TOGGLE DE TEMA
-========================= */
+/* Alinhamento do hover do botão voltar para o modo claro */
+[data-theme="light"] .btn-voltar:hover {
+    background: var(--btn-action-hover);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.btn-sair {
+    background: var(--btn-sair-bg);
+    border: 1px solid var(--btn-sair-border);
+    color: var(--btn-sair-text);
+}
+
+.btn-sair:hover {
+    background: var(--btn-sair-hover);
+    border-color: var(--btn-sair-hover);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+}
+
+[data-theme="light"] .btn-sair:hover {
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   5. INTERRUPTOR DE TEMA (TOGGLE SWITCH MINIATURA)
+   ========================================================================== */
 .theme-toggle-wrap {
     display: flex;
     align-items: center;
     gap: 6px;
+    background: var(--toggle-track);
+    padding: 4px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border-subtle);
+    height: 24px;
+    transition: all 0.3s ease;
 }
 
 .theme-icon {
-    font-size: 1rem;
-    color: rgba(255,255,255,0.8);
-    line-height: 1;
-    min-width: 16px;
+    font-size: 0.85rem;
+    user-select: none;
+    opacity: 0.7;
+}
+
+/* Ajuste de contraste dos ícones do toggle dentro do header claro */
+[data-theme="light"] .theme-icon {
+    color: #ffffff;
 }
 
 .theme-toggle {
     position: relative;
-    width: 44px;
-    height: 24px;
-    background: var(--toggle-bg);
-    border-radius: 12px;
+    background: var(--text-primary);
     border: none;
-    cursor: pointer;
-    transition: background 0.3s;
-    flex-shrink: 0;
-}
-
-.theme-toggle::after {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 18px;
-    height: 18px;
-    background: #ffffff;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    transition: transform 0.3s;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
 }
 
-[data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
+[data-theme="light"] .theme-toggle {
+    transform: translateX(2px);
+    background: #ffffff;
+}
 
-/* =========================
-   GRID DE MÓDULOS
-========================= */
+/* ==========================================================================
+   6. GRID DE MÓDULOS (ESTILO DE CARDS)
+   ========================================================================== */
 .grid-modulos {
     display: grid;
-    /* Ajustado o minmax para 1fr no mobile se a tela for muito pequena */
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
 }
 
-/* =========================
-   CARDS
-========================= */
 .card {
-    background-color: var(--bg-card);
-    padding: 20px;
-    border-radius: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    padding: 28px 24px;
+    border-radius: 14px;
     box-shadow: var(--shadow);
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
-    border-left: 5px solid var(--border-card);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.25s ease, 
+                background-color 0.3s ease, 
+                border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Bordas laterais customizadas de acordo com o padrão do projeto */
+[data-theme="light"] .card {
+    border-left: 5px solid #1e3a6e;
+}
+
+[data-theme="dark"] .card {
+    border-left: 5px solid #007bff; /* Herda o azul customizado do modo escuro */
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
     box-shadow: var(--shadow-hover);
     background-color: var(--bg-card-hover);
+    border-color: var(--accent-blue);
 }
 
-.card h3 { margin-top: 0; color: var(--text-primary); }
-.card p  { color: var(--text-muted); font-size: 0.9rem; margin: 0; }
+[data-theme="dark"] .card:hover {
+    box-shadow: var(--glow-blue), var(--shadow-hover);
+}
 
-/* =========================
-   MEDIA QUERIES (RESPONSIVIDADE)
-========================= */
-@media (max-width: 600px) {
+.card h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.card p {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   7. REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================================== */
+@media (max-width: 768px) {
     body {
-        padding: 12px; /* Diminui o espaçamento das bordas da tela */
+        padding: 16px;
     }
 
     .header {
-        flex-direction: column; /* Empilha o título e as ações verticalmente */
-        align-items: flex-start; /* Alinha o conteúdo à esquerda */
-        padding: 1.2rem;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+        gap: 16px;
     }
 
     .header .header-left {
         width: 100%;
-        margin-bottom: 8px;
     }
 
     .header-actions {
         width: 100%;
-        justify-content: space-between; /* Espalha o botão e o theme toggle */
-        flex-wrap: wrap; /* Caso adicione mais botões, eles quebram linha */
+        justify-content: space-between;
+        flex-wrap: wrap;
         gap: 12px;
     }
-
-    .btn-sair, .btn-voltar {
-        padding: 12px 24px; /* Botões ligeiramente maiores para facilitar o toque */
-        font-size: 0.95rem;
+    
+    .btn-voltar, .btn-sair {
+        flex: 1;
+        text-align: center;
+        padding: 12px;
     }
     
-    .card:hover {
-        transform: none; /* Desativa o efeito de levantar o card no mobile (evita bugs visuais de scroll) */
+    .theme-toggle-wrap {
+        order: -1;
+    }
+
+    .grid-modulos {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 }

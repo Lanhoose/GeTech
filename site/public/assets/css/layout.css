@@ -8,13 +8,14 @@
     --bg-body:           #090d16; /* Um pouco mais escuro/profundo */
     --bg-header:         rgba(30, 41, 59, 0.7); /* Transparência para o Glassmorphism */
     --bg-footer:         #050811;
-    --bg-card:           rgba(255, 255, 255, 0.04);
+    --bg-card:           rgb(0, 0, 0);
+    --bg-card-dark:           rgb(0, 0, 0);
     --bg-card-hover:     rgba(255, 255, 255, 0.08);
     --bg-input:          rgba(255, 255, 255, 0.06);
     --bg-login-btn:      rgba(51, 65, 85, 0.5);
-    --bg-user-pill:      rgba(6, 182, 212, 0.06);
+    --bg-user-pill:      rgba(0, 123, 255, 0.06); /* Ajustado para o novo azul */
     --bg-modal:          rgba(5, 8, 17, 0.85);
-    --bg-page-gradient:  linear-gradient(135deg, #0f172a, #050811);
+    --bg-page-gradient:  #202e4d;
 
     /* Texto */
     --text-primary:      #f8fafc;
@@ -27,17 +28,17 @@
     --border-subtle:     rgba(255, 255, 255, 0.05);
     --border-card:       rgba(255, 255, 255, 0.1);
     --border-input:      rgba(255, 255, 255, 0.15);
-    --border-pill:       rgba(6, 182, 212, 0.2);
+    --border-pill:       rgba(0, 123, 255, 0.2); /* Ajustado para o novo azul */
 
     /* Acentos */
-    --accent-cyan:       #00f2fe; /* Ciano mais elétrico/neon */
-    --accent-cyan-hv:    #05b6d4;
+    --accent-cyan:       #007bff; /* Alterado de ciano para o azul solicitado */
+    --accent-cyan-hv:    #0056b3; /* Tom mais escuro do azul para o efeito Hover */
     --accent-green:      #10b981;
     --accent-green-hv:   #059669;
     --accent-blue:       #3b82f6;
     --accent-blue-lt:    #60a5fa;
     --accent-yellow:     #fbbf24;
-    --accent-user:       #00f2fe;
+    --accent-user:       #007bff; /* Alterado para o novo azul */
     --accent-logout-hv:  #ef4444;
 
     /* Toggle */
@@ -46,12 +47,16 @@
     /* Shadows & Glows (O segredo do visual Tech) */
     --shadow-card:       0 8px 32px 0 rgba(0, 0, 0, 0.37);
     --shadow-sm:         0 4px 12px 0 rgba(0, 0, 0, 0.2);
-    --glow-cyan:         0 0 15px rgba(0, 242, 254, 0.25);
+    --glow-cyan:         0 0 15px rgba(0, 123, 255, 0.25); /* Ajustado para brilho azul */
     --glow-green:        0 0 15px rgba(16, 185, 129, 0.3);
 
     /* Glassmorphism */
     --glass-bg:          rgba(255, 255, 255, 0.03);
     --glass-border:      rgba(255, 255, 255, 0.08);
+
+
+    --btn-outline-color: #ffffff; 
+    --btn-outline-hover: #0056b3; /* Cor do contorno no modo escuro */
 }
 
 [data-theme="light"] {
@@ -63,6 +68,7 @@
     --bg-card-hover:     #f8faff;
     --bg-input:          #ffffff;
     --bg-login-btn:      #2d5192;
+    --bg-card-dark:       #ffffff;
     --bg-user-pill:      rgba(255, 255, 255, 0.15);
     --bg-modal:          rgba(0, 0, 0, 0.55);
     --bg-page-gradient:  linear-gradient(135deg, #c8d8f0, #a0bcdf);
@@ -101,6 +107,8 @@
     /* Glassmorphism */
     --glass-bg:          rgba(255, 255, 255, 0.65);
     --glass-border:      rgba(30, 58, 110, 0.15);
+
+    --btn-outline-color: #1e3a6e; /* Cor do contorno no modo claro */
 }
 
 /* =========================
@@ -200,13 +208,13 @@ body {
 /* Destaque especial e único para o botão de Realidade Aumentada */
 .menu a[href="teste_aumentada.html"] {
     border: 1px solid var(--accent-cyan);
-    background: rgba(6, 182, 212, 0.05);
+    background: rgba(0, 123, 255, 0.05); /* Ajustado para o novo azul */
     box-shadow: var(--glow-cyan);
     font-weight: 600;
 }
 .menu a[href="teste_aumentada.html"]:hover {
     background: var(--accent-cyan);
-    color: #000000 !important;
+    color: #ffffff !important; /* Alterado para branco para melhor contraste com o azul escuro */
 }
 .menu a[href="teste_aumentada.html"]::after { display: none; }
 
