@@ -5,282 +5,206 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GeTech - Sistema de Manutenção</title>
   <link rel="icon" type="image/png" href="IMG/LogoEmpresa.png">
-  <style>
-:root {
-  --azul-industrial: #0664d7;
-  --azul-escuro: #004080;
-  --cinza-claro: #f4f6f9;
-  --branco: #ffffff;
-  --sombra: 0 4px 15px rgba(0,0,0,0.1);
-  --radius: 8px;
-}
+<style>
+    :root {
+      --azul-industrial: #0664d7;
+      --azul-escuro: #004080;
+      --cinza-claro: #f4f6f9;
+      --branco: #ffffff;
+      --sombra: 0 4px 15px rgba(0,0,0,0.1);
+      --radius: 8px;
+    }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+            /* ADICIONADO: Regra para sumir com os elementos */
+        .escondido {
+            display: none !important;
+        }
 
-body {
-  background: var(--cinza-claro);
-  color: #333;
-  line-height: 1.6;
-  scroll-behavior: smooth;
-}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-/* Header e Navegação Fixa (Padrão Desktop/Tablet) */
-header {
-  background-color: var(--azul-industrial);
-  color: var(--branco);
-  padding: 0.5rem 5%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  width: 100%; 
-  box-sizing: border-box; 
-  top: 0;
-  z-index: 1000;
-}
+    body {
+      background: var(--cinza-claro);
+      color: #333;
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 10px; 
-}
+    /* Header e Navegação Fixa */
+        header {
+            background-color: var(--azul-industrial);
+            color: var(--branco);
+            padding: 0.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%; 
+            box-sizing: border-box; 
+            top: 0;
+            z-index: 1000;
+        }
 
-.logo-img {
-  height: 50px; 
-  display: block;
-  border-radius: 40px;
-}
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
 
-.logo-texto {
-  font-size: 1.5rem;
-  letter-spacing: 1px;
-}
+        .logo-img {
+            height: 50px; 
+            display: block;
+            border-radius: 40px;
+        }
 
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-}
+        .logo-texto {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
 
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
 
-/* Banner Hero */
-.hero {
-  min-height: 65vh; /* min-height evita que o texto transborde em telas menores */
-  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-              url('https://img.freepik.com/fotos-gratis/administrador-de-uma-fabrica-fotovoltaica-que-acompanha-a-producao-de-energia-renovavel-verde_482257-120078.jpg?semt=ais_hybrid&w=740&q=80');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
-  margin-top: 66px; /* Altura aproximada do header fixo */
-  padding: 20px;
-}
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    /* Banner Hero */
+    .hero {
+      height: 65vh;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                  url('https://img.freepik.com/fotos-gratis/administrador-de-uma-fabrica-fotovoltaica-que-acompanha-a-producao-de-energia-renovavel-verde_482257-120078.jpg?semt=ais_hybrid&w=740&q=80');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      margin-top: 60px;
+      padding: 20px;
+    }
 
-.hero h1 { font-size: 2.8rem; margin-bottom: 15px; }
-.hero p { font-size: 1.2rem; max-width: 700px; margin-bottom: 25px; }
+    .hero h1 { font-size: 2.8rem; margin-bottom: 15px; }
+    .hero p { font-size: 1.2rem; max-width: 700px; margin-bottom: 25px; }
 
-/* Estrutura de Conteúdo e Containers */
-main, .cadastro-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 0 20px;
-}
+    /* Estrutura de Conteúdo */
+    main {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
 
-section, .cadastro-card {
-  background: var(--branco);
-  border-radius: var(--radius);
-  box-shadow: var(--sombra);
-  padding: 35px;
-  margin-bottom: 50px;
-  border-top: 6px solid var(--azul-industrial);
-}
+    section {
+      background: var(--branco);
+      border-radius: var(--radius);
+      box-shadow: var(--sombra);
+      padding: 35px;
+      margin-bottom: 50px;
+      border-top: 6px solid var(--azul-industrial);
+    }
 
-section h2, .cadastro-card h2 {
-  color: var(--azul-industrial);
-  margin-bottom: 25px;
-  font-size: 1.8rem;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
-}
+    section h2 {
+      color: var(--azul-industrial);
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
 
-h3 { color: var(--azul-escuro); margin: 25px 0 15px 0; }
+    h3 { color: var(--azul-escuro); margin: 25px 0 15px 0; }
 
-/* Formulários com Grid (Padrão de 2 colunas para telas maiores) */
-form, .form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  background: #fcfcfc;
-  padding: 25px;
-  border: 1px solid #eee;
-  border-radius: var(--radius);
-}
+    /* Formulários */
+    form {
+      display: grid;
+      gap: 15px;
+      background: #fcfcfc;
+      padding: 25px;
+      border: 1px solid #eee;
+      border-radius: var(--radius);
+    }
 
-/* Classe utilitária para inputs que ocupam a linha inteira no Desktop */
-.form-group.full-width, button, .btn-cadastro {
-  grid-column: span 2;
-}
+    label { font-weight: 600; color: #555; font-size: 0.9rem; }
 
-label { font-weight: 600; color: #555; font-size: 0.9rem; display: block; margin-bottom: 5px; }
+    input, select, textarea {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: 0.3s;
+    }
 
-/* Garante que elementos de formulários fiquem sempre contidos nos seus blocos */
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--azul-industrial);
+      box-shadow: 0 0 0 3px rgba(6, 100, 215, 0.15);
+    }
 
-input, select, textarea {
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
-  transition: 0.3s;
-  width: 100%;
-}
+    /* Botões */
+    button {
+      background: var(--azul-industrial);
+      color: white;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: 0.3s;
+    }
 
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--azul-industrial);
-  box-shadow: 0 0 0 3px rgba(6, 100, 215, 0.15);
-}
+    button:hover {
+      background: var(--azul-escuro);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
 
-/* Botões */
-button, .btn-cadastro {
-  background: var(--azul-industrial);
-  color: white;
-  padding: 14px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: 0.3s;
-}
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--azul-industrial);
+      color: var(--azul-industrial);
+      margin-top: 10px;
+    }
 
-button:hover, .btn-cadastro:hover {
-  background: var(--azul-escuro);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
+    /* Cards de Listagem (Firebase) */
+    .card-item {
+      background: #fff;
+      border: 1px solid #eee;
+      padding: 20px;
+      margin-top: 15px;
+      border-radius: var(--radius);
+      border-left: 5px solid var(--azul-industrial);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
 
-.btn-outline {
-  background: transparent;
-  border: 2px solid var(--azul-industrial);
-  color: var(--azul-industrial);
-  margin-top: 10px;
-}
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 60px;
+    }
 
-/* Cards de Listagem (Firebase) */
-.card-item {
-  background: #fff;
-  border: 1px solid #eee;
-  padding: 20px;
-  margin-top: 15px;
-  border-radius: var(--radius);
-  border-left: 5px solid var(--azul-industrial);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-footer {
-  background: #222;
-  color: white;
-  text-align: center;
-  padding: 40px 20px;
-  margin-top: 60px;
-}
-
-/* ==========================================================================
-   MEDIA QUERIES (Baseado na sua referência)
-   ========================================================================== */
-
-/* Tablets (Telas até 768px) */
-@media (max-width: 768px) {
-  /* O formulário passa a ter apenas 1 coluna */
-  form, .form-grid { 
-    grid-template-columns: 1fr; 
-  }
-  
-  /* Inputs full-width agora se adaptam para ocupar 1 coluna */
-  .form-group.full-width, button, .btn-cadastro { 
-    grid-column: span 1; 
-  }
-
-  /* Ajuste sutil no tamanho do título do Hero */
-  .hero h1 {
-    font-size: 2.2rem;
-  }
-}
-
-/* Celulares (Smartphones até 480px) */
-@media (max-width: 480px) {
-  header {
-    flex-direction: column;
-    padding: 12px 5%;
-    position: static; /* Remove o fixo no mobile para não sobrepor o conteúdo */
-  }
-
-  .logo-container {
-    margin-bottom: 12px;
-  }
-
-  .logo-texto {
-    font-size: 1.25rem; /* Diminui levemente o texto do logo */
-  }
-
-  .logo-img {
-    height: 40px; /* Reduz o tamanho da imagem da logo */
-  }
-
-  nav ul {
-    gap: 15px;
-    flex-wrap: wrap; /* Se os links forem grandes, eles quebram linha suavemente */
-    justify-content: center;
-  }
-
-  /* Removemos o espaço extra do topo já que o header agora é static */
-  .hero {
-    margin-top: 0;
-    min-height: auto;
-  }
-
-  .cadastro-container, main {
-    margin-top: 15px; /* Ajusta o espaçamento já que o header não é mais fixo */
-    padding: 0 10px; /* Margem mínima nas bordas da tela */
-  }
-
-  .cadastro-card, section {
-    padding: 20px 15px; /* Reduz o preenchimento interno para ganhar espaço */
-    border-radius: 6px;
-    margin-bottom: 25px;
-  }
-
-  .cadastro-card h2, section h2 {
-    font-size: 1.4rem; /* Título ligeiramente menor para não quebrar linhas */
-  }
-
-  input, select, textarea, button, .btn-cadastro {
-    font-size: 0.95rem; /* Ajuste fino nas fontes dos inputs e botão */
-    padding: 12px; /* Mantém uma área de toque boa para os dedos */
-  }
-}
-</style>
+    @media (max-width: 768px) {
+      header { flex-direction: column; padding: 15px; text-align: center; }
+      nav { margin-top: 15px; }
+      nav a { margin: 0 10px; font-size: 0.8rem; }
+      .hero h1 { font-size: 2rem; }
+    }
+  </style>
 </head>
 <body>
 
@@ -290,22 +214,24 @@ footer {
         <span class="logo-texto"><strong>GE</strong>TECH</span>
     </div>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Início</a></li>
-            <li><a href="Contato.html">Contato</a></li>
-            <li><a href="orçamento.html">Orçamento</a></li>
-            <li><a href="loginreal.html">Sistema</a></li>
-            <li><a href="mensagem.html">Caixa de Mensagem</a></li>
-            <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
-        </ul>
-    </nav>
+<nav>
+    <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="Contato.html">Contato</a></li>
+        <li><a href="orçamento.html">Orçamento</a></li>       
+        <li class="restrito gestor"><a href="material.html">Materiais</a></li>
+        <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
+        <li><a href="loginreal.html" id="btn-login-status">Sistema</a></li>
+        <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
+
+    </ul>
+</nav>
 </header>
 
   <section class="hero">
     <h1>Manutenção Industrial Especializada</h1>
     <p>Soluções completas em manutenção preventiva e corretiva para maximizar a produtividade da sua indústria.</p>
-    <a href="/GeTech/site/public/pages/index.html"><button>Visitar Nossa ERP</button></a>
+    <a href="/public/pages/index.html"><button>Visitar Nossa ERP</button></a>
   </section>
 
   <main>
@@ -400,8 +326,6 @@ footer {
     <p>&copy; 2026 GeTech Manutenção Industrial. Todos os direitos reservados.</p>
     <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">Sistema de Gestão de Ativos v2.0</p>
   </footer>
-
-  <script src="../../site/public/assets/js/acessibilidade.js"></script>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -504,5 +428,6 @@ footer {
       });
     });
   </script>
+  <script src="controle.js"></script>
 </body>
 </html>

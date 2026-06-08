@@ -5,7 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Materiais Escolares</title>
     <style>
-/* Definições Básicas */
+        /* Definições Básicas */
+
+:root {
+        --azul-industrial: #0664d7;
+        --azul-alerta: #3d92ff ;
+        --cinza-claro: #f4f4f4;
+        --branco: #ffffff;
+        }
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -14,13 +21,51 @@ body {
     color: #0056b3;
 }
 
-header {
-    background-color: #007bff;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+        header {
+            background-color: var(--azul-industrial);
+            color: var(--branco);
+            padding: 0.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%; 
+            box-sizing: border-box; 
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
+        .logo-img {
+            height: 50px; 
+            display: block;
+            border-radius: 40px;
+        }
+
+        .logo-texto {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
 main {
     max-width: 800px;
@@ -93,34 +138,27 @@ footer {
     border-top: 1px solid #ccc;
     color: #111;
 }
-
-/* ==========================================
-   REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
-   ========================================== */
-
-/* Ajustes para telas menores (Celulares) */
-@media (max-width: 576px) {
-    main {
-        margin: 15px auto; /* Reduz a margem superior em telas pequenas */
-    }
-
-    .documento {
-        flex-direction: column; /* Muda o alinhamento de linha para coluna */
-        align-items: flex-start; /* Alinha o texto à esquerda */
-        gap: 15px; /* Cria um espaçamento seguro entre o texto e o botão */
-    }
-
-    .documento a {
-        width: 100%; /* O botão passa a ocupar toda a largura do card */
-        text-align: center; /* Centraliza o texto "Download" dentro do botão */
-        box-sizing: border-box; /* Garante que o padding não quebre a largura */
-    }
-}
     </style>
 <body>
-    <header>
-        <h1>Manuais Industriais </h1>
-    </header>
+<header>
+    <div class="logo-container">
+        <img src="Getech.png" alt="Logo GeTech" class="logo-img">
+        <span class="logo-texto"><strong>GE</strong>TECH</span>
+    </div>
+
+<nav>
+    <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="Contato.html">Contato</a></li>
+        <li><a href="orçamento.html">Orçamento</a></li>       
+        <li class="restrito gestor"><a href="material.html">Materiais</a></li>
+        <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
+        <li><a href="loginreal.html" id="btn-login-status">Sistema</a></li>
+        <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
+
+    </ul>
+</nav>
+</header>
 
     <main>
         <section id="lista-documentos">
@@ -157,6 +195,6 @@ footer {
     <footer>
         <p>&copy; 2026 GeTech Soluções Industriais.</p>
     </footer>
-    <script src="../../site/public/assets/js/acessibilidade.js"></script>
+
 </body>
 </html>

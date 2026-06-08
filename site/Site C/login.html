@@ -6,218 +6,155 @@
     <title>GeTech | Login</title>
     
     <style>
-:root {
-    --azul-industrial: #0664d7;
-    --azul-alerta: #3d92ff;
-    --cinza-claro: #f4f4f4;
-    --branco: #ffffff;
-    --preto-suave: #333;
-}
+        :root {
+            --azul-industrial: #0664d7;
+            --azul-alerta: #3d92ff;
+            --cinza-claro: #f4f4f4;
+            --branco: #ffffff;
+            --preto-suave: #333;
+        }
 
-body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    background-color: var(--cinza-claro);
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            background-color: var(--cinza-claro);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-/* Header Idêntico ao da Home */
-header {
-    background-color: var(--azul-industrial);
-    color: var(--branco);
-    padding: 0.5rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    width: 100%; 
-    box-sizing: border-box; 
-    top: 0;
-    z-index: 1000;
-}
+        header {
+            background-color: var(--azul-industrial);
+            color: var(--branco);
+            padding: 0.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%; 
+            box-sizing: border-box; 
+            top: 0;
+            z-index: 1000;
+        }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px; 
-}
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
 
-.logo-img {
-    height: 50px; 
-    display: block;
-    border-radius: 40px;
-}
+        .logo-img {
+            height: 50px; 
+            display: block;
+            border-radius: 40px;
+        }
 
-.logo-texto {
-    font-size: 1.5rem;
-    letter-spacing: 1px;
-}
+        .logo-texto {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
 
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-    margin: 0;
-    padding: 0;
-}
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
 
-nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-/* Ajuste para o conteúdo não ficar por baixo do header fixo */
-.login-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    margin-top: 80px; /* Compensa o header fixo */
-}
+        /* Ajuste para o conteúdo não ficar por baixo do header fixo */
+        .login-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin-top: 80px; /* Compensa o header fixo */
+        }
 
-.login-card {
-    background: var(--branco);
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 400px;
-    border-top: 5px solid var(--azul-industrial);
-    box-sizing: border-box; /* Garante que o padding não quebre a largura */
-}
+        .login-card {
+            background: var(--branco);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            border-top: 5px solid var(--azul-industrial);
+        }
 
-.login-card h2 {
-    text-align: center;
-    color: var(--azul-industrial);
-    margin-bottom: 30px;
-}
+        .login-card h2 {
+            text-align: center;
+            color: var(--azul-industrial);
+            margin-bottom: 30px;
+        }
 
-.form-group {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-}
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
 
-.form-group label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: var(--preto-suave);
-}
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--preto-suave);
+        }
 
-input {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-    box-sizing: border-box;
-}
+        input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
 
-input:focus {
-    outline: none;
-    border-color: var(--azul-industrial);
-}
+        input:focus {
+            outline: none;
+            border-color: var(--azul-industrial);
+        }
 
-.btn-login {
-    background-color: var(--azul-industrial);
-    color: var(--branco);
-    padding: 12px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: 0.3s;
-    font-weight: bold;
-    width: 100%;
-    margin-top: 10px;
-}
+        .btn-login {
+            background-color: var(--azul-industrial);
+            color: var(--branco);
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
 
-.btn-login:hover {
-    background-color: #054da5;
-}
+        .btn-login:hover {
+            background-color: #054da5;
+        }
 
-.links-auxiliares {
-    margin-top: 20px;
-    text-align: center;
-    font-size: 0.9rem;
-}
+        .links-auxiliares {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
 
-.links-auxiliares a {
-    color: var(--azul-industrial);
-    text-decoration: none;
-}
+        .links-auxiliares a {
+            color: var(--azul-industrial);
+            text-decoration: none;
+        }
 
-footer {
-    background: #222;
-    color: white;
-    text-align: center;
-    padding: 15px;
-}
-
-/* ==========================================================================
-   REGRAS DE RESPONSIVIDADE (BASEADAS NA SUA REFERÊNCIA)
-   ========================================================================== */
-
-/* Tablets (Até 768px) */
-@media (max-width: 768px) {
-    /* Caso você decida usar CSS Grid no formulário futuramente, já fica pronto */
-    .form-grid { 
-        grid-template-columns: 1fr; 
-    }
-    .form-group.full-width { 
-        grid-column: span 1; 
-    }
-}
-
-/* Celulares (Smartphones até 480px) */
-@media (max-width: 480px) {
-    header {
-        flex-direction: column;
-        padding: 12px 5%;
-        position: static; /* Remove o fixo no mobile para não sobrepor o conteúdo */
-    }
-
-    .logo-container {
-        margin-bottom: 12px;
-    }
-
-    .logo-texto {
-        font-size: 1.25rem; /* Diminui levemente o texto do logo */
-    }
-
-    .logo-img {
-        height: 40px; /* Reduz o tamanho da imagem da logo */
-    }
-
-    nav ul {
-        gap: 15px;
-        flex-wrap: wrap; /* Se os links forem grandes, eles quebram linha suavemente */
-        justify-content: center;
-    }
-
-    .login-container {
-        margin-top: 15px; /* Ajusta o espaçamento já que o header não é mais fixo */
-        padding: 10px; /* Margem mínima nas bordas da tela */
-    }
-
-    .login-card {
-        padding: 20px 15px; /* Reduz o preenchimento interno para ganhar espaço */
-        border-radius: 6px;
-    }
-
-    .login-card h2 {
-        font-size: 1.4rem; /* Título ligeiramente menor para não quebrar linhas */
-    }
-
-    input, .btn-login {
-        font-size: 0.95rem; /* Ajuste fino nas fontes dos inputs e botão */
-        padding: 12px; /* Mantém uma área de toque boa para os dedos */
-    }
-}
-    </style>    
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+    </style>
 </head>
 <body>
 
@@ -227,16 +164,18 @@ footer {
         <span class="logo-texto"><strong>GE</strong>TECH</span>
     </div>
 
-    <nav>
-        <ul>
-            <li><a href="home.html">Início</a></li>
-            <li><a href="Contato.html">Contato</a></li>
-            <li><a href="orçamento.html">Orçamento</a></li>
-            <li><a href="loginreal.html">Sistema</a></li>
-            <li><a href="mensagem.html">Caixa de Mensagem</a></li>
-            <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
-        </ul>
-    </nav>
+<nav>
+    <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="Contato.html">Contato</a></li>
+        <li><a href="orçamento.html">Orçamento</a></li>       
+        <li class="restrito gestor"><a href="material.html">Materiais</a></li>
+        <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
+        <li><a href="loginreal.html" id="btn-login-status">Sistema</a></li>
+        <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
+
+    </ul>
+</nav>
 </header>
 
 <main class="login-container">
@@ -267,13 +206,11 @@ footer {
     <p>&copy; 2026 GeTech Soluções Industriais</p>
 </footer>
 
-<script src="../../site/public/assets/js/acessibilidade.js"></script>
-
 <script>
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
         alert("Login simulado com sucesso!");
-        window.location.href = "index.html";
+        window.location.href = "home.html";
     });
 </script>
 
