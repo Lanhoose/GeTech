@@ -3,50 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vindo - ERP Industrial</title>
+    <title>Painel Central - ERP Industrial</title>
 
-    <!-- CSS GLOBAL -->
     <link rel="stylesheet" href="../assets/css/layout.css">
-
-    <!-- CSS DA PÁGINA -->
     <link rel="stylesheet" href="../assets/css/index.css">
 </head>
 <body>
-<div id="header"></div>
+    <div id="header"></div>
 
-    <div class="container">
-        <div class="card">
-            <h1>Bem-vindo</h1>
-            <p>Seja bem-vindo ao Sistema de Gestão Industrial</p>
-            <button onclick="redirecionarUsuario()">Entrar</button>
-        </div>
+    <main class="container">
+        <section class="hero-card hidden-track">
+            <div class="badge-status">
+                <span class="status-indicator online"></span>
+                <span>Servidor Principal: Operacional</span>
+            </div>
+            <h1>Plataforma Integrada de Gestão de Ativos</h1>
+            <p>Monitore a eficiência global de seus equipamentos, controle ordens de serviço, gerencie a cadeia de suprimentos e reduza o tempo de inatividade em um único ecossistema digital inteligente.</p>
+            
+            <div class="hero-actions">
+                <button class="btn-primary" onclick="redirecionarUsuario()">Entrar no Painel</button>
+                <a href="sobre.html" class="btn-secondary">Conhecer o ERP</a>
+            </div>
+        </section>
 
-        <div class="stats-grid hidden-track">
-            <div class="stat-card">
-                <span class="stat-number">+150</span>
-                <span class="stat-label">Indústrias Atendidas</span>
+        <section class="quick-modules-section">
+            <h2 class="section-title hidden-track">Módulos Estruturais do Sistema</h2>
+            <div class="modules-grid hidden-track">
+                <div class="module-shortcut" onclick="redirecionarUsuario()">
+                    <div class="module-icon">⚙️</div>
+                    <h3>Controle de Manutenção</h3>
+                    <p>Ordens de serviço preventivas e corretivas estruturadas.</p>
+                </div>
+                <div class="module-shortcut" onclick="redirecionarUsuario()">
+                    <div class="module-icon">📦</div>
+                    <h3>Estoque de Peças</h3>
+                    <p>Rastreabilidade física e níveis críticos de insumos de reposição.</p>
+                </div>
+                <div class="module-shortcut" onclick="redirecionarUsuario()">
+                    <div class="module-icon">📊</div>
+                    <h3>Métricas de OEE</h3>
+                    <p>Cálculo em tempo real de eficiência, performance e qualidade.</p>
+                </div>
+                <div class="module-shortcut" onclick="redirecionarUsuario()">
+                    <div class="module-icon">🔒</div>
+                    <h3>Auditoria & Logs</h3>
+                    <p>Histórico digital imutável em conformidade com normas de segurança.</p>
+                </div>
             </div>
-            <div class="stat-card">
-                <span class="stat-number">99.8%</span>
-                <span class="stat-label">Otimização de Tempo</span>
+        </section>
+
+        <section class="stats-section">
+            <h2 class="section-title hidden-track">Impacto Operacional Global</h2>
+            <div class="stats-grid hidden-track">
+                <div class="stat-card">
+                    <span class="stat-number">+150</span>
+                    <span class="stat-label">Plantas Industriais Atendidas</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">99.8%</span>
+                    <span class="stat-label">Disponibilidade de Dados</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Monitoramento Ativo e Alertas</span>
+                </div>
             </div>
-            <div class="stat-card">
-                <span class="stat-number">24/7</span>
-                <span class="stat-label">Suporte Especializado</span>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <div id="footer"></div>
 
-
     <script src="../assets/js/index.js"></script>
     <script src="../assets/js/component.js"></script>
-
     <script src="../assets/js/verificacaologin.js"></script>
-
     <script src="../assets/js/acessibilidade.js"></script>
-
-
 </body>
 </html>

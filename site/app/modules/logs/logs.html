@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria & Logs - ERP Industrial</title>
+    <link rel="stylesheet" href="../../assets/css/logs.css">
+</head>
+<body>
+    <div id="header"></div>
+
+    <main class="container">
+        <section class="log-header-section hidden-track">
+            <h1 class="section-title">Histórico Digital de Auditoria</h1>
+            <p class="subtitle-page">Rastreabilidade imutável de ações executadas no ecossistema ERP em conformidade com as normas de segurança corporativa.</p>
+            
+            <div class="action-bar">
+                <button class="btn-secondary" onclick="exportarLogs()">Gerar Relatório CSV</button>
+                <button class="btn-danger-outline" onclick="limparHistorico()">Resetar Logs</button>
+            </div>
+        </section>
+
+        <section class="log-table-container hidden-track">
+            <div class="table-responsive">
+                <table class="audit-table">
+                    <thead>
+                        <tr>
+                            <th>ID do Log</th>
+                            <th>Data & Hora</th>
+                            <th>Operador</th>
+                            <th>Ação / Evento</th>
+                            <th>Descrição Complementar</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="log-table-body">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-secondary);">Nenhum log registrado até o momento.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="../../assets/js/logs.js"></script>
+    <script src="../../assets/js/acessibilidade.js"></script>
+    
+    <script>
+        // Carrega e renderiza os logs na tabela
+        function carregarTabelaLogs() {
+            const tbody = document.getElementById('log-table-body');
+            const logs = Auditoria.obterLogs();
+
+            if (logs.length === 0) return;
+
+            tbody.innerHTML = ''; // Limpa a tabela
+
+            logs.forEach(log => {
+                const dataFormatada = new Date(log.dataHora).toLocaleString('pt-BR');
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="log-id">${log.id}</td>
+                    <td class="log-date">${dataFormatada}</td>
+                    <td class="log-user"><strong>${log.usuario}</strong></td>
+                    <td class="log-action">${log.acao}</td>
+                    <td class="log-detail">${log.detalhe}</td>
+                    <td><span class="badge-status-log badge-${log.criticidade}">${log.criticidade.toUpperCase()}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Funções da barra de ações
+        function limparHistorico() {
+            if (confirm("Tem certeza que deseja apagar permanentemente todos os registros de auditoria?")) {
+                Auditoria.limparLogs();
+                carregarTabelaLogs();
+            }
+        }
+
+        function exportarLogs() {
+            const logs = Auditoria.obterLogs();
+            if(logs.length === 0) return alert("Não há registros para exportar.");
+            
+            let csv = "ID;Data/Hora;Usuario;Acao;Detalhe;Criticidade\n";
+            logs.forEach(l => {
+                csv += `${l.id};${l.dataHora};${l.usuario};${l.acao};${l.detalhe};${l.criticidade}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", `auditoria_erp_${new Date().toLocaleDateString()}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Ativação das transições suaves e atraso idêntico ao index
+        document.addEventListener("DOMContentLoaded", () => {
+            carregarTabelaLogs();
+            
+            const headerSection = document.querySelector('.log-header-section');
+            const tableContainer = document.querySelector('.log-table-container');
+
+            setTimeout(() => {
+                if (headerSection) headerSection.classList.remove('hidden-track');
+                if (tableContainer) tableContainer.classList.remove('hidden-track');
+            }, 200);
+        });
+    </script>
+</body>
+</html>
