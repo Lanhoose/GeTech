@@ -74,7 +74,8 @@
     --bg-page-gradient:  linear-gradient(135deg, #c8d8f0, #a0bcdf);
 
     /* Texto */
-    --text-primary:      #1e293b;
+    --text-contraz:     #ffffff; /* Azul escuro para melhor contraste no modo claro */
+    --text-primary:      #000000;
     --text-secondary:    #475569;
     --text-heading:      #1e3a6e;
     --text-nav:          #ffffff;

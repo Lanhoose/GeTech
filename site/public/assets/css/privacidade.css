@@ -99,7 +99,7 @@ body {
     padding: 35px;
     width: 90%;
     max-width: 500px;
-    color: var(--text-primary);
+    color: var(--text-contraz);
     position: relative;
     box-shadow: var(--shadow-card);
     animation: subirSuave 0.4s ease-out;
