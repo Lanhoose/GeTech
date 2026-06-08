@@ -53,7 +53,7 @@ body {
     padding: 14px 30px;
     border-radius: 50px;
     font-weight: bold;
-    border: none;
+    border: var(--border-button);
     cursor: pointer;
     transition: 0.3s;
     font-size: 16px;
@@ -109,6 +109,7 @@ body {
     position: absolute;
     right: 20px; top: 15px;
     font-size: 28px;
+    border: 1px solid var(--border-card);
     color: var(--text-secondary);
     cursor: pointer;
 }

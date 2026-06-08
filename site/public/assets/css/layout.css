@@ -57,9 +57,12 @@
 
     --btn-outline-color: #ffffff; 
     --btn-outline-hover: #0056b3; /* Cor do contorno no modo escuro */
+    --border-button: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="light"] {
+
+    --border-button: 3px solid rgba(255, 255, 255, 0.15);
     /* Backgrounds */
     --bg-body:           #f0f6ff;
     --bg-header:         #1e3a6e;
