@@ -332,8 +332,11 @@
 
   <script>
     
-    function abrirLink(){
-      window.location.href = "./GeTech/site/public/pages/index.html";
+    const BASE_URL = window.location.origin + "/GeTech";
+  
+    // Aguarda 1 segundo (1000ms) antes de mudar de página
+    function abrirLink() {
+      window.location.href = BASE_URL + "/site/public/pages/index.html";
     }
     // Configuração Firebase (Mantenha a sua configuração original)
     const firebaseConfig = {
