@@ -86,19 +86,18 @@ nav a:hover {
     flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 120px 20px 60px 20px; /* Aumentado o padding superior para evitar que o header cubra o card */
+    align-items: flex-start;
+    padding: 40px 20px;
 }
 
-.contact-card {
-    background: var(--branco);
-    width: 100%;
-    max-width: 450px;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    border-top: 8px solid var(--azul-industrial);
-    position: relative;
+.contact-card{
+    background:#fff;
+    width:100%;
+    max-width:500px;
+    padding:35px;
+    border-radius:15px;
+    border-top:6px solid var(--azul-industrial);
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
 
 .header-logo {
@@ -213,66 +212,146 @@ button.submit-btn:active {
 /* --- MEDIA QUERIES (RESPONSIVIDADE) --- */
 
 /* Tablets e Celulares Grandes */
+/* ==========================
+   RESPONSIVIDADE
+========================== */
+
+/* Tablets */
+/* ==========================
+   RESPONSIVIDADE
+========================== */
+
+/* Tablets */
 @media (max-width: 768px) {
-    header { 
-        padding: 1rem 5%;
-    }
-    
+
     .contact-card {
-        padding: 30px; /* Reduz espaço interno para ganhar área útil */
+        max-width: 95%;
+        padding: 30px;
+    }
+
+    nav ul {
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }
 
-/* Celulares Médios e Pequenos */
-@media (max-width: 600px) {
-    header { 
-        flex-direction: column; 
-        gap: 12px;
+/* Smartphones */
+@media (max-width: 480px) {
+
+    header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: static;
         padding: 15px;
         text-align: center;
     }
 
-    nav ul { 
-        width: 100%;
-        justify-content: center;
-        gap: 15px;
+    .logo-container {
+        margin-bottom: 15px;
     }
 
-    .main-wrapper { 
-        padding-top: 150px; /* Compensa o cabeçalho que ficou mais alto no mobile */
-        padding-bottom: 100px; /* Garante que o botão do WhatsApp não cubra o botão do formulário */
+    .logo-texto {
+        font-size: 1.25rem;
+    }
+
+    .logo-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    nav {
+        width: 100%;
+    }
+
+    nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav li {
+        display: flex;
+        justify-content: center;
+    }
+
+    nav a {
+        font-size: 0.95rem;
+        white-space: nowrap;
+    }
+
+    .main-wrapper {
+        padding: 25px 10px 90px;
+        align-items: flex-start;
     }
 
     .contact-card {
+        width: 100%;
+        max-width: 100%;
         padding: 20px;
-        border-radius: 8px;
+        border-radius: 10px;
+        margin-top: 10px;
     }
 
     .header-logo h1 {
         font-size: 1.6rem;
     }
 
-    /* Esconde a label de texto do WhatsApp no mobile para não poluir a tela */
+    .header-logo p {
+        font-size: 0.9rem;
+    }
+
+    input {
+        font-size: 0.95rem;
+        padding: 12px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        font-size: 1rem;
+    }
+
     .chatbot-label {
         display: none;
     }
 
     .chatbot-btn {
-        bottom: 15px;
-        right: 15px;
         width: 55px;
         height: 55px;
+        right: 15px;
+        bottom: 15px;
     }
 }
 
-/* Telas Extremamente Pequenas (ex: iPhone SE antigo) */
+/* Telas muito pequenas */
 @media (max-width: 360px) {
+
     .logo-texto {
         font-size: 1.1rem;
     }
-    
+
+    nav ul {
+        gap: 10px;
+    }
+
     nav a {
         font-size: 0.8rem;
+    }
+
+    .contact-card {
+        padding: 15px;
+    }
+
+    .header-logo h1 {
+        font-size: 1.3rem;
     }
 }
     </style>
