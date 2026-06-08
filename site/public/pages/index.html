@@ -12,19 +12,36 @@
     <link rel="stylesheet" href="../assets/css/index.css">
 </head>
 <body>
-
-    <div id="header"></div>
+<div id="header"></div>
 
     <div class="container">
-    <div class="card">
-        <h1>Bem-vindo</h1>
-        <p>Seja bem-vindo ao Sistema de Gestão Industrial</p>
-        <button onclick="redirecionarUsuario()">Entrar</button>
+        <div class="card">
+            <h1>Bem-vindo</h1>
+            <p>Seja bem-vindo ao Sistema de Gestão Industrial</p>
+            <button onclick="redirecionarUsuario()">Entrar</button>
+        </div>
+
+        <div class="stats-grid hidden-track">
+            <div class="stat-card">
+                <span class="stat-number">+150</span>
+                <span class="stat-label">Indústrias Atendidas</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">99.8%</span>
+                <span class="stat-label">Otimização de Tempo</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Suporte Especializado</span>
+            </div>
+        </div>
     </div>
-</div>
-    <div id="footer"></div>
+
+    <div class="footer"></div>
 
     <!-- JS COMPONENTES -->
+
+    <script src="../assets/js/index.js"></script>
     <script src="../assets/js/component.js"></script>
 
     <script src="../assets/js/verificacaologin.js"></script>

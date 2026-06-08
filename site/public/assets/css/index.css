@@ -8,14 +8,16 @@ body {
 }
 
 .container {
-    /* Troca de altura fixa para min-height flexível, garantindo que o rodapé não quebre */
-    min-height: min(100vh - 160px, auto); 
+    flex: 1; 
     display: flex;
+    flex-direction: column; /* Alinha o card principal e os indicadores um embaixo do outro */
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: clamp(15px, 4vw, 40px); /* Padding fluido baseado na largura da tela */
+    padding: clamp(20px, 5vw, 50px); 
+    gap: clamp(30px, 6vw, 60px); /* Espaço responsivo entre o card de boas-vindas e as estatísticas */
     box-sizing: border-box;
+    width: 100%;
 }
 
 .container .card {
@@ -23,7 +25,7 @@ body {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
-    padding: clamp(25px, 5vw, 40px); /* Ajusta o padding interno dinamicamente */
+    padding: clamp(25px, 5vw, 40px); 
     border-radius: 16px;
     max-width: 400px;
     width: 100%;
@@ -33,9 +35,8 @@ body {
 }
 
 .container h1 {
-    color: var(--text-heading);
+    color: var(--accent-cyan);
     margin-bottom: 10px;
-    /* Fonte fluida: min 24px, ideal 3.5vw, max 32px */
     font-size: clamp(24px, 3.5vw, 32px); 
     line-height: 1.2;
 }
@@ -43,7 +44,6 @@ body {
 .container p {
     color: var(--text-secondary);
     margin-bottom: 20px;
-    /* Fonte fluida: min 14px, ideal 2vw, max 16px */
     font-size: clamp(14px, 2vw, 16px);
     line-height: 1.5;
 }
@@ -60,13 +60,10 @@ body {
     display: inline-block;
     transition: all 0.3s ease;
     box-shadow: var(--shadow-sm);
-    
-    /* Garante que em telas muito pequenas o botão não estoure o card */
     max-width: 100%; 
     width: auto;
 }
 
-/* Interações por toque/mouse */
 .container button:hover {
     background: var(--accent-cyan-hv);
     transform: translateY(-3px);
@@ -78,27 +75,126 @@ body {
 }
 
 /* ==========================================================
-   MEDIA QUERIES (Ajustes finos para telas específicas)
+   PAINEL DE ESTATÍSTICAS DA INDÚSTRIA (INTERATIVO COM ANIMAÇÃO)
 ========================================================== */
+.stats-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    max-width: 1000px;
+    width: 100%;
+    
+    /* Configuração padrão da transição de surgimento suave */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-/* Telas ultra-pequenas (Smartphones menores que 360px de largura) */
+/* Estado inicial invisível e deslocado para baixo (removido via JS pós-carregamento) */
+.stats-grid.hidden-track {
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 30px;
+    min-width: 220px;
+    flex: 1;
+    
+    /* Visual Estilo Card Industrial Glassmorphism */
+    background: var(--bg-card);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border-card);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    
+    /* Transições de Interatividade (Hover) */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-number {
+    font-size: clamp(32px, 4.5vw, 42px);
+    font-weight: 800;
+    color: var(--accent-cyan); /* Cor neutra suave inicial */
+    line-height: 1.1;
+    margin-bottom: 8px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.stat-label {
+    font-size: clamp(12px, 1.6vw, 14px);
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+/* ==========================================================
+   EFEITOS DE HOVER / COMPORTAMENTO INTERATIVO
+========================================================== */
+.stat-card:hover {
+    transform: translateY(-8px); /* Eleva o card sutilmente */
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--accent-cyan); /* A borda acende com o ciano do tema */
+    box-shadow: var(--shadow-card), var(--glow-cyan); /* Brilho neon de fundo */
+}
+
+/* O número acende em neon quando o card recebe hover */
+.stat-card:hover .stat-number {
+    color: var(--accent-cyan);
+    text-shadow: var(--glow-cyan);
+}
+
+.stat-card:hover .stat-label {
+    color: var(--text-primary);
+}
+
+/* Adaptação de contraste para o Tema Claro (Light Mode) */
+[data-theme="light"] .stat-card:hover {
+    background: var(--bg-card-hover);
+    box-shadow: var(--shadow-card);
+}
+
+/* ==========================================================
+   MEDIA QUERIES 
+========================================================== */
+@media (max-width: 576px) {
+    .stats-grid {
+        gap: 16px; /* Ajusta a proximidade dos cards em telas menores */
+    }
+    .stat-card {
+        min-width: 140px;
+        padding: 16px 20px;
+    }
+}
+
 @media (max-width: 360px) {
     .container {
-        padding: 10px;
+        padding: 15px;
+        gap: 25px;
     }
     .container .card {
         padding: 15px;
     }
     .container button {
-        width: 100%; /* Botão vira bloco inteiro para facilitar o toque */
+        width: 100%; 
         padding: 12px 16px;
     }
 }
 
-/* Evita que o card quebre ou fique bizarro se o usuário deitar o celular (Landscape) */
-@media (max-height: 500px) and (orientation: landscape) {
+@media (max-height: 600px) and (orientation: landscape) {
     .container {
         min-height: auto;
-        padding: 40px 20px; /* Dá espaço para rolar a página verticalmente */
+        padding: 40px 20px; 
     }
 }
