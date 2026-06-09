@@ -466,135 +466,201 @@ main { flex: 1; }
 ========================= */
 
 /* Transição inteligente para telas de notebooks e resoluções comuns de mercado */
+/* ==========================================
+   NOTEBOOKS E TELAS MÉDIAS
+========================================== */
 @media (max-width: 1366px) {
+
     .header {
         padding: 12px 15px;
     }
+
+    .logo h2 {
+        font-size: 1.2rem;
+    }
+
     .menu a {
         padding: 6px 8px;
         font-size: 0.8rem;
     }
-    .logo h2 {
-        font-size: 1.2rem;
-    }
 }
 
-/* Dispositivos Grandes (Até 1200px) */
+/* ==========================================
+   DESKTOPS PEQUENOS E TABLETS
+========================================== */
 @media (max-width: 1200px) {
+
     .header {
-        padding: 15px 20px;
+        padding: 15px;
     }
-    
+
     .footer-content {
-        justify-content: center;
-        text-align: center;
         flex-direction: column;
+        text-align: center;
         gap: 20px;
     }
 }
 
-/* Tablets e Desktops Pequenos (Até 992px) */
+/* ==========================================
+   TABLETS
+========================================== */
 @media (max-width: 992px) {
+
     .header {
         flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-        align-items: center;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px;
     }
 
+    .logo {
+        text-align: center;
+    }
+
+    /* MENU COM SCROLL */
     .menu {
-        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
         justify-content: flex-start;
+        align-items: center;
+
+        width: 100%;
         overflow-x: auto;
-        padding: 8px 4px;
+        overflow-y: hidden;
+
+        white-space: nowrap;
         gap: 8px;
+        padding: 8px 4px;
+
         scrollbar-width: thin;
         scrollbar-color: var(--accent-cyan) transparent;
+
         -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
     }
 
     .menu::-webkit-scrollbar {
-        height: 3px;
+        height: 5px;
     }
+
     .menu::-webkit-scrollbar-track {
         background: transparent;
     }
+
     .menu::-webkit-scrollbar-thumb {
-        background: var(--border-pill);
-        border-radius: 10px;
-    }
-    .menu::-webkit-scrollbar-thumb:hover {
         background: var(--accent-cyan);
+        border-radius: 30px;
+    }
+
+    .menu::-webkit-scrollbar-thumb:hover {
+        background: var(--accent-cyan-hv);
     }
 
     .menu a {
-        padding: 6px 12px;
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 8px 14px;
         font-size: 0.85rem;
     }
 
     .auth {
         width: 100%;
         justify-content: center;
+        flex-wrap: wrap;
         border-top: 1px solid var(--border-subtle);
         padding-top: 12px;
     }
-    
+
     .theme-toggle-wrap {
         border-left: none;
         padding-left: 0;
     }
 }
 
-/* Smartphones (Até 576px) */
+/* ==========================================
+   SMARTPHONES
+========================================== */
 @media (max-width: 576px) {
+
     .header {
-        gap: 12px;
+        padding: 10px;
+        gap: 10px;
+        margin-bottom: 25px;
     }
 
     .logo h2 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+    }
+
+    .menu {
+        padding-bottom: 8px;
+    }
+
+    .menu a {
+        font-size: 0.8rem;
+        padding: 8px 12px;
     }
 
     .auth {
-        flex-wrap: nowrap; /* Impede quebra vertical indesejada em smartphones */
         gap: 8px;
     }
 
     .auth a {
         flex: 1;
+        min-width: 120px;
         text-align: center;
-        padding: 8px 12px;
-        font-size: 0.8rem;
+        padding: 8px 10px;
     }
-    
+
     .user-info {
         width: 100%;
         justify-content: space-between;
-        border-radius: 8px;
+        flex-wrap: wrap;
+        gap: 8px;
     }
 
     .footer {
-        padding: 30px 15px 15px 15px;
+        padding: 30px 15px 15px;
     }
 
-    .footer-nav, .suporte {
+    .footer-nav,
+    .suporte {
         flex-direction: column;
         gap: 12px;
         width: 100%;
     }
-    
-    .suporte h4 {
-        margin-bottom: 4px;
-    }
 }
 
-/* Ajuste fino para telas ultra-pequenas */
+/* ==========================================
+   CELULARES PEQUENOS
+========================================== */
 @media (max-width: 360px) {
+
+    .logo h2 {
+        font-size: 1rem;
+    }
+
+    .menu a {
+        font-size: 0.75rem;
+        padding: 7px 10px;
+    }
+
     .auth {
         flex-direction: column;
         width: 100%;
     }
+
     .auth a {
+        width: 100%;
+    }
+
+    .user-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .btn-logout {
         width: 100%;
     }
 }

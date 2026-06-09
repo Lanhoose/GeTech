@@ -19,8 +19,8 @@ body {
     box-sizing: border-box; /* Garante que o padding não quebre o layout */
 }
 
-/* Card principal */
-.card {
+/* Card principal isolado para evitar conflitos com a página de configurações */
+.login-box-card {
     background: var(--glass-bg);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
@@ -145,15 +145,12 @@ body {
     cursor: pointer;
     margin-top: 6px;
     font-family: inherit;
-    transition: filter 0.25s, transform 0.2s;
-}
-
-.btn-login-main {
+    transition: background-color 0.25s, filter 0.25s, transform 0.2s;
     background: var(--accent-cyan);
     color: #ffffff;
 }
 
-.btn-login-main:hover {
+.btn-main:hover {
     background: var(--accent-cyan-hv);
     transform: translateY(-1px);
 }
@@ -188,7 +185,7 @@ body {
 }
 
 /* Mensagem de retorno */
-#mensagem {
+#mensagem, #mensagem-cad {
     min-height: 20px;
     margin-top: 12px;
     font-size: 0.85rem;
@@ -208,7 +205,7 @@ body {
         min-height: 100vh; /* Ocupa a tela inteira se necessário */
     }
 
-    .card { 
+    .login-box-card { 
         max-width: 100%; 
         border-radius: 12px; 
     }
@@ -218,7 +215,7 @@ body {
     }
 }
 
-/* Ajuste extra para celulares muito antigos ou muito pequenos (ex: iPhone SE antigo - max-width: 340px) */
+/* Ajuste extra para celulares muito antigos ou muito pequenos */
 @media (max-width: 340px) {
     .form-body {
         padding: 16px 14px;

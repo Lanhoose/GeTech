@@ -44,7 +44,8 @@ function cadastrar() {
 //  LOGIN
 // =========================
 
-const BASE_URL = window.location.origin + "/GeTech/site";
+// Modificado para evitar o erro "Identifier 'BASE_URL' has already been declared"
+window.BASE_URL = window.location.origin + "/GeTech/site";
 
 function fazerLogin() {
     const email = document.getElementById('loginEmail').value.trim();
@@ -68,7 +69,7 @@ function fazerLogin() {
         localStorage.setItem('usuarioAtual', usuario.email);
 
         setTimeout(() => {
-            window.location.href = `${BASE_URL}/app/app.html`;
+            window.location.href = `${window.BASE_URL}/app/app.html`;
         }, 1000);
     } else {
         mostrarMensagem(msg, 'Email ou senha incorretos!', 'erro');

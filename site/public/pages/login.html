@@ -13,15 +13,13 @@
     <div id="header"></div>
 
     <div class="container">
-        <div class="card">
+        <div class="login-box-card">
 
-            <!-- ABAS -->
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('login', this)">Entrar</button>
                 <button class="tab-btn"        onclick="switchTab('cadastro', this)">Cadastrar</button>
             </div>
 
-            <!-- PAINEL LOGIN -->
             <div id="pane-login" class="pane active">
                 <div class="form-body">
                     <h2>Bem-vindo de volta</h2>
@@ -36,22 +34,21 @@
                         <input type="password" id="loginSenha" placeholder="••••••••">
                     </div>
 
-                    <button class="btn-main btn-login-main" onclick="fazerLogin()">Entrar</button>
+                    <button class="btn-main" onclick="fazerLogin()">Entrar</button>
 
                     <p class="footer-link">
                         Não tem conta?
-                        <span onclick="switchTab('cadastro', document.querySelectorAll('.tab-btn')[1])">Cadastre-se</span>
+                        <span onclick="switchTab('cadastro', document.querySelectorAll('.tab-btn')[1])">Criar uma agora</span>
                     </p>
 
                     <p id="mensagem"></p>
                 </div>
             </div>
 
-            <!-- PAINEL CADASTRO -->
             <div id="pane-cadastro" class="pane">
                 <div class="form-body">
-                    <h2>Criar conta</h2>
-                    <p class="subtitle">Preencha os dados para se cadastrar</p>
+                    <h2>Crie sua conta</h2>
+                    <p class="subtitle">Comece a gerir a sua indústria hoje mesmo</p>
 
                     <div class="field">
                         <label for="cadEmail">Email</label>
@@ -78,9 +75,7 @@
 
     <div id="footer"></div>
 
-    <script src="../assets/js/component.js"></script>
-    <script src="../assets/js/login.js"></script>
-    <script src="../assets/js/verificacaologin.js"></script>
+    
 
     <script>
         function switchTab(pane, btn) {
@@ -91,7 +86,10 @@
         }
     </script>
 
+    <script src="../assets/js/login.js"></script>
+    <script src="../assets/js/component.js"></script>
+    <script src="../assets/js/verificacaologin.js"></script>
     <script src="../assets/js/acessibilidade.js"></script>
-<script src="../../app/assets/js/logs.js"></script>
+    <script src="../../app/assets/js/logs.js"></script>
 </body>
 </html>

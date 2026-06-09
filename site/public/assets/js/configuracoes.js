@@ -1,5 +1,5 @@
-// Captura dinamicamente a URL base do projeto no GitHub Pages ou Localhost
-const BASE_URL = window.location.origin + "/GeTech";
+// Atribuição global segura para evitar o erro "Identifier 'BASE_URL' has already been declared"
+window.BASE_URL = window.location.origin + "/GeTech";
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
 
@@ -21,7 +21,7 @@ function inicializarDadosUsuario() {
 
     if (!estaLogado || !emailUsuario) {
         alert("Acesso restrito! Por favor, faça login para acessar as configurações.");
-        window.location.href = `${BASE_URL}/site/public/pages/login.html`;
+        window.location.href = `${window.BASE_URL}/site/public/pages/login.html`;
         return false;
     }
 
@@ -29,21 +29,16 @@ function inicializarDadosUsuario() {
     const inputEmail = document.getElementById('conf-email');
     if (inputEmail) inputEmail.value = emailUsuario;
 
-    // FIX: lê o nome salvo do objeto do usuário no localStorage; só usa fallback
-    // do prefixo do e-mail se nunca tiver sido salvo um nome antes.
+    // Lógica Corrigida: Busca o usuário dentro da lista 'usuarios' compartilhada
     const inputNome = document.getElementById('conf-nome');
     if (inputNome) {
-        const dadosSalvos = localStorage.getItem(emailUsuario);
-        if (dadosSalvos) {
-            try {
-                const obj = JSON.parse(dadosSalvos);
-                // Usa o nome salvo se existir; caso contrário deriva do e-mail
-                inputNome.value = obj.nome || emailUsuario.split('@')[0];
-            } catch (e) {
-                inputNome.value = emailUsuario.split('@')[0];
-            }
+        const listaUsuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+        const usuarioEncontrado = listaUsuarios.find(u => u.email === emailUsuario);
+
+        if (usuarioEncontrado && usuarioEncontrado.nome) {
+            inputNome.value = usuarioEncontrado.nome;
         } else {
-            // Usuário existe na sessão mas ainda não tem objeto salvo
+            // Fallback se não possuir nome salvo ainda
             inputNome.value = emailUsuario.split('@')[0];
         }
     }
@@ -89,22 +84,30 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSalvarPerfil.disabled    = true;
 
             setTimeout(() => {
-                // FIX: persiste o nome no objeto do usuário
-                const dadosSalvos = localStorage.getItem(emailAntigo);
-                let obj = dadosSalvos ? JSON.parse(dadosSalvos) : {};
-                obj.nome = nome;
+                let listaUsuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+                let index = listaUsuarios.findIndex(u => u.email === emailAntigo);
 
-                if (emailAntigo && emailAntigo !== novoEmail) {
-                    // Migra o cadastro completo para a nova chave de e-mail
-                    obj.email = novoEmail;
-                    localStorage.setItem(novoEmail, JSON.stringify(obj));
-                    localStorage.removeItem(emailAntigo);
-                    localStorage.setItem('usuarioAtual', novoEmail);
-                } else {
-                    localStorage.setItem(emailAntigo, JSON.stringify(obj));
+                if (index !== -1) {
+                    // Atualiza os dados no banco central
+                    listaUsuarios[index].nome = nome;
+                    
+                    if (emailAntigo !== novoEmail) {
+                        // Verifica se o novo e-mail já pertence a outro usuário
+                        const emailDuplicado = listaUsuarios.find(u => u.email === novoEmail);
+                        if (emailDuplicado) {
+                            mostrarFeedback('feedback-perfil', '⚠️ Este novo e-mail já está em uso por outra conta.', 'erro');
+                            btnSalvarPerfil.textContent = 'Salvar Alterações';
+                            btnSalvarPerfil.disabled    = false;
+                            return;
+                        }
+                        listaUsuarios[index].email = novoEmail;
+                        localStorage.setItem('usuarioAtual', novoEmail);
+                    }
+                    
+                    localStorage.setItem('usuarios', JSON.stringify(listaUsuarios));
                 }
 
-                // Atualiza o nome exibido no header dinamicamente
+                // Atualiza o nome exibido no header de forma dinâmica e persistente
                 const strongUser = document.querySelector('.user-logged strong');
                 if (strongUser) strongUser.textContent = nome;
 
@@ -129,21 +132,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const dadosSalvos = localStorage.getItem(emailUsuario);
-            if (!dadosSalvos) {
+            let listaUsuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+            let index = listaUsuarios.findIndex(u => u.email === emailUsuario);
+
+            if (index === -1) {
                 mostrarFeedback('feedback-senha', '❌ Erro ao localizar sua conta. Faça login novamente.', 'erro');
                 return;
             }
 
-            const obj = JSON.parse(dadosSalvos);
-
-            if (obj.senha !== senhaAtual) {
+            if (listaUsuarios[index].senha !== senhaAtual) {
                 mostrarFeedback('feedback-senha', '❌ A senha atual informada está incorreta.', 'erro');
                 return;
             }
 
-            if (novaSenha.length < 8) {
-                mostrarFeedback('feedback-senha', '⚠️ A nova senha deve ter no mínimo 8 caracteres.', 'erro');
+            if (novaSenha.length < 6) { // Igualado aos 6 caracteres mínimos definidos no cadastro
+                mostrarFeedback('feedback-senha', '⚠️ A nova senha deve ter no mínimo 6 caracteres.', 'erro');
                 return;
             }
 
@@ -156,8 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSalvarSenha.disabled    = true;
 
             setTimeout(() => {
-                obj.senha = novaSenha;
-                localStorage.setItem(emailUsuario, JSON.stringify(obj));
+                // Atualiza a senha no objeto interno correto do banco central
+                listaUsuarios[index].senha = novaSenha;
+                localStorage.setItem('usuarios', JSON.stringify(listaUsuarios));
 
                 document.getElementById('senha-atual').value   = '';
                 document.getElementById('nova-senha').value    = '';

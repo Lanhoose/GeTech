@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - ERP Industrial</title>
+    
     <link rel="stylesheet" href="../assets/css/layout.css">
     <link rel="stylesheet" href="../assets/css/configuracoes.css">
-    <title>Configurações - ERP Industrial</title>
-    <!-- Aplica o tema ANTES da renderização para evitar flash de tema errado -->
-    <script>(function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'); })();</script>
 </head>
 <body>
+
     <div id="header"></div>
 
     <main class="config-container">
@@ -33,36 +33,30 @@
                 
                 <div class="config-card">
                     <div class="input-group">
-                        <label for="conf-nome">Nome Completo</label>
-                        <input type="text" id="conf-nome" value="Ricardo Souza" placeholder="Seu nome">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label for="conf-email">E-mail de Login</label>
-                        <input type="email" id="conf-email" value="ricardo.souza@metalurgicanorte.com" placeholder="seu@email.com">
+                        <label for="conf-nome">Nome do Usuário</label>
+                        <input type="text" id="conf-nome" placeholder="Seu nome aparecerá aqui">
                     </div>
 
                     <div class="input-group">
-                        <label for="conf-empresa">Cargo e Empresa</label>
-                        <input type="text" id="conf-empresa" value="Gerente de Operações - Metalúrgica Norte" disabled>
-                        <small class="input-help">Para alterar sua empresa ou cargo institucional, contate o administrador.</small>
+                        <label for="conf-email">E-mail de Login</label>
+                        <input type="email" id="conf-email" placeholder="seuemail@empresa.com">
+                        <span class="input-help">Este e-mail é utilizado para acessar a plataforma.</span>
                     </div>
 
                     <button class="btn-salvar-config" id="btn-salvar-perfil">Salvar Alterações</button>
-                    <p class="feedback-msg" id="feedback-perfil"></p>
                 </div>
             </div>
 
             <div id="tab-seguranca" class="config-pane">
                 <h2>Segurança e Senha</h2>
-                <p class="section-desc">Mantenha sua conta protegida atualizando sua senha regularmente.</p>
+                <p class="section-desc">Atualize suas credenciais de segurança para manter sua conta protegida.</p>
                 
                 <div class="config-card">
                     <div class="input-group">
                         <label for="senha-atual">Senha Atual</label>
-                        <input type="password" id="senha-atual" placeholder="••••••••">
+                        <input type="password" id="senha-atual" placeholder="Digite sua senha atual">
                     </div>
-                    
+
                     <div class="input-group">
                         <label for="nova-senha">Nova Senha</label>
                         <input type="password" id="nova-senha" placeholder="Mínimo 8 caracteres">
@@ -74,7 +68,6 @@
                     </div>
 
                     <button class="btn-salvar-config" id="btn-salvar-senha">Atualizar Senha</button>
-                    <p class="feedback-msg" id="feedback-senha"></p>
                 </div>
             </div>
 
@@ -98,10 +91,10 @@
 
     <div id="footer"></div>
 
+    <script src="../assets/js/configuracoes.js"></script>
     <script src="../assets/js/component.js"></script>
     <script src="../assets/js/verificacaologin.js"></script>
     <script src="../assets/js/acessibilidade.js"></script>
-    <script src="../assets/js/logs.js"></script>
-    <script src="../assets/js/configuracoes.js"></script>
+    <script src="../../app/assets/js/logs.js"></script>
 </body>
 </html>
