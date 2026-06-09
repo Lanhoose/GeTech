@@ -134,6 +134,37 @@ body {
     box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.18);
 }
 
+/* Estrutura para alinhar o botão de mostrar senha em cima do input */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 45px; /* Espaço interno à direita para o texto não ficar por baixo do olho */
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-password:hover {
+    opacity: 0.8;
+}
+
 /* Botões de ação */
 .btn-main {
     width: 100%;

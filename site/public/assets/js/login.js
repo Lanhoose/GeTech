@@ -86,3 +86,21 @@ function mostrarMensagem(elemento, texto, tipo) {
         ? 'var(--accent-green)'
         : '#f87171';
 }
+
+// ==========================================
+//  ALTERNAR VISIBILIDADE DA SENHA
+// ==========================================
+function togglePasswordVisibility(inputId, buttonElement) {
+    const inputField = document.getElementById(inputId);
+    if (!inputField) return;
+
+    if (inputField.type === 'password') {
+        inputField.type = 'text';
+        buttonElement.textContent = '⊘'; // Ícone/Emoji de ocultar
+        buttonElement.setAttribute('aria-label', 'Esconder senha');
+    } else {
+        inputField.type = 'password';
+        buttonElement.textContent = '◉'; // Ícone/Emoji de mostrar
+        buttonElement.setAttribute('aria-label', 'Mostrar senha');
+    }
+}

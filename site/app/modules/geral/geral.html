@@ -141,7 +141,7 @@
 <span class="kw">function</span> <span class="fn">carregarComponente</span>(id, arquivo) {
   <span class="fn">fetch</span>(arquivo)
     .then(res =&gt; res.<span class="fn">text</span>())
-    .then(data =&gt; { document.<span class="fn">getElementById</span>(id).innerHTML = data; });
+    .then(data => { document.<span class="fn">getElementById</span>(id).innerHTML = data; });
 }
 
 document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentLoaded"</span>, () => {
@@ -349,8 +349,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    
-
     <script>
         // TROCA DE ABAS
         const trocarAba = (tela) => {
@@ -382,14 +380,16 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             }
         };
 
-        // RENDERIZAÇÃO DINÂMICA DA ÁRVORE DE PASTAS (Gera a árvore com base no JSON do GitHub Actions)
+        // RENDERIZAÇÃO DINÂMICA DA ÁRVORE DE PASTAS
         function gerarHTMLEstrutura(item) {
-            // Tratamento caso a raiz retorne o nome do diretório do servidor (ex: "workspace" ou ".")
             let nomeExibido = item.name;
             let labelZona = '';
 
-            if (item.type === "root" || nomeExibido === "versão préfinal" || nomeExibido === "." || nomeExibido === "workspace") {
-                nomeExibido = "raiz do projeto";
+            // Condição ajustada para aceitar o nome customizado se for diferente de fallbacks comuns
+            if (item.type === "root") {
+                if (nomeExibido === "versão préfinal" || nomeExibido === "." || nomeExibido === "workspace") {
+                    nomeExibido = "raiz do projeto";
+                }
                 labelZona = '<span class="zone-label zone-root">raiz</span>';
             } else if (nomeExibido === "app") {
                 labelZona = '<span class="zone-label zone-app">sistema ERP</span>';
@@ -403,7 +403,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                 let icone = 'fa-file';
                 let cor = 'var(--text-muted)';
                 
-                // Atribuição de ícones inteligentes baseados na extensão
                 if (nomeExibido.endsWith('.html')) { icone = 'fab fa-html5'; cor = '#e67e22'; }
                 else if (nomeExibido.endsWith('.css')) { icone = 'fab fa-css3-alt'; cor = '#3498db'; }
                 else if (nomeExibido.endsWith('.js')) { icone = 'fab fa-js-square'; cor = '#f1c40f'; }
@@ -439,7 +438,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
 
         // TEMA E INICIALIZAÇÃO DO FETCH
         document.addEventListener('DOMContentLoaded', () => {
-            // Gerenciador do Tema
             const btn  = document.getElementById('themeToggle');
             const icon = document.getElementById('themeIcon');
             const aplicar = (tema) => {
@@ -452,7 +450,6 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                 aplicar(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
             });
 
-            // Carregamento Assíncrono do arquivo estrutura.json gerado pelo GitHub Actions
             fetch('estrutura.json')
                 .then(res => {
                     if (!res.ok) throw new Error("Arquivo json não encontrado");

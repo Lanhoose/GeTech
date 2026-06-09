@@ -1,6 +1,5 @@
 body {
-    background: var(--bg-body); /* Atualizado para usar o fundo dinâmico */
-    background-image: var(--bg-page-gradient); /* Aplica o degradê de fundo moderno */
+    background: var(--bg-page-gradient); /* Atualizado para usar o fundo dinâmico */
     background-attachment: fixed;
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -49,7 +48,7 @@ body {
 /* BOTÕES REESTILIZADOS COM AS NOVAS VARIÁVEIS */
 .btn-web {
     background-color: var(--btn-primary-bg);
-    color: var(--btn-primary-text);
+    color: var(--text-secondary-second);
     padding: 14px 30px;
     border-radius: 50px;
     font-weight: bold;

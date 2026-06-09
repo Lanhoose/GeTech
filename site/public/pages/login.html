@@ -29,9 +29,13 @@
                         <label for="loginEmail">Email</label>
                         <input type="email" id="loginEmail" placeholder="seu@email.com">
                     </div>
+                    
                     <div class="field">
                         <label for="loginSenha">Senha</label>
-                        <input type="password" id="loginSenha" placeholder="••••••••">
+                        <div class="password-wrapper">
+                            <input type="password" id="loginSenha" placeholder="••••••••">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('loginSenha', this)" aria-label="Mostrar senha">◉</button>
+                        </div>
                     </div>
 
                     <button class="btn-main" onclick="fazerLogin()">Entrar</button>
@@ -54,9 +58,13 @@
                         <label for="cadEmail">Email</label>
                         <input type="email" id="cadEmail" placeholder="seu@email.com">
                     </div>
+                    
                     <div class="field">
                         <label for="cadSenha">Senha</label>
-                        <input type="password" id="cadSenha" placeholder="••••••••">
+                        <div class="password-wrapper">
+                            <input type="password" id="cadSenha" placeholder="••••••••">
+                            <button type="button" class="toggle-password" onclick="togglePasswordVisibility('cadSenha', this)" aria-label="Mostrar senha">◉</button>
+                        </div>
                     </div>
 
                     <button class="btn-main btn-cad-main" onclick="cadastrar()">Cadastrar</button>
@@ -74,8 +82,6 @@
     </div>
 
     <div id="footer"></div>
-
-    
 
     <script>
         function switchTab(pane, btn) {

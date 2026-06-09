@@ -2,6 +2,15 @@
     CONFIGURAÇÕES
 ========================= */
 
+body{
+    background: var(--bg-page-gradient);
+    background-attachment: fixed;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
 /* Página fluida e visível por padrão */
 .config-container {
     max-width: 1200px;
@@ -20,7 +29,7 @@
     flex-direction: column;
     gap: 8px;
     width: 280px;
-    background: var(--glass-bg);
+    background: var(--bg-card);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -37,7 +46,7 @@
     background: transparent;
     border: none;
     padding: 12px 16px;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 0.95rem;
     font-weight: 600;
     text-align: left;
@@ -93,7 +102,7 @@
 
 /* Cartões de Configurações */
 .config-card {
-    background: var(--glass-bg);
+    background: var(--bg-card);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -153,10 +162,46 @@
     background: rgba(255, 255, 255, 0.02);
 }
 
+/* Container de Senha com o botão Revelar incorporado */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-container input {
+    padding-right: 46px; /* Espaço para o ícone não cobrir o texto digitado */
+}
+
+.btn-toggle-password {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.btn-toggle-password:hover {
+    color: var(--text-primary);
+}
+
+.btn-toggle-password:active {
+    transform: scale(0.9);
+}
+
 /* Botões de Ação */
 .btn-salvar-config {
     background: var(--accent-cyan);
-    color: #050811;
+    color: var(--text-primary);
     border: none;
     padding: 12px 24px;
     border-radius: 8px;
@@ -238,7 +283,7 @@
 }
 
 /* ==========================================
-   NOTEBOOKS E TELAS MÉDIAS
+    NOTEBOOKS E TELAS MÉDIAS
 ========================================== */
 @media (max-width: 1366px) {
 
@@ -253,7 +298,7 @@
 }
 
 /* ==========================================
-   TABLETS E DESKTOPS PEQUENOS
+    TABLETS E DESKTOPS PEQUENOS
 ========================================== */
 @media (max-width: 992px) {
 
@@ -312,7 +357,7 @@
 }
 
 /* ==========================================
-   SMARTPHONES
+    SMARTPHONES
 ========================================== */
 @media (max-width: 576px) {
 
@@ -377,7 +422,7 @@
 }
 
 /* ==========================================
-   CELULARES PEQUENOS
+    CELULARES PEQUENOS
 ========================================== */
 @media (max-width: 360px) {
 

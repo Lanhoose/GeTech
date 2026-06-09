@@ -111,7 +111,7 @@ body {
     cursor: pointer;
     border: none;
     background: var(--accent-cyan);
-    color: #090d16;
+    color: var(--text-primary);
     padding: 14px 32px;
     border-radius: 8px;
     font-weight: 700;

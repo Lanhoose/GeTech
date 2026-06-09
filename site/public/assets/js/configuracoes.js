@@ -174,3 +174,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==========================================
+// FUNÇÃO PARA MOSTRAR / ESCONDER SENHA
+// ==========================================
+function togglePasswordVisibility(inputId, buttonElement) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+
+    if (input.type === "password") {
+        input.type = "text";
+        buttonElement.textContent = "⊘"; // Muda o ícone quando está visível
+        buttonElement.setAttribute('aria-label', 'Esconder senha');
+    } else {
+        input.type = "password";
+        buttonElement.textContent = "◉"; // Volta para o olho quando oculta
+        buttonElement.setAttribute('aria-label', 'Mostrar senha');
+    }
+}

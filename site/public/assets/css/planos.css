@@ -205,7 +205,7 @@ body {
    ========================================================================== */
 .plan-card button {
     background: var(--accent-cyan, #06b6d4);
-    color: #000000;
+    color: var(--text-primary);
     padding: 14px 24px;
     border: none;
     border-radius: 8px;

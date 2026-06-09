@@ -54,17 +54,26 @@
                 <div class="config-card">
                     <div class="input-group">
                         <label for="senha-atual">Senha Atual</label>
-                        <input type="password" id="senha-atual" placeholder="Digite sua senha atual">
+                        <div class="password-container">
+                            <input type="password" id="senha-atual" placeholder="Digite sua senha atual">
+                            <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('senha-atual', this)">◉</button>
+                        </div>
                     </div>
 
                     <div class="input-group">
                         <label for="nova-senha">Nova Senha</label>
-                        <input type="password" id="nova-senha" placeholder="Mínimo 8 caracteres">
+                        <div class="password-container">
+                            <input type="password" id="nova-senha" placeholder="Mínimo 8 caracteres">
+                            <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('nova-senha', this)">◉</button>
+                        </div>
                     </div>
 
                     <div class="input-group">
                         <label for="confirma-senha">Confirmar Nova Senha</label>
-                        <input type="password" id="confirma-senha" placeholder="Repita a nova senha">
+                        <div class="password-container">
+                            <input type="password" id="confirma-senha" placeholder="Repita a nova senha">
+                            <button type="button" class="btn-toggle-password" onclick="togglePasswordVisibility('confirma-senha', this)">◉</button>
+                        </div>
                     </div>
 
                     <button class="btn-salvar-config" id="btn-salvar-senha">Atualizar Senha</button>

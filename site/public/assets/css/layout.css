@@ -19,6 +19,7 @@
 
     /* Texto */
     --text-primary:      #f8fafc;
+    --text-secondary-second:    #f8fafc;
     --text-secondary:    #94a3b8;
     --text-heading:      #ffffff;
     --text-nav:          #cbd5e1;
@@ -77,6 +78,7 @@
     /* Texto */
     --text-contraz:      #ffffff; /* Azul escuro para melhor contraste no modo claro */
     --text-primary:      #000000;
+    --text-secondary-second:    #ffffff;
     --text-secondary:    #475569;
     --text-heading:      #1e3a6e;
     --text-nav:          #ffffff;
