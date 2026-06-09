@@ -14,7 +14,6 @@
             --branco: #ffffff;
         }
 
-
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
@@ -105,10 +104,62 @@
             border: 2px solid var(--azul-industrial); 
         }
 
+        /* Seção Sobre a Empresa (Modificado para linha única) */
+        .sobre {
+            padding: 60px 5%;
+            text-align: center;
+            background-color: var(--branco);
+        }
+
+        .sobre-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card-sobre {
+            background: var(--branco);
+            padding: 35px 30px;
+            border-radius: 8px;
+            border-left: 5px solid var(--azul-industrial);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-sobre:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-sobre h2 {
+            margin-top: 0;
+            color: var(--azul-industrial);
+            margin-bottom: 25px;
+        }
+
+        .sobre-topicos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .topico-item h4 {
+            margin: 0 0 8px 0;
+            color: var(--azul-industrial); /* Cor alterada para o azul industrial */
+            font-size: 1.2rem;
+        }
+
+        .topico-item p {
+            font-size: 1rem;
+            color: #555;
+            margin: 0;
+        }
+
         /* Seção de Serviços */
         .servicos {
             padding: 50px 5%;
             text-align: center;
+            background-color: var(--cinza-claro);
         }
 
         .grid-servicos {
@@ -119,10 +170,18 @@
         }
 
         .card {
-            background: var(--cinza-claro);
+            background: var(--branco);
             padding: 30px;
             border-radius: 8px;
             border-bottom: 4px solid var(--azul-industrial);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-bottom-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+            border-bottom-color: var(--azul-alerta);
         }
 
         /* Área do Chatbot */
@@ -227,6 +286,11 @@
             text-align: center;
             padding: 20px;
         }
+
+        .escondido {
+            display: none !important;
+        }
+        
     </style>
 </head>
 <body>
@@ -237,26 +301,45 @@
         <span class="logo-texto"><strong>GE</strong>TECH</span>
     </div>
 
-    <nav>
-        <ul>
-            <li><a href="index.html">Início</a></li>
-            <li><a href="Contato.html">Contato</a></li>
-            <li><a href="orçamento.html">Orçamento</a></li>
-            <li><a href="loginreal.html">Sistema</a></li>
-            <li><a href="mensagem.html">Caixa de Mensagem</a></li>
-            <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
-        </ul>
-    </nav>
+<nav>
+    <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="Contato.html">Contato</a></li>
+        <li><a href="material.html">Materiais</a></li>
+        <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
+        <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
+        <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
+        <li><a href="cadastro.html"><img id="avatarUsuario" src="" alt="Foto de Perfil" style="display: none; width: 40px; height: 40px; border-radius: 50%;"></a></li>
+
+    </ul>
+</nav>
+
 </header>
 
     <section class="hero">
         <h1>Manutenção de Máquinas Pesadas</h1>
         <p>Especialistas em diagnóstico, reparo e prevenção industrial.</p>
-        <button class="btn-contato" onclick="scrollToChat()">Falar com um Especialista</button>
+        <button class="btn-contato" onclick="scrollToChat()">Conversar com nosso chatbot</button>
     </section>
+
+    <!-- SEÇÃO SOBRE A EMPRESA (Tópicos em uma única linha e títulos em Azul) -->
 
     <section id="servicos" class="servicos">
         <h2>Nossas Especialidades</h2>
+            <div class="card-sobre">
+                <h2>Sobre a GeTech</h2>
+                <div class="sobre-topicos">
+                    <div class="topico-item">
+                        <h4>Atuação</h4>
+                        <p>Setores automotivo, alimentício e metalúrgico com tecnologia de ponta.</p>
+                    </div>
+                    <div class="topico-item">
+                        <h4>Preventiva</h4>
+                        <p>Redução de custos emergenciais e aumento da vida útil dos equipamentos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="grid-servicos">
             <div class="card">
                 <h3>Hidráulica</h3>
@@ -289,8 +372,6 @@
         <p>&copy; 2026 GeTech Soluções Industriais</p>
     </footer>
 
-    <script src="../../site/public/assets/js/acessibilidade.js"></script>
-
     <script>
         function scrollToChat() {
             document.getElementById('atendimento').scrollIntoView({ behavior: 'smooth' });
@@ -314,7 +395,6 @@
         function adicionarMensagem(texto, remetente) {
             const msgDiv = document.createElement('div');
             msgDiv.classList.add('message', remetente);
-            // Substitui a sintaxe de negrito **texto** por tags HTML <strong> para renderizar corretamente
             msgDiv.innerHTML = texto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             chatMessages.appendChild(msgDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight; 
@@ -324,18 +404,10 @@
             adicionarMensagem(perguntas[passoAtual], 'bot');
         }
 
-        // Função para salvar a mensagem/chamado no LocalStorage
         function salvarMensagemNoSistema(novoChamado) {
-            // Pega as mensagens já existentes ou cria uma lista vazia se for a primeira
             let listaMensagens = JSON.parse(localStorage.getItem('chamadosChatbot')) || [];
-            
-            // Adiciona a data atual ao chamado
             novoChamado.data = new Date().toLocaleString('pt-BR');
-            
-            // Salva na lista
             listaMensagens.push(novoChamado);
-            
-            // Atualiza o LocalStorage
             localStorage.setItem('chamadosChatbot', JSON.stringify(listaMensagens));
             console.log("Chamado guardado na Caixa de Mensagens!", novoChamado);
         }
@@ -371,12 +443,10 @@
                 setTimeout(() => {
                     adicionarMensagem(mensagemFinal, 'bot');
                     
-                    // Desativa os campos após finalizar
                     userInput.disabled = true;
                     chatForm.querySelector('button').disabled = true;
                     userInput.placeholder = "Atendimento concluído.";
                     
-                    // ENVIA OS DADOS PARA A CAIXA DE MENSAGENS (LocalStorage)
                     salvarMensagemNoSistema(dadosColetados);
                 }, 600);
             }
@@ -384,6 +454,6 @@
 
         iniciarChat();
     </script>
-    <script src="../app/assets/js/logs.js"></script>
+<script src="controle.js"></script>
 </body>
 </html>

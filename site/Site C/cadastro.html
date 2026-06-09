@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeTech | Cadastro de Usuário</title>
+    <link rel="shortcut icon" href="Getech.png" type="image/x-icon">
+
     
-      <style>
+    <style>
         :root {
             --azul-industrial: #0664d7;
             --azul-alerta: #3d92ff ;
@@ -179,6 +181,26 @@
             .form-grid { grid-template-columns: 1fr; }
             .form-group.full-width { grid-column: span 1; }
         }
+
+        /* Estilização do Botão Customizado de Upload */
+        .btn-upload-custom {
+            display: block;
+            background-color: var(--branco);
+            color: var(--azul-industrial);
+            border: 2px dashed var(--azul-industrial);
+            padding: 12px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: 0.3s ease;
+        }
+
+        .btn-upload-custom:hover {
+            background-color: #f0f7ff;
+            border-style: solid;
+        }
     </style>
 </head>
 <body>
@@ -193,12 +215,11 @@
     <ul>
         <li><a href="index.html">Início</a></li>
         <li><a href="Contato.html">Contato</a></li>
-        <li><a href="orçamento.html">Orçamento</a></li>       
-        <li class="restrito gestor"><a href="material.html">Materiais</a></li>
+        <li><a href="material.html">Materiais</a></li>
+        <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
         <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
-        <li><a href="loginreal.html" id="btn-login-status">Sistema</a></li>
-        <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
-
+        <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
+        <li><a href="cadastro.html"><img id="avatarUsuario" src="" alt="Foto de Perfil" style="display: none; width: 40px; height: 40px; border-radius: 50%;"></a></li>
     </ul>
 </nav>
 </header>
@@ -208,7 +229,7 @@
         <h2>Criar Nova Conta</h2>
         <p style="text-align: center; color: #666; margin-bottom: 20px;">Selecione seu perfil para acessar as ferramentas corretas.</p>
         
-        <form id="cadastroForm" action="processa_cadastro.php">
+        <form id="cadastroForm" action="javascript:void(0);">
             <div class="form-grid">
                 <div class="form-group full-width">
                     <label for="tipo_usuario">Eu sou um:</label>
@@ -257,7 +278,20 @@
                     <label for="senha2">Confirmar Senha</label>
                     <input type="password" id="senha2" required>
                 </div>
+
+                <div class="form-group full-width">
+                    <label>Foto de Perfil</label>
+                    <!-- Botão customizado que o usuário realmente vai ver -->
+                    <label for="foto" class="btn-upload-custom">
+                        📷 Selecionar Foto de Perfil
+                    </label>
+                    <!-- O input original fica escondido, mas funciona através do 'id' -->
+                    <input type="file" id="foto" accept="image/*" class="escondido">
+                    <!-- Feedback visual para mostrar o nome do arquivo selecionado -->
+                    <span id="nome-arquivo" style="display: block; margin-top: 5px; color: #666; font-size: 0.85rem; text-align: center;">Nenhuma foto selecionada</span>
+                </div>
             </div>
+
 
             <button type="submit" class="btn-cadastro">Finalizar e Acessar</button>
         </form>
@@ -273,41 +307,102 @@
 </footer>
 
 <script>
-    document.getElementById('cadastroForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        // Captura o tipo de usuário selecionado
-        const tipoUsuario = document.getElementById('tipo_usuario').value;
-        const nomeUsuario = document.getElementById('nome').value;
-        const s1 = document.getElementById('senha').value;
-        const s2 = document.getElementById('senha2').value;
+// Função auxiliar para converter o ficheiro de imagem numa string Base64
+function converterParaBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
 
-        // Validação básica de senha
-        if (s1 !== s2) {
-            alert("⚠️ As senhas não conferem. Tente novamente.");
+// Listener para atualizar o nome do arquivo na tela quando o usuário escolher a foto
+document.getElementById('foto').addEventListener('change', function() {
+    const arquivo = this.files[0];
+    const textoFeedback = document.getElementById('nome-arquivo');
+    
+    if (arquivo) {
+        textoFeedback.textContent = `▶ Ficheiro selecionado: ${arquivo.name}`;
+        textoFeedback.style.color = "var(--azul-industrial)";
+    } else {
+        textoFeedback.textContent = "Nenhuma foto selecionada";
+        textoFeedback.style.color = "#666";
+    }
+});
+
+// Repara no 'async' adicionado antes da função do evento
+document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); 
+    
+    const tipoUsuario = document.getElementById('tipo_usuario').value; 
+    const nomeUsuario = document.getElementById('nome').value;
+    const emailUsuario = document.getElementById('email').value.trim().toLowerCase();
+    const s1 = document.getElementById('senha').value;
+    const s2 = document.getElementById('senha2').value;
+    const fotoInput = document.getElementById('foto').files[0]; // Pega o ficheiro carregado
+
+    if (s1 !== s2) {
+        alert("⚠️ As senhas não conferem. Tente novamente.");
+        return;
+    }
+
+    // Processa a foto (se o utilizador tiver escolhido uma)
+    let fotoBase64 = "";
+    if (fotoInput) {
+        try {
+            // Converte a imagem para texto (Base64)
+            fotoBase64 = await converterParaBase64(fotoInput);
+        } catch (erro) {
+            alert("⚠️ Erro ao processar a imagem. Tenta outra foto.");
             return;
         }
+    } else {
+        // Foto padrão (avatar) caso o utilizador não faça upload de nenhuma
+        fotoBase64 = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+    }
 
-        // SALVAMENTO SIMULADO (LocalStorage)
-        // Isso permite que o sistema "lembre" quem você é na próxima página
-        const dadosUsuario = {
-            nome: nomeUsuario,
-            perfil: tipoUsuario,
-            loginAtivo: true
-        };
-        localStorage.setItem('sessaoGeTech', JSON.stringify(dadosUsuario));
+    // 1. Pega a lista de utilizadores já cadastrados ou cria uma lista vazia
+    let usuariosCadastrados = JSON.parse(localStorage.getItem('usuariosGeTech')) || [];
 
-        // LÓGICA DE REDIRECIONAMENTO
-        if (tipoUsuario === 'gestor') {
-            alert("✅ Perfil GESTOR identificado! Redirecionando para o Painel Administrativo...");
-            window.location.href = "login.html"; // Nome da sua página de gestor
-        } else {
-            alert("✅ Cadastro de CLIENTE concluído! Bem-vindo à sua área de orçamentos.");
-            window.location.href = "area_cliente.html"; // Nome da sua página de cliente
-        }
-    });
+    // 2. Verifica se o e-mail já está cadastrado
+    const usuarioExiste = usuariosCadastrados.some(user => user.email === emailUsuario);
+    if (usuarioExiste) {
+        alert("⚠️ Este e-mail já está cadastrado!");
+        return;
+    }
+
+    // 3. Cria o novo utilizador guardando também a FOTO
+    const novoUsuario = {
+        nome: nomeUsuario,
+        email: emailUsuario,
+        senha: s1,
+        perfil: tipoUsuario,
+        foto: fotoBase64 // <-- Foto guardada aqui
+    };
+    usuariosCadastrados.push(novoUsuario);
+    localStorage.setItem('usuariosGeTech', JSON.stringify(usuariosCadastrados));
+
+    // 4. Cria a sessão ativa para o utilizador que se acabou de cadastrar
+    const dadosSessao = {
+        nome: nomeUsuario,
+        perfil: tipoUsuario,
+        foto: fotoBase64, // <-- Passa a foto para a sessão ativa
+        loginAtivo: true
+    };
+    localStorage.setItem('sessaoGeTech', JSON.stringify(dadosSessao));
+
+    // Redirecionamento
+    if (tipoUsuario === 'gestor') {
+        alert("✅ Perfil GESTOR cadastrado com sucesso! Redirecionando para o Painel...");
+        window.location.href = "sistema.html"; 
+    } else {
+        alert("✅ Cadastro de CLIENTE concluído! Redirecionando para a Home...");
+        window.location.href = "index.html";
+    }
+});
 </script>
-<script src="../app/assets/js/logs.js"></script>
+<script src="controle.js"></script>
 
 </body>
 </html>

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GeTech | Login</title>
+    <link rel="shortcut icon" href="Getech.png" type="image/x-icon">
+
     
     <style>
         :root {
@@ -154,6 +156,10 @@
             text-align: center;
             padding: 15px;
         }
+
+        .escondido {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -168,12 +174,11 @@
     <ul>
         <li><a href="index.html">Início</a></li>
         <li><a href="Contato.html">Contato</a></li>
-        <li><a href="orçamento.html">Orçamento</a></li>       
-        <li class="restrito gestor"><a href="material.html">Materiais</a></li>
+        <li><a href="material.html">Materiais</a></li>
+        <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
         <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
-        <li><a href="loginreal.html" id="btn-login-status">Sistema</a></li>
-        <li><a href="cadastro.html"><img src="perfil.jpg" alt="Perfil" class="logo-img"></a></li>
-
+        <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
+        <li><a href="cadastro.html"><img id="avatarUsuario" src="" alt="Foto de Perfil" style="display: none; width: 40px; height: 40px; border-radius: 50%;"></a></li>
     </ul>
 </nav>
 </header>
@@ -207,12 +212,50 @@
 </footer>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        alert("Login simulado com sucesso!");
-        window.location.href = "home.html";
-    });
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const usuarioInput = document.getElementById('usuario').value.trim().toLowerCase();
+    const senhaInput = document.getElementById('senha').value;
+
+    // 1. Busca a lista de usuários cadastrados no localStorage
+    const usuariosCadastrados = JSON.parse(localStorage.getItem('usuariosGeTech')) || [];
+
+    // 2. Procura por um usuário onde o e-mail E a senha coincidam
+    const usuarioEncontrado = usuariosCadastrados.find(user => user.email === usuarioInput && user.senha === senhaInput);
+
+    if (!usuarioEncontrado) {
+        alert("❌ E-mail ou senha incorretos. Tente novamente.");
+        return;
+    }
+
+    // 3. Se achou, limpa qualquer sessão antiga
+    localStorage.removeItem('sessaoGeTech');
+
+    // 4. Grava a nova sessão com os dados REAIS obtidos do cadastro
+// ... (código anterior do login que procura o utilizador encontrado)
+
+// 4. Grava a nova sessão com os dados REAIS obtidos do cadastro (incluindo a foto)
+const dadosUsuario = {
+    nome: usuarioEncontrado.nome,
+    perfil: usuarioEncontrado.perfil,
+    foto: usuarioEncontrado.foto || "https://cdn-icons-png.flaticon.com/512/149/149071.png", // Usa a foto do cadastro ou a padrão
+    loginAtivo: true
+};
+localStorage.setItem('sessaoGeTech', JSON.stringify(dadosUsuario));
+
+// ... (resto do código de redirecionamento do login)
+
+    // 5. Redirecionamento baseado no perfil real do cadastro
+    if (usuarioEncontrado.perfil === 'gestor') {
+        alert(`✅ Bem-vindo, Gestor ${usuarioEncontrado.nome}! Entrando no sistema administrativo...`);
+        window.location.href = "sistema.html"; 
+    } else {
+        alert(`✅ Login efetuado com sucesso! Olá, ${usuarioEncontrado.nome}.`);
+        window.location.href = "index.html";
+    }
+});
 </script>
-<script src="../app/assets/js/logs.js"></script>
+<script src="controle.js"></script>
 </body>
 </html>
