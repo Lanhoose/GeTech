@@ -9,7 +9,7 @@
     <style>
         :root {
             --azul-industrial: #0664d7;
-            --azul-alerta: #3d92ff ;
+            --azul-alerta: #3d92ff;
             --cinza-claro: #f4f4f4;
             --branco: #ffffff;
         }
@@ -104,7 +104,7 @@
             border: 2px solid var(--azul-industrial); 
         }
 
-        /* Seção Sobre a Empresa (Modificado para linha única) */
+        /* Seção Sobre a Empresa (Alinhado em linha única) */
         .sobre {
             padding: 60px 5%;
             text-align: center;
@@ -124,6 +124,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             text-align: left;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 30px;
         }
 
         .card-sobre:hover {
@@ -145,7 +146,7 @@
 
         .topico-item h4 {
             margin: 0 0 8px 0;
-            color: var(--azul-industrial); /* Cor alterada para o azul industrial */
+            color: var(--azul-industrial);
             font-size: 1.2rem;
         }
 
@@ -290,30 +291,31 @@
         .escondido {
             display: none !important;
         }
-        
     </style>
 </head>
 <body>
 
-<header>
+    <header>
     <div class="logo-container">
         <img src="Getech.png" alt="Logo GeTech" class="logo-img">
         <span class="logo-texto"><strong>GE</strong>TECH</span>
     </div>
 
-<nav>
-    <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="Contato.html">Contato</a></li>
-        <li><a href="material.html">Materiais</a></li>
-        <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
-        <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
-        <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
-        <li><a href="cadastro.html"><img id="avatarUsuario" src="" alt="Foto de Perfil" style="display: none; width: 40px; height: 40px; border-radius: 50%;"></a></li>
-
-    </ul>
-</nav>
-
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="Contato.html">Contato</a></li>
+            <li><a href="material.html">Materiais</a></li>
+            <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
+            <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
+            <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
+            <li>
+                <a href="cadastro.html">
+                    <img id="avatarUsuario" src="perfil.jpg" alt="Foto de Perfil" style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; object-fit: cover;">
+                </a>
+            </li>
+        </ul>
+    </nav>
 </header>
 
     <section class="hero">
@@ -322,24 +324,22 @@
         <button class="btn-contato" onclick="scrollToChat()">Conversar com nosso chatbot</button>
     </section>
 
-    <!-- SEÇÃO SOBRE A EMPRESA (Tópicos em uma única linha e títulos em Azul) -->
-
     <section id="servicos" class="servicos">
-        <h2>Nossas Especialidades</h2>
-            <div class="card-sobre">
-                <h2>Sobre a GeTech</h2>
-                <div class="sobre-topicos">
-                    <div class="topico-item">
-                        <h4>Atuação</h4>
-                        <p>Setores automotivo, alimentício e metalúrgico com tecnologia de ponta.</p>
-                    </div>
-                    <div class="topico-item">
-                        <h4>Preventiva</h4>
-                        <p>Redução de custos emergenciais e aumento da vida útil dos equipamentos.</p>
-                    </div>
+        <div class="card-sobre">
+            <h2>Sobre a GeTech</h2>
+            <div class="sobre-topicos">
+                <div class="topico-item">
+                    <h4>Atuação</h4>
+                    <p>Setores automotivo, alimentício e metalúrgico com tecnologia de ponta.</p>
+                </div>
+                <div class="topico-item">
+                    <h4>Preventiva</h4>
+                    <p>Redução de custos emergenciais e aumento da vida útil dos equipamentos.</p>
                 </div>
             </div>
         </div>
+
+        <h2>Nossas Especialidades</h2>
         <div class="grid-servicos">
             <div class="card">
                 <h3>Hidráulica</h3>
@@ -452,8 +452,16 @@
             }
         });
 
-        iniciarChat();
+        // Verificação rápida local do avatar do usuário logado
+        document.addEventListener('DOMContentLoaded', () => {
+            const usr = JSON.parse(localStorage.getItem('usuarioLogado'));
+            const avatar = document.getElementById('avatarUsuario');
+            if (usr && avatar) {
+                avatar.style.display = 'inline-block';
+            }
+            iniciarChat();
+        });
     </script>
-<script src="controle.js"></script>
+    <script src="controle.js"></script>
 </body>
 </html>
