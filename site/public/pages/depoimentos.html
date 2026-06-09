@@ -11,90 +11,86 @@
     <div id="header"></div>
 
     <main class="container">
-    <div class="testimonials-wrapper">
-        <h1 class="titulo-sessao">O que nossos clientes dizem</h1><br><br>
-        <button id="btn-abrir-form" class="btn-primario">Adicionar Depoimento</button>
+        <div class="testimonials-wrapper">
+            <h1 class="titulo-sessao">O que nossos clientes dizem</h1>
+            <p class="subtitulo-sessao">Resultados reais de quem vive a transformação industrial diariamente.</p>
+            <button id="btn-abrir-form" class="btn-primario">Adicionar Depoimento</button>
 
-            <section id="form-container" class="hidden">
-    <div class="form-card">
-        <h3>Novo Depoimento</h3>
-        <input type="text" id="nome" placeholder="Nome Completo">
-        <input type="text" id="cargo" placeholder="Cargo e Empresa">
-        <select id="nota">
-            <option value="★★★★★">5 Estrelas</option>
-            <option value="★★★★☆">4 Estrelas</option>
-            <option value="★★★☆☆">3 Estrelas</option>
-            <option value="★★☆☆☆">2 Estrelas</option>
-            <option value="★☆☆☆☆">1 Estrela</option>
-        </select>
-        <textarea id="texto" placeholder="Seu depoimento..."></textarea>
-        
-        <div class="form-actions">
-            <button id="btn-salvar">Salvar</button>
-            <button id="btn-cancelar">Cancelar</button>
+            <!-- OVERLAY / MODAL -->
+            <div id="form-overlay" class="overlay hidden">
+                <section id="form-container" class="form-modal">
+                    <div class="form-card">
+                        <h3>Compartilhe sua Experiência</h3>
+                        <input type="text" id="nome" placeholder="Nome Completo">
+                        <input type="text" id="cargo" placeholder="Cargo e Empresa">
+                        <select id="nota">
+                            <option value="★★★★★">5 Estrelas</option>
+                            <option value="★★★★☆">4 Estrelas</option>
+                            <option value="★★★☆☆">3 Estrelas</option>
+                            <option value="★★☆☆☆">2 Estrelas</option>
+                            <option value="★☆☆☆☆">1 Estrela</option>
+                        </select>
+                        <textarea id="texto" placeholder="Seu depoimento..."></textarea>
+                        
+                        <div class="form-actions">
+                            <button id="btn-salvar">Salvar Depoimento</button>
+                            <button id="btn-cancelar">Cancelar</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- GRID DE DEPOIMENTOS -->
+            <div class="testimonials-grid" id="grid-depoimentos">
+
+                <article class="card">
+                    <div class="card-header">
+                        <div class="stars">★★★★★</div>
+                        <span class="quote-icon">“</span>
+                    </div>
+                    <p>"Reduzimos o tempo de parada de máquina em 22% logo no primeiro semestre. A precisão dos relatórios é impressionante."</p>
+                    <div class="card-footer">
+                        <div class="avatar">RS</div>
+                        <div class="user-info">
+                            <strong>Ricardo Souza</strong>
+                            <small>Gerente de Operações - Metalúrgica Norte</small>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-header">
+                        <div class="stars">★★★★★</div>
+                        <span class="quote-icon">“</span>
+                    </div>
+                    <p>"O suporte técnico é ágil e o sistema é intuitivo. O controle de inventário finalmente está batendo com o físico."</p>
+                    <div class="card-footer">
+                        <div class="avatar">AP</div>
+                        <div class="user-info">
+                            <strong>Ana Paula</strong>
+                            <small>Diretora de Logística - Indústria Alimentícia</small>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <div class="card-header">
+                        <div class="stars">★★★★★</div>
+                        <span class="quote-icon">“</span>
+                    </div>
+                    <p>"A integração com o chão de fábrica via sensores mudou nossa visão da produção em tempo real."</p>
+                    <div class="card-footer">
+                        <div class="avatar">MV</div>
+                        <div class="user-info">
+                            <strong>Marcos Vinícius</strong>
+                            <small>Engenheiro Chefe - TechParts Brasil</small>
+                        </div>
+                    </div>
+                </article>
+
+            </div> 
         </div>
-    </div>
-</section>
-
-<div class="testimonials-grid" id="grid-depoimentos">
-
-    <article class="card">
-        <div class="stars">★★★★★</div>
-        <p>"Reduzimos o tempo de parada de máquina em 22% logo no primeiro semestre. A precisão dos relatórios é impressionante."</p>
-        <div class="card-footer">
-            <strong>Ricardo Souza</strong>
-            <small>Gerente de Operações - Metalúrgica Norte</small>
-        </div>
-    </article>
-
-    <article class="card">
-        <div class="stars">★★★★★</div>
-        <p>"O suporte técnico é ágil e o sistema é intuitivo. O controle de inventário finalmente está batendo com o físico."</p>
-        <div class="card-footer">
-            <strong>Ana Paula</strong>
-            <small>Diretora de Logística - Indústria Alimentícia</small>
-        </div>
-    </article>
-
-    <article class="card">
-        <div class="stars">★★★★★</div>
-        <p>"A integração com o chão de fábrica via sensores mudou nossa visão da produção em tempo real."</p>
-        <div class="card-footer">
-            <strong>Marcos Vinícius</strong>
-            <small>Engenheiro Chefe - TechParts Brasil</small>
-        </div>
-    </article>
-
-    <article class="card">
-        <div class="stars">★★★★★</div>
-        <p>"O módulo de PCP transformou nossa linha de montagem. Conseguimos otimizar as ordens de serviço e reduzimos o desperdício de matéria-prima em 15%."</p>
-        <div class="card-footer">
-            <strong>Juliana Mendes</strong>
-            <small>Coordenadora de PCP - Plásticos Industriais</small>
-        </div>
-    </article>
-
-    <article class="card">
-        <div class="stars">★★★★★</div>
-        <p>"A rastreabilidade total de lotes facilitou nossas auditorias internas. Hoje temos segurança total sobre o histórico de cada peça produzida."</p>
-        <div class="card-footer">
-            <strong>André Oliveira</strong>
-            <small>Gestor de Qualidade - Automotive Parts</small>
-        </div>
-    </article>
-
-    <article class="card">
-        <div class="stars">★★★★★</div>
-        <p>"Implementamos a manutenção preditiva através do ERP e eliminamos as paradas inesperadas. O retorno sobre o investimento foi alcançado em 4 meses."</p>
-        <div class="card-footer">
-            <strong>Eng. Carlos Eduardo</strong>
-            <small>Diretor Técnico - TechMáquinas S.A.</small>
-        </div>
-    </article>
-
-</div> 
-    </div>
-</main>
+    </main>
 
     <div id="footer"></div>
 

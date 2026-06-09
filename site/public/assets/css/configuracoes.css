@@ -1,0 +1,296 @@
+/* =========================
+    CONFIGURAÇÕES
+========================= */
+
+/* Página fluida e visível por padrão */
+.config-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex; /* Agora renderiza direto no fluxo normal sem travas */
+    gap: 40px;
+    align-items: flex-start;
+    flex: 1;
+}
+
+/* Menu de Abas Lateral */
+.config-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 280px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 20px;
+    border-radius: 16px;
+    flex-shrink: 0;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.tab-btn i {
+    font-style: normal;
+    font-size: 1.1rem;
+}
+
+.tab-btn:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: var(--accent-cyan);
+    color: #ffffff;
+    box-shadow: var(--glow-cyan);
+}
+
+/* Área de Conteúdo */
+.config-content {
+    flex: 1;
+}
+
+.config-pane {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.config-pane.active {
+    display: block;
+}
+
+.config-pane h2 {
+    color: var(--text-heading);
+    margin: 0 0 6px 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.section-desc {
+    color: var(--text-secondary);
+    margin: 0 0 25px 0;
+    font-size: 0.95rem;
+}
+
+/* Cartão de Formulário */
+.config-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    padding: 30px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group input {
+    background: var(--bg-input);
+    border: 1px solid var(--border-input);
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+}
+
+.input-group input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.input-help {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Botão Salvar */
+.btn-salvar-config {
+    background: var(--accent-cyan);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: all 0.25s ease;
+    box-shadow: var(--glow-cyan);
+}
+
+.btn-salvar-config:hover {
+    background: var(--accent-cyan-hv);
+    transform: translateY(-1px);
+}
+
+/* Especificidades da Aba de Ajuda */
+.ajuda-card h3 {
+    margin: 0;
+    color: var(--text-heading);
+}
+
+.ajuda-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.ajuda-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.link-ajuda-btn {
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+.link-ajuda-btn:not(.secundario) {
+    background: var(--bg-login-btn);
+    color: var(--text-primary);
+    border: 1px solid var(--border-subtle);
+}
+
+.link-ajuda-btn:not(.secundario):hover {
+    background: transparent;
+    border-color: var(--accent-cyan);
+    box-shadow: var(--glow-cyan);
+    color: var(--accent-cyan);
+}
+
+.link-ajuda-btn.secundario {
+    background: transparent;
+    border: 1px solid var(--border-input);
+    color: var(--text-secondary);
+}
+
+.link-ajuda-btn.secundario:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+/* Animação suave de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+    RESPONSIVIDADE
+========================= */
+@media (max-width: 992px) {
+    .config-container {
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .config-tabs {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 12px;
+        white-space: nowrap;
+        scrollbar-width: none;
+    }
+
+    .config-tabs::-webkit-scrollbar {
+        display: none; /* Oculta barra no Chrome/Safari para ficar limpo */
+    }
+
+    .tab-btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .config-card {
+        padding: 20px;
+    }
+
+    .btn-salvar-config {
+        width: 100%;
+        text-align: center;
+    }
+
+    .ajuda-links {
+        flex-direction: column;
+    }
+}
+/* =========================
+    CORREÇÕES E ADIÇÕES
+========================= */
+
+/* Garante altura mínima da página mesmo com conteúdo leve (aba de ajuda) */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.config-container {
+    min-height: 60vh;
+}
+
+/* Mensagens de feedback inline — substitui os alert() bloqueantes */
+.feedback-msg {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    min-height: 1.2em;
+    transition: opacity 0.3s ease;
+}
+
+.feedback-msg.sucesso {
+    color: var(--accent-green, #10b981);
+}
+
+.feedback-msg.erro {
+    color: #ef4444;
+}

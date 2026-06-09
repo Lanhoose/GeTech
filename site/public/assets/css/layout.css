@@ -9,7 +9,7 @@
     --bg-header:         rgba(30, 41, 59, 0.7); /* Transparência para o Glassmorphism */
     --bg-footer:         #050811;
     --bg-card:           rgb(0, 0, 0);
-    --bg-card-dark:           rgb(0, 0, 0);
+    --bg-card-dark:      rgb(0, 0, 0);
     --bg-card-hover:     rgba(255, 255, 255, 0.08);
     --bg-input:          rgba(255, 255, 255, 0.06);
     --bg-login-btn:      rgba(51, 65, 85, 0.5);
@@ -54,15 +54,13 @@
     --glass-bg:          rgba(255, 255, 255, 0.03);
     --glass-border:      rgba(255, 255, 255, 0.08);
 
-
     --btn-outline-color: #ffffff; 
     --btn-outline-hover: #0056b3; /* Cor do contorno no modo escuro */
-    --border-button: 1px solid rgba(255, 255, 255, 0.15);
+    --border-button:     1px solid rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="light"] {
-
-    --border-button: 3px solid rgba(255, 255, 255, 0.15);
+    --border-button:     3px solid rgba(255, 255, 255, 0.15);
     /* Backgrounds */
     --bg-body:           #f0f6ff;
     --bg-header:         #1e3a6e;
@@ -71,13 +69,13 @@
     --bg-card-hover:     #f8faff;
     --bg-input:          #ffffff;
     --bg-login-btn:      #2d5192;
-    --bg-card-dark:       #ffffff;
+    --bg-card-dark:      #ffffff;
     --bg-user-pill:      rgba(255, 255, 255, 0.15);
     --bg-modal:          rgba(0, 0, 0, 0.55);
     --bg-page-gradient:  linear-gradient(135deg, #c8d8f0, #a0bcdf);
 
     /* Texto */
-    --text-contraz:     #ffffff; /* Azul escuro para melhor contraste no modo claro */
+    --text-contraz:      #ffffff; /* Azul escuro para melhor contraste no modo claro */
     --text-primary:      #000000;
     --text-secondary:    #475569;
     --text-heading:      #1e3a6e;
@@ -136,7 +134,7 @@ body {
 }
 
 /* =========================
-   HEADER (Visual Único Flutuante)
+   HEADER (Visual Único Flutuante - CORRIGIDO)
 ========================= */
 .header {
     position: sticky;
@@ -146,14 +144,20 @@ body {
     justify-content: space-between;
     align-items: center;
     background: var(--bg-header);
-    padding: 12px 40px;
+    padding: 12px 24px; /* Otimizado para melhor aproveitamento horizontal */
     border-bottom: 1px solid var(--glass-border);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 15px; /* Evita colisões diretas entre os containers filhos */
+    margin-bottom: 40px; /* Cria o distanciamento perfeito para o conteúdo da página não grudar */
 }
 
 /* Logo Estilizada */
+.logo {
+    flex-shrink: 0; /* Impede que a logo perca tamanho sob pressão do menu */
+}
+
 .logo h2 { 
     margin: 0;
     font-size: 1.35rem;
@@ -163,25 +167,28 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     position: relative;
+    white-space: nowrap;
 }
 
 /* Menu de Navegação Clean e Tech */
 .menu {
     display: flex;
-    gap: 6px;
+    gap: 2px; /* Espaço otimizado para acomodar o grande fluxo de links */
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Permite uma quebra adaptável e sutil em resoluções intermediárias */
 }
 
 .menu a {
     text-decoration: none;
-    padding: 8px 14px;
+    padding: 8px 10px; /* Redução cirúrgica do padding horizontal */
     background: transparent;
     border-radius: 8px;
     white-space: nowrap;
     color: var(--text-nav) !important;
-    font-size: 0.88rem;
+    font-size: 0.82rem; /* Ajustado para que todos os 11 links caibam elegantemente */
     font-weight: 500;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.1px;
     position: relative;
     transition: all 0.25s ease;
 }
@@ -231,16 +238,18 @@ body {
 /* Área de Autenticação */
 .auth {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
+    flex-shrink: 0; /* Bloqueia terminantemente a compressão ou quebra dos botões */
 }
 
 .auth a {
-    padding: 8px 18px;
+    padding: 8px 16px;
     border-radius: 8px;
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 600;
+    white-space: nowrap;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -453,10 +462,24 @@ main { flex: 1; }
 }
 
 /* =========================
-   MEDIA QUERIES (Responsivo)
+   MEDIA QUERIES (Responsivo Adaptado)
 ========================= */
 
-/* Dispositivos Grandes e Desktops Médios (Até 1200px) */
+/* Transição inteligente para telas de notebooks e resoluções comuns de mercado */
+@media (max-width: 1366px) {
+    .header {
+        padding: 12px 15px;
+    }
+    .menu a {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+    .logo h2 {
+        font-size: 1.2rem;
+    }
+}
+
+/* Dispositivos Grandes (Até 1200px) */
 @media (max-width: 1200px) {
     .header {
         padding: 15px 20px;
@@ -533,7 +556,7 @@ main { flex: 1; }
     }
 
     .auth {
-        flex-wrap: wrap;
+        flex-wrap: nowrap; /* Impede quebra vertical indesejada em smartphones */
         gap: 8px;
     }
 

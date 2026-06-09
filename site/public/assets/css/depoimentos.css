@@ -22,46 +22,91 @@ body {
 
 .titulo-sessao {
     color: var(--accent-cyan);
-    /* Usando clamp para a fonte diminuir fluidamente em telas menores */
     font-size: clamp(2rem, 5vw, 2.8rem); 
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
-/* Botão e formulário */
+.subtitulo-sessao {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-bottom: 30px;
+}
+
+/* Botão principal */
 .btn-primario {
     background: var(--glass-bg);
     color: var(--text-primary);
     border: 1px solid var(--glass-border);
-    padding: 12px 25px;
+    padding: 12px 30px;
     border-radius: 30px;
+    font-weight: 600;
     cursor: pointer;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     backdrop-filter: blur(5px);
     transition: 0.3s;
-    max-width: 100%; /* Garante que não estoure em telas minúsculas */
+    max-width: 100%;
 }
 
 .btn-primario:hover {
-    background: var(--bg-card-hover);
+    background: var(--accent-cyan);
+    color: #ffffff;
+    border-color: var(--accent-cyan);
     transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+}
+
+/* OVERLAY / MODAL ESTRUTURA */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.overlay.hidden {
+    display: none;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.form-modal {
+    animation: scaleUp 0.3s ease-out forwards;
+    width: 100%;
+    max-width: 500px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+@keyframes scaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 .form-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: var(--bg-header, #111827); /* Fallback caso a variável falhe */
     border: 1px solid var(--glass-border);
     padding: 30px;
     border-radius: 20px;
-    margin: 0 auto 40px;
-    max-width: 500px;
-    /* Ajuste para largura total em telas mobile */
-    width: 100%; 
-    box-sizing: border-box; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     gap: 15px;
-    transition: background 0.3s ease;
+}
+
+.form-card h3 {
+    margin-top: 0;
+    color: var(--accent-cyan);
+    font-size: 1.5rem;
 }
 
 .form-card input,
@@ -74,7 +119,7 @@ body {
     color: var(--text-primary);
     font-family: inherit;
     transition: border-color 0.25s;
-    width: 100%; /* Garante que os campos ocupem todo o espaço interno */
+    width: 100%; 
     box-sizing: border-box;
 }
 
@@ -89,22 +134,16 @@ body {
     box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.18);
 }
 
-.form-card select option {
-    background: var(--bg-header);
-    color: var(--text-primary);
-}
-
-.hidden { display: none; }
-
 /* Grid de cards */
 .testimonials-grid {
     display: grid;
-    /* Alterado de auto-fill para auto-fit e minmax ajustado para 280px para evitar quebras em telas pequenas (como iPhone SE) */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
     justify-content: center;
+    margin-top: 20px;
 }
 
+/* CARDS DIFERENCIADOS */
 .card {
     background: var(--glass-bg);
     backdrop-filter: blur(12px);
@@ -117,42 +156,104 @@ body {
     justify-content: space-between;
     transition: all 0.4s ease;
     text-align: left;
+    position: relative;
+    overflow: hidden;
 }
 
-/* Desativa o efeito de translação em hover para telas touch (evita bugs visuais no celular) */
+/* Detalhe estético industrial superior no card */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+    opacity: 0.7;
+}
+
 @media (hover: hover) {
     .card:hover {
-        transform: translateY(-10px);
+        transform: translateY(-8px);
         background: var(--bg-card-hover);
         box-shadow: var(--shadow-card);
+        border-color: rgba(6, 182, 212, 0.4);
+    }
+    .card:hover .quote-icon {
+        color: var(--accent-cyan);
+        transform: scale(1.1);
     }
 }
 
-.stars { color: var(--accent-yellow); margin-bottom: 15px; }
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.stars { color: var(--accent-yellow); font-size: 1.1rem; }
+
+.quote-icon {
+    font-size: 3rem;
+    font-family: Georgia, serif;
+    color: var(--border-input);
+    line-height: 0.5;
+    transition: 0.3s;
+}
 
 .card p {
     font-style: italic;
     line-height: 1.6;
     margin-bottom: 25px;
     color: var(--text-secondary);
+    position: relative;
+    z-index: 1;
 }
 
+/* FOOTER COM AVATAR E DESTAQUE NO NOME */
 .card-footer {
     border-top: 1px solid var(--border-subtle);
-    padding-top: 20px;
+    padding-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, var(--accent-cyan), #0891b2);
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(6, 182, 212, 0.2);
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
 }
 
 .card-footer strong {
     display: block;
-    font-size: 1.2rem;
-    color: var(--accent-cyan);
+    font-size: 1.15rem;
+    color: #ffffff; /* Nome ganha mais destaque direto */
+    text-shadow: 0 0 1px rgba(255,255,255,0.1);
 }
 
 .card-footer small {
     color: var(--text-muted);
     text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 1px;
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
 }
 
 /* Área de botões do Form */
@@ -160,11 +261,12 @@ body {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+    margin-top: 10px;
 }
 
 .form-actions button {
-    flex: 1; /* Faz os botões dividirem o espaço igualmente no mobile */
-    padding: 12px 20px; /* Um pouco mais de padding para facilitar o clique no celular */
+    flex: 1; 
+    padding: 12px 20px; 
     border-radius: 20px;
     border: none;
     cursor: pointer;
@@ -176,38 +278,16 @@ body {
 #btn-salvar:hover { background-color: var(--accent-cyan-hv); }
 
 #btn-cancelar {
-    background-color: var(--glass-bg);
+    background-color: transparent;
     color: var(--text-primary);
     border: 1px solid var(--glass-border);
-    margin-left: 0; /* Resetado para funcionar melhor com o flexbox */
 }
+#btn-cancelar:hover { background-color: rgba(255,255,255,0.05); }
 
-/* =========================
-    MEDIA QUERIES (Responsividade)
-========================= */
-
-/* Tablets e Celulares deitados */
-@media (max-width: 768px) {
-    .container {
-        padding: 40px 15px;
-    }
-}
-
-/* Celulares verticais pequenos (Abaixo de 480px) */
+/* Responsividade Mobile */
 @media (max-width: 480px) {
-    .form-card {
-        padding: 20px 15px; /* Reduz o recuo interno para ganhar espaço na tela */
-    }
-
-    .card {
-        padding: 20px; /* Reduz padding dos cards de depoimentos */
-    }
-
-    .form-actions {
-        flex-direction: column; /* Coloca os botões um embaixo do outro para não espremer o texto */
-    }
-    
-    #btn-cancelar {
-        order: 2; /* Garante que o cancelar fique abaixo do salvar se necessário */
-    }
+    .form-card { padding: 20px 15px; }
+    .card { padding: 20px; }
+    .form-actions { flex-direction: column; }
+    #btn-cancelar { order: 2; }
 }

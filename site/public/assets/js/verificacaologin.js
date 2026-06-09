@@ -4,11 +4,22 @@ const BASE_URL = window.location.origin + "/GeTech";
 
 function verificarStatusLogin() {
     const authSection = document.getElementById('auth-section');
-
-    if (!authSection) return;
+    const menuConfig = document.getElementById('menu-configuracoes');
 
     const estaLogado = localStorage.getItem('logado') === 'true';
     const emailUsuario = localStorage.getItem('usuarioAtual');
+
+    // --- CONTROLE DO LINK DE CONFIGURAÇÕES NO HEADER ---
+    if (menuConfig) {
+        if (estaLogado && emailUsuario) {
+            menuConfig.style.display = "inline-block"; // Exibe se estiver logado
+        } else {
+            menuConfig.style.display = "none"; // Oculta se NÃO estiver logado
+        }
+    }
+
+    // --- CONTROLE DOS BOTÕES DE LOGIN / LOGOUT ---
+    if (!authSection) return;
 
     if (estaLogado && emailUsuario) {
         const nomeExibicao = emailUsuario.split('@')[0];
