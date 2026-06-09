@@ -12,9 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
 let listaMaquinas = [];
 let historicoOS   = [];
 
-// Variáveis de controle para o modo de edição
+// Variáveis de controle para o modo de edição (Máquinas)
 let emModoEdicao = false;
 let idMaquinaSendoEditada = null;
+
+// Variáveis de controle para o modo de edição (Ordens de Serviço)
+let emModoEdicaoOS = false;
+let idOSSendoEditada = null;
 
 
 // ==========================================
@@ -238,17 +242,65 @@ if (formOS) {
             return;
         }
 
-        historicoOS.push({
-            maquina:   selectMaq.value,
-            descricao: document.querySelector('#descricaoOS').value,
-            status:    document.querySelector('#statusOS').value,
-            data:      new Date().toLocaleString('pt-BR')
-        });
+        if (emModoEdicaoOS) {
+            // Preserva a data original da OS
+            const dataOriginal = historicoOS[idOSSendoEditada].data;
 
-        document.querySelector('#ordem_servico').textContent = '🚀 Ordem de Serviço aberta com sucesso!';
+            historicoOS[idOSSendoEditada] = {
+                maquina:   selectMaq.value,
+                descricao: document.querySelector('#descricaoOS').value,
+                status:    document.querySelector('#statusOS').value,
+                data:      dataOriginal
+            };
+
+            // Reseta o estado de edição
+            emModoEdicaoOS = false;
+            idOSSendoEditada = null;
+
+            const btnSub = formOS.querySelector('button[type="submit"]');
+            if (btnSub) {
+                btnSub.textContent = "Abrir Ordem de Serviço";
+                btnSub.style.background = "";
+            }
+
+            document.querySelector('#ordem_servico').innerHTML =
+                `✅ Ordem de Serviço atualizada com sucesso!`;
+        } else {
+            historicoOS.push({
+                maquina:   selectMaq.value,
+                descricao: document.querySelector('#descricaoOS').value,
+                status:    document.querySelector('#statusOS').value,
+                data:      new Date().toLocaleString('pt-BR')
+            });
+
+            document.querySelector('#ordem_servico').textContent = '🚀 Ordem de Serviço aberta com sucesso!';
+        }
+
         formOS.reset();
         exibirHistoricoOS();
     });
+}
+
+function prepararEdicaoOS(index) {
+    const os = historicoOS[index];
+
+    // Garante que o select está atualizado antes de tentar setar o valor
+    atualizarSelectMaquinas();
+
+    document.querySelector('#maquinaOS').value   = os.maquina;
+    document.querySelector('#descricaoOS').value = os.descricao;
+    document.querySelector('#statusOS').value    = os.status;
+
+    emModoEdicaoOS   = true;
+    idOSSendoEditada = index;
+
+    const btnSub = formOS.querySelector('button[type="submit"]');
+    if (btnSub) {
+        btnSub.textContent = "💾 Salvar Alterações";
+        btnSub.style.background = "#27ae60";
+    }
+
+    formOS.scrollIntoView({ behavior: 'smooth' });
 }
 
 function exibirHistoricoOS() {
@@ -261,19 +313,22 @@ function exibirHistoricoOS() {
         return;
     }
 
-    historicoOS.forEach(os => {
+    historicoOS.forEach((os, index) => {
         const cor = os.status === 'concluido'    ? '#27ae60'
                   : os.status === 'em andamento' ? '#f39c12'
                   : '#e74c3c';
 
         container.innerHTML += `
-            <div style="border:1px solid var(--mod-input-border,#ddd); padding:15px; margin-top:10px; border-radius:6px; position:relative; background:var(--mod-card-bg,white);">
+            <div style="border:1px solid var(--mod-input-border,#ddd); padding:15px; padding-bottom:45px; margin-top:10px; border-radius:6px; position:relative; background:var(--mod-card-bg,white);">
                 <span style="position:absolute; top:15px; right:15px; color:${cor}; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">
                     ● ${os.status}
                 </span>
                 <strong>Equipamento:</strong> ${os.maquina}<br>
                 <p style="margin:5px 0; color:var(--mod-label,#555);">${os.descricao}</p>
                 <small style="color:#999;">Data: ${os.data}</small>
+                <button onclick="prepararEdicaoOS(${index})" class="btn-app btn-outline-app" style="position:absolute; bottom:8px; right:8px; width:auto; padding:4px 10px; font-size:0.8rem;">
+                    ✏️ Editar
+                </button>
             </div>`;
     });
 }
@@ -384,4 +439,4 @@ function importarExcel(event) {
     };
     
     reader.readAsArrayBuffer(file);
-}
+}   

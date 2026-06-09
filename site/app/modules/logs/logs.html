@@ -4,10 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auditoria & Logs - ERP Industrial</title>
+    <link rel="stylesheet" href="../../assets/css/layout.css">
     <link rel="stylesheet" href="../../assets/css/logs.css">
 </head>
 <body>
-    <div id="header"></div>
+    <script>(function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'); })();</script>
+    <!-- ── HEADER PRÓPRIO DA PÁGINA DE LOGS ── -->
+    <header class="logs-header">
+        <button class="btn-voltar-erp" onclick="window.location.href='../../app.html'">← Voltar ao ERP</button>
+
+        <div class="logs-header-title">
+            <span class="logs-header-icon">🔍</span>
+            <span>Auditoria & Logs</span>
+        </div>
+
+        <div class="logs-header-right">
+            <span class="theme-icon" id="themeIcon">🌙</span>
+            <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema"></button>
+        </div>
+    </header>
 
     <main class="container">
         <section class="log-header-section hidden-track">
@@ -15,12 +30,41 @@
             <p class="subtitle-page">Rastreabilidade imutável de ações executadas no ecossistema ERP em conformidade com as normas de segurança corporativa.</p>
             
             <div class="action-bar">
-                <button class="btn-secondary" onclick="exportarLogs()">Gerar Relatório CSV</button>
-                <button class="btn-danger-outline" onclick="limparHistorico()">Resetar Logs</button>
+                <button class="btn-secondary" onclick="exportarLogs()">📥 Gerar Relatório CSV</button>
+                <button class="btn-danger-outline" onclick="limparHistorico()">🗑️ Resetar Logs</button>
             </div>
         </section>
 
+        <!-- ── BARRA DE FILTROS ── -->
+        <section class="filter-bar hidden-track">
+            <div class="filter-group">
+                <label for="filtroTexto">🔎 Busca geral</label>
+                <input type="text" id="filtroTexto" placeholder="ID, operador, ação, descrição..." />
+            </div>
+            <div class="filter-group">
+                <label for="filtroCriticidade">Status</label>
+                <select id="filtroCriticidade">
+                    <option value="">Todos</option>
+                    <option value="info">INFO</option>
+                    <option value="aviso">AVISO</option>
+                    <option value="critico">CRÍTICO</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="filtroDataInicio">De</label>
+                <input type="date" id="filtroDataInicio" />
+            </div>
+            <div class="filter-group">
+                <label for="filtroDataFim">Até</label>
+                <input type="date" id="filtroDataFim" />
+            </div>
+            <button class="btn-filter-clear" onclick="limparFiltros()" title="Limpar filtros">✕ Limpar</button>
+        </section>
+
         <section class="log-table-container hidden-track">
+            <div class="table-info-bar">
+                <span id="contadorResultados" class="contador-logs">— registros</span>
+            </div>
             <div class="table-responsive">
                 <table class="audit-table">
                     <thead>
@@ -43,25 +87,84 @@
         </section>
     </main>
 
-    <div id="footer"></div>
-
     <script src="../../assets/js/logs.js"></script>
     <script src="../../assets/js/acessibilidade.js"></script>
     
     <script>
-        // Carrega e renderiza os logs na tabela
-        function carregarTabelaLogs() {
-            const tbody = document.getElementById('log-table-body');
-            const logs = Auditoria.obterLogs();
+        // ── TEMA ────────────────────────────────────────────────────────────
+        (function() {
+            document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+        })();
 
-            if (logs.length === 0) return;
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn  = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
 
-            tbody.innerHTML = ''; // Limpa a tabela
+            const aplicarTema = (t) => {
+                document.documentElement.setAttribute('data-theme', t);
+                localStorage.setItem('theme', t);
+                if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+            };
+
+            aplicarTema(localStorage.getItem('theme') || 'dark');
+            if (btn) btn.addEventListener('click', () =>
+                aplicarTema(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')
+            );
+        });
+
+        // ── FILTROS ─────────────────────────────────────────────────────────
+        let _logsCache = [];
+
+        function aplicarFiltros() {
+            const texto       = document.getElementById('filtroTexto').value.toLowerCase().trim();
+            const criticidade = document.getElementById('filtroCriticidade').value;
+            const dataInicio  = document.getElementById('filtroDataInicio').value;  
+            const dataFim     = document.getElementById('filtroDataFim').value;
+
+            const filtrados = _logsCache.filter(log => {
+                const haystack = [log.id, log.usuario, log.acao, log.detalhe].join(' ').toLowerCase();
+                if (texto && !haystack.includes(texto)) return false;
+                if (criticidade && log.criticidade !== criticidade) return false;
+
+                const dataLog = log.dataHora.slice(0, 10); 
+                if (dataInicio && dataLog < dataInicio) return false;
+                if (dataFim    && dataLog > dataFim)    return false;
+
+                return true;
+            });
+
+            renderizarLogs(filtrados);
+        }
+
+        function limparFiltros() {
+            document.getElementById('filtroTexto').value       = '';
+            document.getElementById('filtroCriticidade').value = '';
+            document.getElementById('filtroDataInicio').value  = '';
+            document.getElementById('filtroDataFim').value     = '';
+            renderizarLogs(_logsCache);
+        }
+
+        // ── RENDERIZAÇÃO ────────────────────────────────────────────────────
+        function renderizarLogs(logs) {
+            const tbody    = document.getElementById('log-table-body');
+            const contador = document.getElementById('contadorResultados');
+
+            tbody.innerHTML = '';
+
+            if (contador) {
+                contador.textContent = `${logs.length} registro${logs.length !== 1 ? 's' : ''} encontrado${logs.length !== 1 ? 's' : ''}`;
+            }
+
+            if (logs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-secondary);">
+                    Nenhum registro corresponde aos filtros applied.
+                </td></tr>`;
+                return;
+            }
 
             logs.forEach(log => {
                 const dataFormatada = new Date(log.dataHora).toLocaleString('pt-BR');
                 const row = document.createElement('tr');
-                
                 row.innerHTML = `
                     <td class="log-id">${log.id}</td>
                     <td class="log-date">${dataFormatada}</td>
@@ -74,43 +177,67 @@
             });
         }
 
-        // Funções da barra de ações
+        function carregarTabelaLogs() {
+            _logsCache = Auditoria.obterLogs();
+            renderizarLogs(_logsCache);
+        }
+
+        // ── AÇÕES DA BARRA ───────────────────────────────────────────────────
         function limparHistorico() {
             if (confirm("Tem certeza que deseja apagar permanentemente todos os registros de auditoria?")) {
                 Auditoria.limparLogs();
-                carregarTabelaLogs();
+                _logsCache = Auditoria.obterLogs();
+                renderizarLogs(_logsCache);
             }
         }
 
         function exportarLogs() {
-            const logs = Auditoria.obterLogs();
-            if(logs.length === 0) return alert("Não há registros para exportar.");
-            
-            let csv = "ID;Data/Hora;Usuario;Acao;Detalhe;Criticidade\n";
-            logs.forEach(l => {
-                csv += `${l.id};${l.dataHora};${l.usuario};${l.acao};${l.detalhe};${l.criticidade}\n`;
+            const logsVisiveis = _logsCache.filter(log => {
+                const texto       = document.getElementById('filtroTexto').value.toLowerCase().trim();
+                const criticidade = document.getElementById('filtroCriticidade').value;
+                const dataInicio  = document.getElementById('filtroDataInicio').value;
+                const dataFim     = document.getElementById('filtroDataFim').value;
+                const haystack    = [log.id, log.usuario, log.acao, log.detalhe].join(' ').toLowerCase();
+                const dataLog     = log.dataHora.slice(0, 10);
+                if (texto       && !haystack.includes(texto))    return false;
+                if (criticidade && log.criticidade !== criticidade) return false;
+                if (dataInicio  && dataLog < dataInicio)          return false;
+                if (dataFim     && dataLog > dataFim)             return false;
+                return true;
             });
-            
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+            if (logsVisiveis.length === 0) return alert("Não há registros para exportar.");
+
+            let csv = "ID;Data/Hora;Usuario;Acao;Detalhe;Criticidade\n";
+            logsVisiveis.forEach(l => {
+                csv += `${l.id};${l.dataHora};${l.usuario};${l.acao};"${l.detalhe}";${l.criticidade}\n`;
+            });
+
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", `auditoria_erp_${new Date().toLocaleDateString()}.csv`);
+            link.setAttribute("download", `auditoria_erp_${new Date().toLocaleDateString('pt-BR')}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // Ativação das transições suaves e atraso idêntico ao index
+        // ── INICIALIZAÇÃO CORRIGIDA ──────────────────────────────────────────
         document.addEventListener("DOMContentLoaded", () => {
+            // Inicializa primeiro a leitura dos dados em cache
             carregarTabelaLogs();
-            
-            const headerSection = document.querySelector('.log-header-section');
-            const tableContainer = document.querySelector('.log-table-container');
 
+            // Atribui os escutadores dos filtros em tempo real
+            document.getElementById('filtroTexto').addEventListener('input', aplicarFiltros);
+            document.getElementById('filtroCriticidade').addEventListener('change', aplicarFiltros);
+            document.getElementById('filtroDataInicio').addEventListener('change', aplicarFiltros);
+            document.getElementById('filtroDataFim').addEventListener('change', aplicarFiltros);
+
+            // Executa a remoção do track invisível de forma uniforme e cadenciada para os 3 blocos
             setTimeout(() => {
-                if (headerSection) headerSection.classList.remove('hidden-track');
-                if (tableContainer) tableContainer.classList.remove('hidden-track');
-            }, 200);
+                const els = document.querySelectorAll('.hidden-track');
+                els.forEach(el => el.classList.remove('hidden-track'));
+            }, 200); 
         });
     </script>
 </body>

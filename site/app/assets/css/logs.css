@@ -5,14 +5,35 @@
 /* Estrutura Base e Variáveis de Contingência (caso não herde do layout) */
 :root {
     --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --bg-page-gradient: #0f172a;
+    --bg-header: rgba(30, 41, 59, 0.85);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-nav: #cbd5e1;
+    --toggle-track: #1e293b;
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --border-card: rgba(255, 255, 255, 0.1);
+}
+
+/* Redefinição de variáveis para o Tema Claro globalmente */
+[data-theme="light"] {
+    --bg-page-gradient: #f1f5f9;
+    --bg-header: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-nav: #334155;
+    --toggle-track: #cbd5e1;
+    --glass-border: #e2e8f0;
+    --border-card: #cbd5e1;
 }
 
 body {
-    background: var(--bg-page-gradient, #0f172a);
-    color: var(--text-primary, #f8fafc);
+    background: var(--bg-page-gradient);
+    color: var(--text-primary);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -31,17 +52,23 @@ body {
    1. ANIMAÇÕES DE ENTRADA (Mecânica Fluida)
 ========================================================== */
 .log-header-section, 
+.filter-bar,
 .log-table-container {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 0.8s var(--transition-smooth), transform 0.8s var(--transition-smooth);
+    transition: opacity 0.8s var(--transition-smooth), 
+                transform 0.8s var(--transition-smooth),
+                background 0.3s ease, 
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
 }
 
 /* Estado Invisível Inicial controlado pelo JS */
 .log-header-section.hidden-track, 
+.filter-bar.hidden-track,
 .log-table-container.hidden-track {
-    opacity: 0;
-    transform: translateY(25px);
+    opacity: 0 !important;
+    transform: translateY(25px) !important;
 }
 
 /* ==========================================================
@@ -61,7 +88,7 @@ body {
     line-height: 1.2;
     letter-spacing: -0.5px;
     margin: 0 0 12px 0;
-    background: linear-gradient(135deg, var(--text-primary, #ffffff), var(--text-secondary, #94a3b8));
+    background: linear-gradient(135deg, #ffffff, #94a3b8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -70,11 +97,11 @@ body {
     background: none;
     -webkit-background-clip: unset;
     -webkit-text-fill-color: unset;
-    color: var(--text-heading, #1e293b);
+    color: var(--text-primary);
 }
 
 .subtitle-page {
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary);
     max-width: 720px;
     font-size: clamp(14px, 1.8vw, 16px);
     line-height: 1.5;
@@ -95,9 +122,9 @@ body {
 /* Botão Secundário (CSV) */
 .btn-secondary {
     cursor: pointer;
-    border: 1px solid var(--border-card, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--border-card);
     background: transparent;
-    color: var(--text-primary, #f8fafc);
+    color: var(--text-primary);
     padding: 12px 28px;
     border-radius: 8px;
     font-weight: 600;
@@ -132,14 +159,10 @@ body {
 }
 
 /* Ajustes de botões no Tema Claro */
-[data-theme="light"] .btn-secondary {
-    border-color: var(--border-card, #cbd5e1);
-    color: var(--text-primary, #334155);
-}
 [data-theme="light"] .btn-secondary:hover {
     background: rgba(30, 58, 110, 0.05);
-    border-color: var(--bg-header, #1e3a70);
-    color: var(--bg-header, #1e3a70);
+    border-color: #1e3a70;
+    color: #1e3a70;
 }
 
 /* ==========================================================
@@ -149,7 +172,7 @@ body {
     background: var(--bg-card, rgba(30, 41, 59, 0.5));
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--glass-border);
     border-radius: 16px;
     padding: 20px;
     box-shadow: var(--shadow-card, 0 8px 32px rgba(0, 0, 0, 0.24));
@@ -183,14 +206,14 @@ body {
     border-collapse: collapse;
     text-align: left;
     font-size: 0.9rem;
-    min-width: 850px; /* Garante que os dados fiquem legíveis em modo responsivo */
+    min-width: 850px;
 }
 
 .audit-table th {
     background: rgba(255, 255, 255, 0.02);
-    border-bottom: 2px solid var(--border-card, rgba(255, 255, 255, 0.1));
+    border-bottom: 2px solid var(--border-card);
     padding: 16px;
-    color: var(--text-primary, #f8fafc);
+    color: var(--text-primary);
     font-weight: 700;
     letter-spacing: 0.5px;
 }
@@ -198,7 +221,7 @@ body {
 .audit-table td {
     padding: 16px;
     border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.05));
-    color: var(--text-secondary, #94a3b8);
+    color: var(--text-secondary);
     vertical-align: middle;
 }
 
@@ -209,7 +232,11 @@ body {
 /* Efeito Hover nas Linhas */
 .audit-table tr:hover td {
     background: var(--bg-card-hover, rgba(255, 255, 255, 0.02));
-    color: var(--text-primary, #ffffff);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .audit-table tr:hover td {
+    background: #f8fafc;
 }
 
 /* Estilização Cirúrgica de Colunas */
@@ -219,17 +246,21 @@ body {
     color: var(--accent-cyan, #00f2fe);
 }
 
+[data-theme="light"] .log-id {
+    color: #0e7490;
+}
+
 .log-date {
     white-space: nowrap;
 }
 
-.log-user {
-    color: var(--text-primary, #f8fafc);
+.log-user,
+.log-action {
+    color: var(--text-primary);
 }
 
 .log-action {
     font-weight: 600;
-    color: var(--text-primary, #f8fafc);
 }
 
 .log-detail {
@@ -240,7 +271,7 @@ body {
 }
 
 .audit-table tr:hover .log-detail {
-    white-space: normal; /* Revela o texto completo ao passar o mouse */
+    white-space: normal;
 }
 
 /* ==========================================================
@@ -282,29 +313,25 @@ body {
 ========================================================== */
 [data-theme="light"] .log-table-container {
     background: #ffffff;
-    border-color: var(--border-card, #e2e8f0);
+    border-color: var(--glass-border);
     box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
 }
 
 [data-theme="light"] .audit-table th {
     background: #f1f5f9;
     border-color: #e2e8f0;
-    color: var(--text-heading, #1e293b);
+    color: var(--text-primary);
 }
 
 [data-theme="light"] .audit-table td {
     border-color: #f1f5f9;
-    color: #475569;
-}
-
-[data-theme="light"] .log-user,
-[data-theme="light"] .log-action {
-    color: #1e293b;
+    color: var(--text-secondary);
 }
 
 [data-theme="light"] .badge-info {
     background: rgba(14, 116, 144, 0.08);
     color: #0e7490;
+    border-color: rgba(14, 116, 144, 0.2);
 }
 
 /* ==========================================================
@@ -328,5 +355,289 @@ body {
     .action-bar button {
         width: 100%;
         text-align: center;
+    }
+}
+
+/* ==========================================================
+   9. HEADER PRÓPRIO DA PÁGINA DE LOGS
+========================================================== */
+.logs-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-header);
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="light"] .logs-header {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.logs-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-nav);
+    letter-spacing: 0.3px;
+}
+
+.logs-header-icon { font-size: 1.1rem; }
+
+.logs-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Botão Voltar ao ERP */
+.btn-voltar-erp {
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--text-nav);
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.btn-voltar-erp:hover {
+    border-color: var(--accent-cyan, #007bff);
+    color: var(--accent-cyan, #007bff);
+    background: rgba(0, 123, 255, 0.06);
+    transform: translateX(-2px);
+}
+
+[data-theme="light"] .btn-voltar-erp:hover {
+    background: #f8fafc;
+    border-color: #007bff;
+    color: #007bff;
+}
+
+/* Toggle de tema */
+.logs-header .theme-toggle {
+    position: relative;
+    width: 42px;
+    height: 22px;
+    background: var(--toggle-track);
+    border-radius: 11px;
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.logs-header .theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    background: #f8fafc;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="light"] .logs-header .theme-toggle { background: var(--accent-cyan, #06b6d4); }
+[data-theme="light"] .logs-header .theme-toggle::after { transform: translateX(20px); background: #ffffff; }
+
+.logs-header .theme-icon {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    color: var(--text-nav);
+}
+
+/* ==========================================================
+   10. BARRA DE FILTROS
+========================================================== */
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-end;
+    background: var(--bg-card, rgba(30, 41, 59, 0.5));
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm, 0 4px 12px rgba(0,0,0,0.2));
+    width: 100%;
+    box-sizing: border-box;
+    /* Linha transition antiga removida para evitar que anule a transição de entrada global */
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 160px;
+}
+
+.filter-group label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.filter-group input,
+.filter-group select {
+    background: var(--bg-input, rgba(255,255,255,0.06));
+    border: 1px solid var(--border-input, rgba(255,255,255,0.15));
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: border-color 0.2s, background 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* FIX DA IMAGEM 2: Força as opções nativas do select a terem cores legíveis independente do tema do SO */
+.filter-group select option {
+    background-color: #1e293b;
+    color: #ffffff;
+}
+
+[data-theme="light"] .filter-group select option {
+    background-color: #ffffff;
+    color: #1e293b;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: var(--accent-cyan, #007bff);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.filter-group input::placeholder { color: var(--text-muted, #64748b); }
+
+/* Cor do ícone de seta do select no tema escuro */
+.filter-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+/* Botão limpar filtros */
+.btn-filter-clear {
+    background: transparent;
+    border: 1px solid var(--border-card);
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    align-self: flex-end;
+    height: 41px;
+}
+
+.btn-filter-clear:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+}
+
+/* Contador de resultados */
+.table-info-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.contador-logs {
+    font-size: 0.8rem;
+    color: var(--text-muted, #64748b);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* ==========================================================
+   11. ADAPTAÇÕES DE TEMA CLARO — novos elementos
+========================================================== */
+[data-theme="light"] .filter-bar {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    box-shadow: 0 2px 8px rgba(30, 58, 110, 0.06);
+}
+
+[data-theme="light"] .filter-group label {
+    color: #475569;
+}
+
+[data-theme="light"] .filter-group input,
+[data-theme="light"] .filter-group select {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    color: #1e293b;
+}
+
+[data-theme="light"] .filter-group input:focus,
+[data-theme="light"] .filter-group select:focus {
+    border-color: var(--accent-cyan, #06b6d4);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
+}
+
+/* FIX DA IMAGEM 1: Adicionado background-color explícito para sobrepor o do tema escuro e evitar a repetição ondulada */
+[data-theme="light"] .filter-group select {
+    background-color: #ffffff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23475569' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+[data-theme="light"] .btn-filter-clear {
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+/* ==========================================================
+   12. RESPONSIVIDADE — novos elementos
+========================================================== */
+@media (max-width: 768px) {
+    .logs-header {
+        padding: 12px 16px;
+        gap: 10px;
+    }
+
+    .logs-header-title { font-size: 0.9rem; }
+
+    .btn-voltar-erp {
+        padding: 7px 12px;
+        font-size: 0.82rem;
+    }
+
+    .filter-bar {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .filter-group {
+        min-width: 130px;
+    }
+
+    .btn-filter-clear {
+        width: 100%;
     }
 }

@@ -1,8 +1,18 @@
-// Sistema Global de Auditoria Expandido e Inteligente
+// ==========================================
+// SISTEMA GLOBAL DE AUDITORIA
+// ==========================================
 const Auditoria = {
+    MAX_LOGS: 500, // Limite de segurança para não estourar o localStorage
+
     registrar: function(usuario, acao, detalhe, criticidade = 'info') {
-        const logs = JSON.parse(localStorage.getItem('erp_auditoria_logs')) || [];
-        
+        let logs;
+        try {
+            logs = JSON.parse(localStorage.getItem('erp_auditoria_logs')) || [];
+        } catch (e) {
+            // JSON corrompido: reinicia o array limpo
+            logs = [];
+        }
+
         const novoLog = {
             id: 'LOG-' + Math.floor(100000 + Math.random() * 900000),
             dataHora: new Date().toISOString(),
@@ -13,12 +23,29 @@ const Auditoria = {
         };
 
         logs.unshift(novoLog);
-        localStorage.setItem('erp_auditoria_logs', JSON.stringify(logs));
+
+        // Mantém apenas os últimos MAX_LOGS registros para não estourar o localStorage
+        if (logs.length > this.MAX_LOGS) {
+            logs = logs.slice(0, this.MAX_LOGS);
+        }
+
+        try {
+            localStorage.setItem('erp_auditoria_logs', JSON.stringify(logs));
+        } catch (e) {
+            // localStorage cheio: descarta metade dos logs mais antigos e tenta de novo
+            logs = logs.slice(0, Math.floor(this.MAX_LOGS / 2));
+            localStorage.setItem('erp_auditoria_logs', JSON.stringify(logs));
+        }
+
         console.log(`[Auditoria] ${acao}: ${detalhe}`);
     },
 
     obterLogs: function() {
-        return JSON.parse(localStorage.getItem('erp_auditoria_logs')) || [];
+        try {
+            return JSON.parse(localStorage.getItem('erp_auditoria_logs')) || [];
+        } catch (e) {
+            return [];
+        }
     },
 
     limparLogs: function() {
@@ -27,76 +54,82 @@ const Auditoria = {
     }
 };
 
-// Captura Automática Controlada por Sessão
+// ==========================================
+// CAPTURA AUTOMÁTICA CONTROLADA POR SESSÃO
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    let usuarioAtual = localStorage.getItem('usuario_logado') || 'Usuário Convidado';
-    
-    const nomeAmigavel = document.title || 'Página sem Título';
-    const nomeArquivo = window.location.pathname.split('/').pop() || 'index.html';
+    const usuarioAtual = localStorage.getItem('usuario_logado') || 'Usuário Convidado';
 
-    // CHAVE ÚNICA PARA EVITAR REPETIÇÃO NO RELOAD (F5)
-    // Armazena no sessionStorage temporário da aba atual
+    const nomeAmigavel = document.title || 'Página sem Título';
+
+    // FIX: pathname terminando em "/" retornava string vazia, colidindo a chave entre páginas
+    const pathParts   = window.location.pathname.split('/').filter(Boolean);
+    const nomeArquivo = pathParts.pop() || 'index.html';
+
+    // ── 1. REGISTRO DE ACESSO À PÁGINA ──────────────────────────────────────
+    // Chave única por aba: evita re-registro no F5 sem bloquear navegação normal
     const chaveSessaoPagina = `acessou_${nomeArquivo}`;
 
     if (!sessionStorage.getItem(chaveSessaoPagina)) {
-        // Se for a primeira vez que entra na página nesta sessão, registra o log!
         Auditoria.registrar(
-            usuarioAtual, 
-            'Acesso à Página', 
-            `Entrou em: "${nomeAmigavel}" (${nomeArquivo})`, 
+            usuarioAtual,
+            'Acesso à Página',
+            `Entrou em: "${nomeAmigavel}" (${nomeArquivo})`,
             'info'
         );
-        // Marca que já registrou para não repetir no F5
         sessionStorage.setItem(chaveSessaoPagina, 'true');
     }
 
-    // 2. DETECTOR DE CLIQUES EM BOTÕES E ELEMENTOS (Sempre ativo)
+    // ── 2. DETECTOR DE CLIQUES ───────────────────────────────────────────────
+    // FIX: usamos Set para não registrar o mesmo clique duas vezes quando
+    // um elemento é ao mesmo tempo botão e filho de um card.
     document.addEventListener('click', (evento) => {
         const elemento = evento.target;
-        
-        // Captura botões, links, cards de módulo ou estatísticas
-        const ehBotao = elemento.tagName === 'BUTTON' || elemento.closest('button');
-        const ehLink = elemento.tagName === 'A' || elemento.closest('a');
-        const ehCard = elemento.closest('.card') || elemento.closest('.stat-card') || elemento.closest('.module-shortcut');
 
-        if (ehBotao || ehLink || ehCard) {
-            const alvo = ehBotao ? (elemento.closest('button') || elemento) : 
-                         ehLink ? (elemento.closest('a') || elemento) : ehCard;
-            
-            let textoIdentificador = alvo.innerText?.trim() || alvo.id || alvo.className || 'Elemento sem texto';
-            
-            // Tratamento para não pegar textos gigantescos de parágrafos inteiros
-            if (textoIdentificador.length > 50) {
-                textoIdentificador = textoIdentificador.substring(0, 47) + '...';
-            }
+        const botaoAlvo = elemento.closest('button');
+        const linkAlvo  = !botaoAlvo && elemento.closest('a');           // link só se não for botão
+        const cardAlvo  = !botaoAlvo && !linkAlvo && (                   // card só se não for botão nem link
+            elemento.closest('.stat-card') ||
+            elemento.closest('.module-shortcut')
+            // Removido '.card' genérico: era muito amplo e capturava cliques dentro
+            // de cards de listagem (maq-card, OS cards), gerando logs duplicados
+        );
 
-            // Define o tipo de evento amigável na tabela
-            let tipoAcao = 'Clique em Botão';
-            if (ehLink) tipoAcao = 'Clique em Link';
-            if (alvo.classList.contains('stat-card')) tipoAcao = 'Clique em Estatística';
-            if (alvo.classList.contains('module-shortcut')) tipoAcao = 'Acesso a Módulo';
+        const alvo = botaoAlvo || linkAlvo || cardAlvo;
+        if (!alvo) return;
 
-            Auditoria.registrar(
-                usuarioAtual, 
-                tipoAcao, 
-                `Clicou em "${textoIdentificador}" na página "${nomeArquivo}"`, 
-                'info'
-            );
+        let textoIdentificador = alvo.innerText?.trim() || alvo.id || alvo.className || 'Elemento sem texto';
+        if (textoIdentificador.length > 50) {
+            textoIdentificador = textoIdentificador.substring(0, 47) + '...';
         }
+
+        let tipoAcao = 'Clique em Botão';
+        if (linkAlvo)                               tipoAcao = 'Clique em Link';
+        if (cardAlvo?.classList.contains('stat-card'))       tipoAcao = 'Clique em Estatística';
+        if (cardAlvo?.classList.contains('module-shortcut')) tipoAcao = 'Acesso a Módulo';
+
+        Auditoria.registrar(
+            usuarioAtual,
+            tipoAcao,
+            `Clicou em "${textoIdentificador}" na página "${nomeArquivo}"`,
+            'info'
+        );
     });
 
-    // 3. DETECTOR DE MUDANÇA DE TEMA (DARK / LIGHT)
-    // Monitora o clique no wrapper ou no botão de tema do layout.css
-    const btnTema = document.getElementById('theme-toggle') || document.querySelector('.theme-toggle-wrap');
+    // ── 3. DETECTOR DE MUDANÇA DE TEMA ──────────────────────────────────────
+    // FIX: monitorava o .theme-toggle-wrap (pai), mas o detector de cliques acima
+    // também capturava o button filho — gerando dois logs por clique.
+    // Solução: escuta apenas o button diretamente e marca o evento como já tratado.
+    const btnTema = document.getElementById('themeToggle') || document.querySelector('.theme-toggle');
     if (btnTema) {
-        btnTema.addEventListener('click', () => {
-            // Pequeno delay para esperar o script do seu ERP alterar o data-theme no HTML
+        btnTema.addEventListener('click', (e) => {
+            // Pequeno delay para esperar o data-theme ser atualizado no DOM
             setTimeout(() => {
                 const temaAtual = document.documentElement.getAttribute('data-theme') || 'dark';
                 Auditoria.registrar(
-                    usuarioAtual, 
-                    'Alteração de Interface', 
-                    `Alterou o tema visual do ERP para: ${temaAtual.toUpperCase()} MODE`, 
+                    usuarioAtual,
+                    'Alteração de Interface',
+                    `Alterou o tema visual do ERP para: ${temaAtual.toUpperCase()} MODE`,
                     'info'
                 );
             }, 50);
