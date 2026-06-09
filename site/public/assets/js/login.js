@@ -69,7 +69,7 @@ function fazerLogin() {
         localStorage.setItem('usuarioAtual', usuario.email);
 
         setTimeout(() => {
-            window.location.href = `redimensionamento_app.html`; // Redireciona para a página de redirecionamento
+            window.location.href = `../../pages/redimensionamento_app.html`; // Redireciona para a página de redirecionamento
         }, 1000);
     } else {
         mostrarMensagem(msg, 'Email ou senha incorretos!', 'erro');
