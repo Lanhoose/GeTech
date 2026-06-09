@@ -59,7 +59,7 @@ function logout() {
     localStorage.removeItem('usuarioAtual');
 
     // Redireciona usando a base global limpa
-    window.location.href = `${window.BASE_URL}site/public/pages/index.html`;
+    window.location.href = `${window.BASE_URL}/site/public/pages/index.html`;
 }
 
 function redirecionarUsuario() {
