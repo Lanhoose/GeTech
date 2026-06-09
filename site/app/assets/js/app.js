@@ -1,5 +1,5 @@
 // ==========================================================================
-//  1. CONFIGURAÇÕES INICIAIS E BASE URL (Definidas no topo para evitar erros)
+//  1. CONFIGURAÇÕES INICIAIS E BASE URL
 // ==========================================================================
 const BASE_URL = window.location.origin + "/GeTech";
 
@@ -19,21 +19,39 @@ if (localStorage.getItem('logado') !== 'true') {
 }
 
 // ==========================================================================
-//  4. TRATAMENTO DO USUÁRIO LOGADO (Exibe apenas o que vem antes do @)
+//  4. CAPTURA E EXIBIÇÃO DO NOME DO USUÁRIO LOGADO
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     const emailLogado = localStorage.getItem('usuarioAtual');
     const elementoUsuario = document.getElementById('usuario');
 
     if (emailLogado && elementoUsuario) {
-        // Separa o e-mail no '@' e pega apenas a primeira parte (índice 0)
-        const nomeUsuario = emailLogado.split('@')[0];
+        // 1. Busca os dados do usuário usando o e-mail como chave (Padrão do seu sistema)
+        const dadosPerfil = localStorage.getItem(emailLogado);
         
-        // Formata a primeira letra em maiúscula para ficar mais elegante (opcional, mas recomendado)
-        const nomeFormatado = nomeUsuario.charAt(0).toUpperCase() + nomeUsuario.slice(1);
-        
-        elementoUsuario.innerText = `Bem-vindo, ${nomeFormatado}!`;
+        let nomeParaExibir = "";
+
+        if (dadosPerfil) {
+            // 2. Converte a string salva de volta para um objeto JavaScript
+            const usuarioObj = JSON.parse(dadosPerfil);
+            
+            // 3. Se ele tiver um nome cadastrado, usa ele
+            if (usuarioObj && usuarioObj.nome) {
+                nomeParaExibir = usuarioObj.nome;
+            }
+        }
+
+        // 4. Fallback de Segurança: Se não houver nome salvo, corta o e-mail antes do @
+        if (!nomeParaExibir) {
+            nomeParaExibir = emailLogado.split('@')[0];
+        }
+
+        // 5. Renderiza na tela substituindo o texto "<p id="usuario">"
+        elementoUsuario.textContent = `Bem-vindo, ${nomeParaExibir}!`;
     }
+    
+    // Inicializa o gerenciador do botão de tema
+    inicializarToggleTema();
 });
 
 // ==========================================================================
@@ -67,7 +85,6 @@ function inicializarToggleTema() {
         btn.setAttribute('aria-label', tema === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
     };
 
-    // Inicializa com o tema salvo
     aplicarTema(localStorage.getItem('theme') || 'dark');
 
     btn.addEventListener('click', () => {
@@ -75,6 +92,3 @@ function inicializarToggleTema() {
         aplicarTema(current === 'dark' ? 'light' : 'dark');
     });
 }
-
-// Inicializa o escutador do botão de tema ao carregar a página
-document.addEventListener('DOMContentLoaded', inicializarToggleTema);
