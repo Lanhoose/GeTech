@@ -75,6 +75,8 @@
             margin: 0;
             padding: 0;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         nav a {
@@ -193,7 +195,6 @@
             cursor: pointer;
         }
 
-        /* --- CONFIGURAÇÃO PARA IMPRESSÃO --- */
         @media print {
             header, .inputs, .controles-finais, .btn-del {
                 display: none !important;
@@ -203,11 +204,89 @@
             .card { box-shadow: none; border: none; max-width: 100%; padding: 0; }
         }
 
-        @media (max-width: 600px) {
-            .inputs { grid-template-columns: 1fr; }
-            header { flex-direction: column; padding: 10px; }
-            nav ul { margin-top: 10px; font-size: 0.8rem; }
-            .main-content { padding-top: 140px; }
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: center;
+                padding: 10px 4%;
+                gap: 8px;
+            }
+
+            nav ul {
+                gap: 10px 14px;
+            }
+
+            nav a {
+                font-size: 0.88rem;
+            }
+
+            .main-content {
+                padding: 150px 16px 40px 16px;
+            }
+
+            .inputs {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .inputs input:first-child {
+                grid-column: span 2;
+            }
+
+            table th, table td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 160px 12px 30px 12px;
+            }
+
+            .card {
+                padding: 20px 16px;
+                border-radius: 10px;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .inputs input:first-child {
+                grid-column: span 1;
+            }
+
+            .btn-add {
+                width: 100%;
+                padding: 12px;
+            }
+
+            table {
+                font-size: 0.82rem;
+            }
+
+            table th, table td {
+                padding: 8px 6px;
+            }
+
+            .total-container {
+                font-size: 1.4rem;
+            }
+
+            .controles-finais {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .controles-finais button {
+                width: 100%;
+                padding: 12px;
+                text-align: center;
+            }
         }
     </style>
 </head>

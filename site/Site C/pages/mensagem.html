@@ -15,7 +15,7 @@
             --vermelho-remover: #dc3545;
         }
 
-                /* ADICIONADO: Regra para sumir com os elementos */
+        /* ADICIONADO: Regra para sumir com os elementos */
         .escondido {
             display: none !important;
         }
@@ -66,6 +66,7 @@
             margin: 0;
             padding: 0;
             align-items: center;
+            flex-wrap: wrap; /* Permite que o menu quebre linha em telas médias */
         }
 
         nav a {
@@ -79,6 +80,7 @@
             max-width: 1000px;
             margin: 100px auto 40px auto;
             padding: 20px;
+            box-sizing: border-box;
         }
 
         .page-header {
@@ -90,6 +92,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            gap: 15px; /* Evita que o título e o botão grudem */
         }
 
         .page-header h1 {
@@ -107,6 +110,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: 0.2s;
+            white-space: nowrap; /* Impede o texto do botão de quebrar em duas linhas */
         }
 
         .btn-limpar:hover {
@@ -128,6 +132,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             position: relative;
             transition: 0.2s;
+            word-wrap: break-word; /* Força quebras de texto longo (como e-mails gigantes) */
         }
 
         .card-mensagem:hover {
@@ -143,6 +148,8 @@
             margin-bottom: 10px;
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
+            flex-wrap: wrap;
+            gap: 5px;
         }
 
         .card-body-msg p {
@@ -179,7 +186,7 @@
         .sem-mensagens {
             text-align: center;
             background: var(--branco);
-            padding: 50px;
+            padding: 50px 20px; /* Reduzido padding lateral para telas menores */
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             color: #777;
@@ -196,6 +203,71 @@
             text-align: center;
             padding: 20px;
             margin-top: 40px;
+        }
+
+        /* ==========================================
+           REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
+           ========================================== */
+
+        /* Para telas menores que 768px (Tablets e Celulares grandes) */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                position: relative; /* Muda para relativo para não sobrepor o conteúdo no mobile */
+                padding: 1rem;
+                gap: 15px;
+            }
+
+            .main-container {
+                margin-top: 20px; /* Reduz a margem já que o header não é mais fixo no mobile */
+                padding: 10px;
+            }
+
+            nav ul {
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-limpar {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Para telas menores que 480px (Celulares pequenos) */
+        @media (max-width: 480px) {
+            .logo-texto {
+                font-size: 1.2rem;
+            }
+
+            nav ul {
+                gap: 10px;
+                font-size: 0.9rem;
+                justify-content: center;
+            }
+
+            #avatarUsuario {
+                width: 35px;
+                height: 35px;
+            }
+
+            .page-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .card-mensagem {
+                padding: 15px;
+            }
+
+            .card-header-msg {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -216,7 +288,6 @@
         <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
         <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
         <li><a href="cadastro.html"><img id="avatarUsuario" src="perfil.jpg" alt="Foto de Perfil" style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; object-fit: cover;"></a></li>
-
     </ul>
 </nav>
 </header>
@@ -240,12 +311,10 @@
 
     // Função para renderizar as mensagens na tela
     function carregarMensagens() {
-        // Busca a lista salva no localStorage do navegador
         const chamados = JSON.parse(localStorage.getItem('chamadosChatbot')) || [];
 
-        // Se não houver chamados
         if (chamados.length === 0) {
-            btnLimparTudo.style.display = 'none'; // Esconde botão de limpar
+            btnLimparTudo.style.display = 'none'; 
             containerMensagens.innerHTML = `
                 <div class="sem-mensagens">
                     <h3>Sua caixa está limpa!</h3>
@@ -255,14 +324,15 @@
             return;
         }
 
-        // Se houver chamados, exibe o botão e renderiza cada um deles
         btnLimparTudo.style.display = 'block';
-        containerMensagens.innerHTML = ''; // Limpa o container antes de renderizar
+        containerMensagens.innerHTML = ''; 
 
-        // Renderiza de trás para frente (as mais recentes aparecem primeiro no topo)
-        chamados.reverse().forEach((chamado, indexOriginal) => {
-            // Como revertemos a array para exibição, precisamos recuperar o index real correto para deletar
-            const indexReal = (chamados.length - 1) - indexOriginal;
+        // Cria uma cópia e reverte para não mutar o array original do localStorage ao lidar com os índices reais
+        const chamadosInvertidos = [...chamados].reverse();
+
+        chamadosInvertidos.forEach((chamado, indexInvertido) => {
+            // Recupera o index original correto baseado no array original
+            const indexReal = (chamados.length - 1) - indexInvertido;
 
             const card = document.createElement('div');
             card.classList.add('card-mensagem');
@@ -288,9 +358,9 @@
     function deletarMensagem(index) {
         if(confirm("Tem certeza que deseja apagar este registro de atendimento?")) {
             let chamados = JSON.parse(localStorage.getItem('chamadosChatbot')) || [];
-            chamados.splice(index, 1); // Remove o item da array pelo index
-            localStorage.setItem('chamadosChatbot', JSON.stringify(chamados)); // Atualiza o localStorage
-            carregarMensagens(); // Recarrega a tela
+            chamados.splice(index, 1); 
+            localStorage.setItem('chamadosChatbot', JSON.stringify(chamados)); 
+            carregarMensagens(); 
         }
     }
 
@@ -302,7 +372,6 @@
         }
     }
 
-    // Executa automaticamente ao carregar a página
     document.addEventListener('DOMContentLoaded', carregarMensagens);
 </script>
 <script src="controle.js"></script>

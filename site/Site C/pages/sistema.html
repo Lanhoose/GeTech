@@ -16,10 +16,10 @@
       --radius: 8px;
     }
 
-            /* ADICIONADO: Regra para sumir com os elementos */
-        .escondido {
-            display: none !important;
-        }
+    /* Regra para sumir com os elementos */
+    .escondido {
+        display: none !important;
+    }
 
     * {
       margin: 0;
@@ -35,52 +35,54 @@
       scroll-behavior: smooth;
     }
 
-    /* Header e Navegação Fixa */
-        header {
-            background-color: var(--azul-industrial);
-            color: var(--branco);
-            padding: 0.5rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%; 
-            box-sizing: border-box; 
-            top: 0;
-            z-index: 1000;
-        }
+    /* Header e Navegação Fixa (Alinhado com Contato.html) */
+    header {
+        background-color: var(--azul-industrial);
+        color: var(--branco);
+        padding: 0.5rem 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        width: 100%; 
+        box-sizing: border-box; 
+        top: 0;
+        z-index: 1000;
+    }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px; 
-        }
+    .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; 
+    }
 
-        .logo-img {
-            height: 50px; 
-            display: block;
-            border-radius: 40px;
-        }
+    .logo-img {
+        height: 50px; 
+        display: block;
+        border-radius: 40px;
+    }
 
-        .logo-texto {
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-        }
+    .logo-texto {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+    }
 
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-            margin: 0;
-            padding: 0;
-            align-items: center;
-        }
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+        flex-wrap: wrap; /* ADICIONADO: Força a quebra de linha correta dos links */
+    }
 
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
     /* Banner Hero */
     .hero {
       height: 65vh;
@@ -199,11 +201,45 @@
       margin-top: 60px;
     }
 
+    /* REGRAS DE RESPONSIVIDADE IDENTICAS A CONTATO.HTML */
     @media (max-width: 768px) {
-      header { flex-direction: column; padding: 15px; text-align: center; }
-      nav { margin-top: 15px; }
-      nav a { margin: 0 10px; font-size: 0.8rem; }
-      .hero h1 { font-size: 2rem; }
+        header {
+            flex-direction: column;
+            padding: 10px;
+            position: relative; /* Evita que o card entre por baixo do menu fixo */
+        }
+
+        .logo-container {
+            margin-bottom: 10px;
+        }
+
+        nav ul {
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .hero {
+            margin-top: 0; /* Ajusta o banner por conta do header relativo */
+            height: auto;
+            padding: 60px 20px;
+        }
+
+        .hero h1 { font-size: 2rem; }
+    }
+
+    @media (max-width: 480px) {
+        nav ul {
+            gap: 10px;
+        }
+
+        nav a {
+            font-size: 0.85rem;
+        }
+
+        #avatarUsuario {
+            width: 32px !important;
+            height: 32px !important;
+        }
     }
   </style>
 </head>
@@ -215,17 +251,17 @@
         <span class="logo-texto"><strong>GE</strong>TECH</span>
     </div>
 
-<nav>
-    <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="Contato.html">Contato</a></li>
-        <li><a href="material.html">Materiais</a></li>
-        <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
-        <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
-        <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
-        <li><a href="cadastro.html"><img id="avatarUsuario" src="perfil.jpg" alt="Foto de Perfil" style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; object-fit: cover;"></a></li>
-    </ul>
-</nav>
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="Contato.html">Contato</a></li>
+            <li><a href="material.html">Materiais</a></li>
+            <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
+            <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
+            <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
+            <li><a href="cadastro.html"><img id="avatarUsuario" src="perfil.jpg" alt="Foto de Perfil" style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; object-fit: cover;"></a></li>
+        </ul>
+    </nav>
 </header>
 
   <section class="hero">
@@ -235,8 +271,6 @@
   </section>
 
   <main>
-
-
     <section id="login">
       <h2>Acesso ao Sistema</h2>
       <form id="loginForm">
@@ -331,7 +365,6 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Funções de Exibição Atualizadas com a nova classe CSS 'card-item'
     function exibirMaquinas(dados, container) {
       container.innerHTML = "";
       if (!dados) { container.innerHTML = "<p>Nenhum registro.</p>"; return; }
