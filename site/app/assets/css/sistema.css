@@ -177,6 +177,76 @@
     /* ==========================================================================
        TELA DE CARREGAMENTO (Pyodide Core)
        ========================================================================== */
+
+       .theme-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+.theme-icon {
+    font-size: 1.1rem;
+    user-select: none;
+}
+.theme-toggle {
+    position: relative; width: 44px; height: 24px;
+    background: #334155; border-radius: 12px; border: none;
+    cursor: pointer; transition: background 0.3s; flex-shrink: 0;
+}
+
+button.theme-toggle {
+    position: relative;
+    width: 44px !important;    /* Força a largura da pílula */
+    height: 24px !important;   /* Força a altura da pílula */
+    padding: 0 !important;     /* Remove paddings internos de botões normais */
+    min-width: 44px !important;
+    background: #334155; 
+    border-radius: 12px !important; 
+    border: none;
+    cursor: pointer; 
+    transition: background 0.3s; 
+    flex-shrink: 0;
+}
+
+/* Cria a bolinha branca deslizante */
+button.theme-toggle::after {
+    content: ''; 
+    position: absolute; 
+    top: 3px; 
+    left: 3px;
+    width: 18px; 
+    height: 18px; 
+    background: #fff;
+    border-radius: 50%; 
+    transition: transform 0.3s;
+}
+
+.theme-toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; background: #fff;
+    border-radius: 50%; transition: transform 0.3s;
+}
+[data-theme="light"] button.theme-toggle { 
+    background: #3498db !important; 
+}
+
+[data-theme="light"] button.theme-toggle::after { 
+    transform: translateX(20px); 
+}
+
+.btn-voltar {
+    background: var(--mod-btn-bg);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+    white-space: nowrap; /* Impede que o texto do botão quebre em duas linhas */
+}
+.btn-voltar:hover { background: var(--mod-btn-hover); transform: scale(1.04); } 
+
     #loading-screen {
       padding: 60px 40px;
       text-align: center;

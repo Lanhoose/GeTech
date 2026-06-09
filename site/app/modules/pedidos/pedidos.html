@@ -20,15 +20,12 @@
             <p id="usuario">Bem-vindo, Usuário!</p>
         </div>
         <div class="top-bar-extra">
-            <div class="theme-toggle-wrapper" title="Alternar tema claro/escuro">
-                <label class="toggle-switch">
-                    <input type="checkbox" id="theme-toggle" onchange="alternarTema()">
-                    <span class="slider"></span>
-                </label>
-                <span class="theme-label" id="theme-label">Claro</span>
-            </div>
-            <button class="btn-sair" onclick="logout()">← Voltar ao Menu</button>
-        </div>
+    <div class="theme-toggle-wrap" title="Alternar tema claro/escuro">
+    <span class="theme-icon" id="themeIcon">🌙</span>
+    <button class="theme-toggle" id="themeToggle" onclick="alternarTema()" aria-label="Alternar tema"></button>
+</div>
+    <button class="btn-sair" onclick="window.location.href='../../app.html'">← Voltar ao Menu</button>
+</div>
     </header>
 
     <!-- BARRA DE PERFIL -->
@@ -293,24 +290,44 @@
     const colMap = { 'A Fazer':'col-afazer', 'Em Andamento':'col-andamento', 'Qualidade':'col-qualidade', 'Finalizado':'col-finalizado' };
 
     // ---- TEMA ----
-    function alternarTema() {
-        const toggle = document.getElementById("theme-toggle");
-        const label  = document.getElementById("theme-label");
-        const isDark = toggle.checked;
-        document.body.classList.toggle('dark-mode', isDark);
-        if (label) label.textContent = isDark ? "Escuro" : "Claro";
-        localStorage.setItem('tema', isDark ? 'dark' : 'light');
+    // Subsitua as funções correspondentes no bloco de script do pedidos.html por estas:
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Inicializa o tema e atualiza os elementos visuais do botão
+    inicializarTema();
+    
+    carregarDadosIniciais();
+    renderizarDashboard();
+});
+
+function inicializarTema() {
+    const temaSalvo = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', temaSalvo);
+    
+    // Sincroniza o ícone do botão com o tema salvo
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+        icon.textContent = temaSalvo === 'dark' ? '🌙' : '☀️';
     }
-    // Aplicar tema salvo ao carregar
-    (function() {
-        if (localStorage.getItem('tema') === 'dark') {
-            document.body.classList.add('dark-mode');
-            const toggle = document.getElementById("theme-toggle");
-            const label  = document.getElementById("theme-label");
-            if (toggle) toggle.checked = true;
-            if (label)  label.textContent = "Escuro";
-        }
-    })();
+}
+
+function alternarTema() {
+    const temaAtual = document.documentElement.getAttribute('data-theme') || 'dark';
+    const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', novoTema);
+    localStorage.setItem('theme', novoTema);
+    
+    // Atualiza o ícone de forma dinâmica ao clicar
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+        icon.textContent = novoTema === 'dark' ? '🌙' : '☀️';
+    }
+    
+    if (typeof registrarLog === 'function') {
+        registrarLog('Tema do sistema alternado.');
+    }
+}
 
     // ---- PERFIL ----
     function trocarPerfil() {

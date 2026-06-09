@@ -43,8 +43,8 @@ body {
 .header-actions { 
     display: flex; 
     align-items: center; 
-    gap: 10px; 
-    flex-wrap: wrap; /* Garante que o botão e o toggle não esmaguem um ao outro */
+    gap: 15px;         /* Espaçamento entre o seletor de tema e o botão de voltar */
+    flex-wrap: nowrap; /* Força os elementos a ficarem estritamente na mesma linha */
 }
 
 .btn-voltar {
@@ -61,7 +61,12 @@ body {
 .btn-voltar:hover { background: var(--mod-btn-hover); transform: scale(1.04); }
 
 /* Toggle */
-.theme-toggle-wrap { display: flex; align-items: center; gap: 6px; }
+.theme-toggle-wrap { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    white-space: nowrap; /* Garante que o ícone e o botão não quebrem de linha entre si */
+}
 .theme-icon { font-size: 1rem; color: rgba(255,255,255,0.8); }
 .theme-toggle {
     position: relative; width: 44px; height: 24px;

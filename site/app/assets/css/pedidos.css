@@ -129,55 +129,26 @@ input {
     border-left: 1px solid rgba(255,255,255,0.2);
 }
 
-.theme-toggle-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    user-select: none;
+.theme-toggle-wrap { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    white-space: nowrap; /* Garante que o ícone e o botão não quebrem de linha entre si */
 }
-.theme-label {
-    color: #fff;
-    font-size: 0.78rem;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0.9;
+.theme-icon { font-size: 1rem; color: rgba(255,255,255,0.8); }
+.theme-toggle {
+    position: relative; width: 44px; height: 24px;
+    background: #334155; border-radius: 12px; border: none;
+    cursor: pointer; transition: background 0.3s; flex-shrink: 0;
 }
+.theme-toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; background: #fff;
+    border-radius: 50%; transition: transform 0.3s;
+}
+[data-theme="light"] .theme-toggle { background: var(--mod-accent); }
+[data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
 
-/* toggle switch (mesmo padrão do M.A.P) */
-.toggle-switch {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    display: inline-block;
-    flex-shrink: 0;
-}
-.toggle-switch input {
-    opacity: 0;
-    width: 0; height: 0;
-    position: absolute;
-    margin: 0; padding: 0;
-}
-.slider {
-    position: absolute;
-    inset: 0;
-    background: #334155;
-    border-radius: 12px;
-    cursor: pointer;
-    border: none;
-    transition: background 0.3s;
-}
-.slider::before {
-    content: '';
-    position: absolute;
-    top: 3px; left: 3px;
-    width: 18px; height: 18px;
-    background: #fff;
-    border-radius: 50%;
-    transition: transform 0.3s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-}
-.toggle-switch input:checked + .slider             { background: var(--mod-accent-border); }
-.toggle-switch input:checked + .slider::before     { transform: translateX(20px); }
 
 /* ── BOTÃO SAIR ── */
 .btn-sair {
