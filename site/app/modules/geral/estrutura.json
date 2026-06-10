@@ -190,15 +190,44 @@
           "name": "Site C",
           "type": "folder",
           "children": [
-            { "name": "cadastro.html", "type": "file" },
-            { "name": "Contato.html", "type": "file" },
-            { "name": "Getech.png", "type": "file" },
-            { "name": "home.html", "type": "file" },
-            { "name": "login.html", "type": "file" },
-            { "name": "loginreal.html", "type": "file" },
-            { "name": "material.html", "type": "file" },
-            { "name": "orçamento.html", "type": "file" },
-            { "name": "perfil.jpg", "type": "file" }
+            {"name":"pages", "type":"folder",
+              "children":[
+                { "name": "cadastro.html", "type": "file" },
+                { "name": "Contato.html", "type": "file" },
+                { "name": "index.html", "type": "file" },
+                { "name": "login.html", "type": "file" },
+                { "name": "material.html", "type": "file" },
+                { "name": "orçamento.html", "type": "file" },
+                { "name": "redirecionar.html", "type": "file" },
+                { "name": "sistema.html", "type": "file" }
+              ]},
+            {"name":"assets", "type":"folder",
+            "children":[
+              { "name": "css", "type": "folder","children":[
+                { "name": "cadastro.css", "type": "file" },
+                { "name": "contato.css", "type": "file" },
+                { "name": "index.css", "type": "file" },
+                { "name": "login.css", "type": "file" },
+                { "name": "material.css", "type": "file" },
+                { "name": "orcamento.css", "type": "file" },
+                { "name": "sistema.css", "type": "file" }
+              ]},
+              { "name": "js", "type": "folder", "children":[
+                { "name": "acessibilidade.js", "type": "file" },
+                { "name": "cadastro.js", "type": "file" },
+                { "name": "contato.js", "type": "file" },
+                { "name": "index.js", "type": "file" },
+                { "name": "login.js", "type": "file" },
+                { "name": "controle.js", "type": "file" },
+                { "name": "orcamento.js", "type": "file" },
+                { "name": "sistema.js", "type": "file" }
+              ]},
+              { "name": "img", "type": "folder", "children":[
+                { "name": "Getech.png", "type": "file" },
+                { "name": "perfil.jpg", "type": "file" }
+              ]}
+            ]}
+            
           ]
         },
         { "name": "index.html", "type": "file" },
