@@ -15,7 +15,7 @@
     --border-card: rgba(255, 255, 255, 0.1);
 }
 
-/* Redefinição de variáveis para o Tema Claro globalmente */
+/* Redefinição de variables para o Tema Claro globalmente */
 [data-theme="light"] {
     --bg-page-gradient: #f1f5f9;
     --bg-header: #ffffff;
@@ -263,19 +263,22 @@ body {
     font-weight: 600;
 }
 
+/* MODIFICAÇÃO: Truncamento de texto com reticências estável */
 .log-detail {
     max-width: 320px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: help; /* Indica visualmente que há um tooltip disponível */
 }
 
+/* MODIFICAÇÃO: Removida a expansão abrupta ao passar o mouse para priorizar a leitura limpa via tooltip */
 .audit-table tr:hover .log-detail {
-    white-space: normal;
+    white-space: nowrap; 
 }
 
 /* ==========================================================
-   6. BADGES DE CRITICIDADE
+   6. BADGES DE CRITICIDADE (Modificação: Cores Drásticas)
 ========================================================== */
 .badge-status-log {
     display: inline-flex;
@@ -290,22 +293,25 @@ body {
     min-width: 75px;
 }
 
+/* Info: Tons de Azul/Ciano (Padrão) */
 .badge-info {
     background: rgba(6, 182, 212, 0.08);
     color: var(--accent-cyan, #00f2fe);
-    border: 1px solid rgba(6, 182, 212, 0.2);
+    border: 1px solid rgba(6, 182, 212, 0.3);
 }
 
+/* Aviso: Tons Fortes de Amarelo/Laranja para Atenção */
 .badge-aviso {
-    background: rgba(245, 158, 11, 0.08);
-    color: #f59e0b;
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    background: rgba(245, 158, 11, 0.12);
+    color: #ff9f43;
+    border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
+/* Crítico: Tons Sólidos de Vermelho Vivo para Anomalias Graves */
 .badge-critico {
-    background: rgba(239, 68, 68, 0.08);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.15);
+    color: #ea5455;
+    border: 1px solid rgba(239, 68, 68, 0.5);
 }
 
 /* ==========================================================
@@ -332,6 +338,19 @@ body {
     background: rgba(14, 116, 144, 0.08);
     color: #0e7490;
     border-color: rgba(14, 116, 144, 0.2);
+}
+
+/* Adaptação de Badges de Alerta para Tema Claro */
+[data-theme="light"] .badge-aviso {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+[data-theme="light"] .badge-critico {
+    background: rgba(220, 38, 38, 0.08);
+    color: #dc2626;
+    border-color: rgba(220, 38, 38, 0.25);
 }
 
 /* ==========================================================
@@ -466,7 +485,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 14px;
-    align-items: flex-end;
+    align-items: flex-end; /* Mantém o alinhamento plano perfeito pela base dos campos */
     background: var(--bg-card, rgba(30, 41, 59, 0.5));
     border: 1px solid var(--glass-border);
     border-radius: 12px;
@@ -474,7 +493,6 @@ body {
     box-shadow: var(--shadow-sm, 0 4px 12px rgba(0,0,0,0.2));
     width: 100%;
     box-sizing: border-box;
-    /* Linha transition antiga removida para evitar que anule a transição de entrada global */
 }
 
 .filter-group {
@@ -505,6 +523,7 @@ body {
     transition: border-color 0.2s, background 0.3s;
     width: 100%;
     box-sizing: border-box;
+    height: 41px; /* MODIFICAÇÃO: Altura explícita para sincronização perfeita com o botão */
 }
 
 /* FIX DA IMAGEM 2: Força as opções nativas do select a terem cores legíveis independente do tema do SO */
@@ -537,7 +556,7 @@ body {
     padding-right: 36px;
 }
 
-/* Botão limpar filtros */
+/* MODIFICAÇÃO: Botão limpar filtros com harmonização vertical completa */
 .btn-filter-clear {
     background: transparent;
     border: 1px solid var(--border-card);
@@ -550,7 +569,11 @@ body {
     transition: all 0.2s ease;
     white-space: nowrap;
     align-self: flex-end;
-    height: 41px;
+    height: 41px; /* Casamento exato de altura com os inputs adjacentes */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .btn-filter-clear:hover {
@@ -612,6 +635,12 @@ body {
     color: #475569;
 }
 
+[data-theme="light"] .btn-filter-clear:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+}
+
 /* ==========================================================
    12. RESPONSIVIDADE — novos elementos
 ========================================================== */
@@ -639,5 +668,6 @@ body {
 
     .btn-filter-clear {
         width: 100%;
+        align-self: auto;
     }
 }

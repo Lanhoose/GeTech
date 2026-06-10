@@ -146,37 +146,40 @@
 
         // ── RENDERIZAÇÃO ────────────────────────────────────────────────────
         function renderizarLogs(logs) {
-            const tbody    = document.getElementById('log-table-body');
-            const contador = document.getElementById('contadorResultados');
+    const tbody    = document.getElementById('log-table-body');
+    const contador = document.getElementById('contadorResultados');
 
-            tbody.innerHTML = '';
+    tbody.innerHTML = '';
 
-            if (contador) {
-                contador.textContent = `${logs.length} registro${logs.length !== 1 ? 's' : ''} encontrado${logs.length !== 1 ? 's' : ''}`;
-            }
+    if (contador) {
+        contador.textContent = `${logs.length} registro${logs.length !== 1 ? 's' : ''} encontrado${logs.length !== 1 ? 's' : ''}`;
+    }
 
-            if (logs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-secondary);">
-                    Nenhum registro corresponde aos filtros applied.
-                </td></tr>`;
-                return;
-            }
+    if (logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--text-secondary);">
+            Nenhum registro corresponde aos filtros aplicados.
+        </td></tr>`;
+        return;
+    }
 
-            logs.forEach(log => {
-                const dataFormatada = new Date(log.dataHora).toLocaleString('pt-BR');
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="log-id">${log.id}</td>
-                    <td class="log-date">${dataFormatada}</td>
-                    <td class="log-user"><strong>${log.usuario}</strong></td>
-                    <td class="log-action">${log.acao}</td>
-                    <td class="log-detail">${log.detalhe}</td>
-                    <td><span class="badge-status-log badge-${log.criticidade}">${log.criticidade.toUpperCase()}</span></td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
+    logs.forEach(log => {
+        const dataFormatada = new Date(log.dataHora).toLocaleString('pt-BR');
+        const row = document.createElement('tr');
+        
+        // Define a criticidade padrão caso venha vazia ou indefinida
+        const criticidadeClasse = log.criticidade ? log.criticidade.toLowerCase() : 'info';
 
+        row.innerHTML = `
+            <td class="log-id">${log.id}</td>
+            <td class="log-date">${dataFormatada}</td>
+            <td class="log-user"><strong>${log.usuario}</strong></td>
+            <td class="log-action">${log.acao}</td>
+            <td class="log-detail" title="${log.detalhe}">${log.detalhe}</td>
+            <td><span class="badge-status-log badge-${criticidadeClasse}">${criticidadeClasse.toUpperCase()}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
         function carregarTabelaLogs() {
             _logsCache = Auditoria.obterLogs();
             renderizarLogs(_logsCache);
