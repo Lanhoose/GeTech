@@ -38,4 +38,28 @@ document.addEventListener("DOMContentLoaded", function () {
             elemento.classList.add('escondido');
         });
     }
+
+    // =================================================================
+    // ADICIONADO APENAS A LOGICA PRO BOTAO SAIR APARECER SE LOGADO
+    // =================================================================
+    const botaoSairContainer = document.getElementById('menuSair');
+    const botaoSairLink = document.getElementById('btnSair'); // CORRIGIDO: Espaço removido aqui!
+
+    // Controla se o botão deve aparecer ou sumir
+    if (sessao && sessao.loginAtivo) {
+        if (botaoSairContainer) botaoSairContainer.style.display = 'inline-block';
+    } else {
+        if (botaoSairContainer) botaoSairContainer.style.display = 'none';
+    }
+
+    // Ação do clique para deslogar
+    if (botaoSairLink) {
+        botaoSairLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            localStorage.removeItem("sessaoGeTech");
+            alert("Sessão encerrada com sucesso!");
+            window.location.href = "login.html";
+        });
+    }
+    // =================================================================
 });
