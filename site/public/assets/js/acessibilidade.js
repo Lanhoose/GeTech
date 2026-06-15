@@ -1,3 +1,5 @@
+
+
 // assets/js/acessibilidade.js
 
 document.addEventListener("DOMContentLoaded", () => {
