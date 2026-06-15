@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
         alert("Acesso restrito. Apenas gestores podem acessar este painel.");
         // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/Site C/pages/index.html`;
+        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
         return; // Para a execução do resto do script
     }
 
