@@ -1,3 +1,56 @@
+// ==========================================
+// FUNÇÕES DE MÁSCARA / FORMATAÇÃO (Regex)
+// ==========================================
+
+// Formata Telefone dinamicamente: (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
+function formatarTelefone(valor) {
+    valor = valor.replace(/\D/g, ""); // Remove tudo o que não for número
+    
+    if (valor.length > 10) {
+        // Celular (9 dígitos): (11) 99999-9999
+        return valor.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+    } else {
+        // Telefone fixo (8 dígitos): (11) 9999-9999
+        return valor.replace(/^(\d{2})(\d{4})(\d{4})$/, "($1) $2-$3");
+    }
+}
+
+// Formata CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00)
+function formatarDocumento(valor) {
+    valor = valor.replace(/\D/g, ""); // Remove tudo o que não for número
+
+    if (valor.length <= 11) {
+        // Máscara de CPF
+        valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+        valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
+        return valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+    } else {
+        // Máscara de CNPJ (limita a 14 números)
+        valor = valor.substring(0, 14);
+        valor = valor.replace(/^(\d{2})(\d)/, "$1.$2");
+        valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+        valor = valor.replace(/\.(\d{3})(\d)/, ".$1/$2");
+        return valor.replace(/(\d{4})(\d)/, "$1-$2");
+    }
+}
+
+// ==========================================
+// OUVINTES DE EVENTOS (Máscaras em tempo real)
+// ==========================================
+
+// Aplica máscara ao digitar no campo de Telefone
+document.getElementById('tel').addEventListener('input', function(e) {
+    let numeros = e.target.value.replace(/\D/g, "").substring(0, 11);
+    e.target.value = formatarTelefone(numeros);
+});
+
+// Aplica máscara ao digitar no campo de CPF/CNPJ
+document.getElementById('doc').addEventListener('input', function(e) {
+    let numeros = e.target.value.replace(/\D/g, "").substring(0, 14);
+    e.target.value = formatarDocumento(numeros);
+});
+
+
 function converterParaBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
