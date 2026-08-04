@@ -3,7 +3,13 @@
             --azul-alerta: #3d92ff;
             --cinza-claro: #f4f4f4;
             --branco: #ffffff;
+            --fundo-tema-escuro: #232626;
+            --card-tema-escuro: #005CA1;
+            --listra-card-escuro: #7AC7FF;
+;
+
         }
+        
 
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -79,7 +85,6 @@
             color: white;
             text-align: center;
             padding: 40px 20px;
-            margin-top: 66px; /* Ajustado dinamicamente para não cobrir o conteúdo */
             box-sizing: border-box;
         }
 
@@ -396,3 +401,145 @@
                 height: 280px;
             }
         }
+
+/* ==========================================================================
+   SUPORTE AO MODO ESCURO (CORRIGIDO E DE ALTO CONTRASTE)
+   ========================================================================== */
+
+/* Fundo Geral e Textos */
+body.modo-escuro {
+    background-color: var(--fundo-tema-escuro) !important;
+    color: #f0f0f0 !important;
+}
+
+body.modo-escuro .sobre,
+body.modo-escuro .servicos,
+body.modo-escuro .chatbot-section {
+    background-color: var(--fundo-tema-escuro) !important;
+    color: #f0f0f0 !important;
+}
+
+body.modo-escuro .logo-texto {
+    color: #ffffff !important;
+}chat-header
+
+body.modo-escuro .card,
+body.modo-escuro .card-sobre,
+body.modo-escuro .chat-container {
+    background-color: var(--card-tema-escuro) !important;
+    color: #ffffff !important;
+    border-color: var(--listra-card-escuro) !important;
+}
+
+body.modo-escuro .card:hover,
+body.modo-escuro .card-sobre:hover {
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.5) !important;
+}
+body.modo-escuro .btn-contato {
+    background-color: var(--card-tema-escuro) !important;
+    color: #ffffff !important;
+    border: 2px solid var(--card-tema-escuro) !important;
+}
+/* Títulos Globais no Modo Escuro */
+body.modo-escuro h1,
+body.modo-escuro h2,
+body.modo-escuro h3,
+body.modo-escuro h4 {
+    color: #ffffff !important;
+}
+
+/* 1. CORREÇÃO: Card "Sobre a GeTech" */
+body.modo-escuro .card-sobre {
+    background-color: var(--card-tema-escuro) !important;
+    border-left: 5px solid var(--listra-card-escuro ) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.modo-escuro .card-sobre h2,
+body.modo-escuro .topico-item h4 {
+    color: #ffffff !important;
+}
+
+body.modo-escuro .topico-item p {
+    color: #e2e8f0 !important; /* Texto claro totalmente legível */
+}
+
+/* 2. CORREÇÃO: Cards "Nossas Especialidades" */
+body.modo-escuro .grid-servicos .card {
+    background-color: var(--card-tema-escuro) !important;
+    border-bottom: 4px solid var(--listra-card-escuro) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.modo-escuro .grid-servicos .card:hover {
+    border-bottom-color: var(--azul-alerta) !important;
+}
+
+body.modo-escuro .grid-servicos .card h3 {
+    color: #ffffff !important;
+}
+
+body.modo-escuro .grid-servicos .card p {
+    color: #e2e8f0 !important; /* Texto claro sobre o card azul escuro */
+}
+
+/* 3. CORREÇÃO: Área do Chatbot */
+body.modo-escuro .chat-container {
+    background-color: var(--card-tema-escuro) !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+}
+
+body.modo-escuro .chat-header {
+    background-color: var(--card-tema-escuro) !important;
+    color: #ffffff !important;
+}
+
+body.modo-escuro .chat-messages {
+    background-color: #1a1d1d !important;
+}
+
+body.modo-escuro .message.user {
+    background-color: var(--azul-industrial) !important;
+    color: #ffffff !important;
+}
+
+body.modo-escuro .message.bot {
+    background-color: var(--card-tema-escuro) !important;
+    color: #ffffff !important;
+}
+
+body.modo-escuro header {
+    background-color: var(--card-tema-escuro) !important;
+    color: #ffffff !important;
+}
+
+body.modo-escuro .chat-input-area {
+    background-color: var(--card-tema-escuro) !important;
+    border-top: 1px solid #333a40 !important;
+}
+
+body.modo-escuro .message.bot {
+    background-color: var(--card-tema-escuro) !important;
+    color: #ffffff !important;
+}
+
+body.modo-escuro .chat-input-area {
+    background-color: var(--card-tema-escuro) !important;
+    border-top: 1px solid #333a40 !important;
+}
+
+body.modo-escuro .chat-input-area input {
+    background-color: #1a1d1d !important;
+    color: #ffffff !important;
+    border: 1px solid #333a40 !important;
+}
+
+body.modo-escuro .chat-input-area input::placeholder {
+    color: #a0aec0 !important;
+}
+
+/* Footer */
+body.modo-escuro footer {
+    background-color: #151717 !important;
+    color: #e2e8f0 !important;
+}

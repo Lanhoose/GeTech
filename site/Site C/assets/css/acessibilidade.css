@@ -1,0 +1,122 @@
+/* --- WIDGET FLUTUANTE DE ACESSIBILIDADE --- */
+.acessibilidade-widget {
+  position: fixed;
+  top: 50%;                    /* Posiciona a 50% do topo da tela */
+  left: 25px;
+  transform: translateY(-50%); /* Centraliza perfeitamente no meio da altura */
+  z-index: 9999;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  cursor: move;               /* Cursor indicando que é arrastável */
+  user-select: none;          /* Evita selecionar textos enquanto arrasta */
+  touch-action: none;         /* Melhora o suporte para telas touch */
+}
+
+.btn-acessibilidade-toggle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--azul-industrial, #0664d7);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.btn-acessibilidade-toggle:hover {
+  transform: scale(1.1) rotate(30deg);
+}
+
+.acessibilidade-menu {
+  display: none;
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  width: 260px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  padding: 15px;
+  color: #333333;
+}
+
+.acessibilidade-menu.ativo {
+  display: block;
+  animation: popup 0.2s ease-out;
+}
+
+@keyframes popup {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.acessibilidade-menu h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #111;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.acessibilidade-opcao {
+  margin-bottom: 12px;
+}
+
+.acessibilidade-opcao label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.acessibilidade-botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.acessibilidade-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: #f4f4f4;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.acessibilidade-btn:hover {
+  background: #e0e0e0;
+}
+
+.acessibilidade-select {
+  width: 100%;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
+
+/* --- ESTILOS GLOBAIS DE ACESSIBILIDADE --- */
+
+/* 1. MODO ESCURO */
+
+/* 2. MODO DALTONISMO (Filtros de Visão via SVG/CSS Matrix) */
+body.daltonismo-protanopia {
+  filter: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filbtnAcessibilidadeter id="f"><feColorMatrix type="matrix" values="0.56667 0.43333 0 0 0 0.55833 0.44167 0 0 0 0 0.24167 0.75833 0 0 0 0 0 1 0"/></filter></svg>#f');
+}
+
+body.daltonismo-deuteranopia {
+  filter: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="f"><feColorMatrix type="matrix" values="0.625 0.375 0 0 0 0.7 0.3 0 0 0 0 0.3 0.7 0 0 0 0 0 1 0"/></filter></svg>#f');
+}
+
+body.daltonismo-tritanopia {
+  filter: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="f"><feColorMatrix type="matrix" values="0.95 0.05 0 0 0 0 0.43333 0.56667 0 0 0 0.475 0.525 0 0 0 0 0 1 0"/></filter></svg>#f');
+}

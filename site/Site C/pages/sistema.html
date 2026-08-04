@@ -6,6 +6,7 @@
   <title>GeTech - Sistema de Manutenção</title>
   <link rel="shortcut icon" href="../assets/img/Getech.png" type="image/x-icon">
   <link rel="stylesheet" href="../assets/css/sistema.css" />
+  <link rel="stylesheet" href="../assets/css/acessibilidade.css">
 </head>
 <body>
 
@@ -80,7 +81,7 @@
         <input type="text" id="numeroSerie" required />
         <button type="submit">Cadastrar Equipamento</button>
       </form>
-      <p id="dadosmaquina" style="text-align: center; margin-top: 10px; color: var(--azul-industrial);"></p>
+      <p id="dadosmaquina" class="texto"></p>
 
       <h3>Consultar Inventário</h3>
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -104,7 +105,7 @@
         </select>
         <button type="submit">Abrir Ordem de Serviço</button>
       </form>
-      <p id="ordem_servico" style="text-align: center; margin-top: 10px; color: var(--azul-industrial);"></p>
+      <p id="ordem_servico" class="texto"></p>
 
       <h3>Histórico de Intervenções</h3>
       <button id="btnConsultarOS" class="btn-outline">Atualizar Histórico</button>
