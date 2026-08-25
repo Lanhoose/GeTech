@@ -104,13 +104,8 @@
   background: #fff;
 }
 
-/* --- ESTILOS GLOBAIS DE ACESSIBILIDADE --- */
-
-/* 1. MODO ESCURO */
-
-/* 2. MODO DALTONISMO (Filtros de Visão via SVG/CSS Matrix) */
 body.daltonismo-protanopia {
-  filter: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filbtnAcessibilidadeter id="f"><feColorMatrix type="matrix" values="0.56667 0.43333 0 0 0 0.55833 0.44167 0 0 0 0 0.24167 0.75833 0 0 0 0 0 1 0"/></filter></svg>#f');
+  filter: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="f"><feColorMatrix type="matrix" values="0.56667 0.43333 0 0 0 0.55833 0.44167 0 0 0 0 0.24167 0.75833 0 0 0 0 0 1 0"/></filter></svg>#f');
 }
 
 body.daltonismo-deuteranopia {

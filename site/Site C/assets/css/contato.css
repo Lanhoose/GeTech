@@ -1,16 +1,27 @@
+/* =========================================================
+   VARIÁVEIS PADRÃO (TEMA CLARO / DEFAULT)
+   ========================================================= */
 :root {
     --azul-industrial: #0664d7;
     --azul-action: #3d92ff;
     --cinza-fundo: #f4f7f6;
     --branco: #ffffff;
+    --texto-principal: #333333;
+    --texto-secundario: #666666;
+    --borda-input: #e1e1e1;
     --verde-whatsapp: #25d366;
+    --sombra-card: rgba(0, 0, 0, 0.1);
 }
 
 .escondido {
     display: none !important;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,8 +29,11 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    color: var(--texto-principal);
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* --- HEADER --- */
 header {
     background-color: var(--azul-industrial);
     color: var(--branco);
@@ -32,6 +46,7 @@ header {
     box-sizing: border-box; 
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 .logo-container {
@@ -73,7 +88,11 @@ nav a:hover {
     color: var(--azul-action);
 }
 
-/* --- AJUSTE DO AVATAR --- */
+nav a.btn-sair-nav {
+    color: #ef4444;
+    font-weight: bold;
+}
+
 #avatarUsuario {
     width: 38px !important;
     height: 38px !important;
@@ -85,6 +104,7 @@ nav a:hover {
     display: inline-block;
 }
 
+/* --- CONTEÚDO PRINCIPAL --- */
 .main-wrapper {
     flex: 1;
     display: flex;
@@ -99,9 +119,10 @@ nav a:hover {
     max-width: 450px;
     padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px var(--sombra-card);
     border-top: 8px solid var(--azul-industrial);
     position: relative;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .header-logo {
@@ -121,7 +142,7 @@ nav a:hover {
 }
 
 .header-logo p {
-    color: #666;
+    color: var(--texto-secundario);
     font-size: 0.9rem;
     margin-top: 5px;
 }
@@ -134,16 +155,18 @@ label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #333;
+    color: var(--texto-principal);
 }
 
 input {
     width: 100%;
     padding: 12px;
-    border: 2px solid #e1e1e1;
+    border: 2px solid var(--borda-input);
     border-radius: 6px;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    background-color: var(--branco);
+    color: var(--texto-principal);
+    transition: border-color 0.3s, background-color 0.3s;
 }
 
 input:focus {
@@ -166,10 +189,11 @@ button.submit-btn {
 }
 
 button.submit-btn:hover {
-    background-color: #33A5FF;
+    filter: brightness(0.9);
     transform: translateY(-2px);
 }
 
+/* --- BOTÃO FLUTUANTE CHATBOT/WHATSAPP --- */
 .chatbot-btn {
     position: fixed;
     bottom: 30px;
@@ -194,16 +218,59 @@ button.submit-btn:hover {
     position: fixed;
     bottom: 40px;
     right: 100px;
-    background: white;
+    background: var(--branco);
     padding: 8px 15px;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: bold;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    color: #333;
+    box-shadow: 0 2px 10px var(--sombra-card);
+    color: var(--texto-principal);
     z-index: 1000;
 }
 
+footer {
+    background: #222222;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   1. MODO ESCURO (Dark Mode)
+   ========================================================= */
+body.modo-escuro {
+    --cinza-fundo: #181a1b;
+    --branco: #232626;
+    --texto-principal: #e8e6e3;
+    --texto-secundario: #a1b0cb;
+    --borda-input: #34383a;
+    
+    --azul-industrial: #005ca1;
+    --azul-action: #7ac7ff;
+    
+    --sombra-card: rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================================
+   2. TEMAS PARA DALTONISMO
+   ========================================================= */
+body.daltonismo-protanopia,
+body.daltonismo-deuteranopia {
+    --azul-industrial: #0072b2;
+    --azul-action: #e69f00;
+    --verde-whatsapp: #0072b2;
+}
+
+body.daltonismo-tritanopia {
+    --azul-industrial: #cc79a7;
+    --azul-action: #d55e00;
+    --verde-whatsapp: #cc79a7;
+}
+
+/* =========================================================
+   RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================= */
 @media (max-width: 768px) {
     header {
         flex-direction: column;

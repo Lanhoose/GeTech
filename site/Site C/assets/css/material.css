@@ -1,22 +1,58 @@
+/* =========================================================
+   VARIÁVEIS PADRÃO (TEMA CLARO / DEFAULT)
+   ========================================================= */
 :root {
     --azul-industrial: #0664d7;
     --azul-alerta: #3d92ff;
     --cinza-claro: #f4f4f4;
     --branco: #ffffff;
+    --texto-principal: #333333;
+    --texto-secundario: #555555;
+    
+    --fundo-pagina: #ffffff;
+    --titulo-secao: #007bff;
+    
+    --card-fundo: #ffffff;
+    --card-borda: #e9ecef;
+    --sombra-card: rgba(0, 0, 0, 0.06);
+    
+    --quiz-secao-fundo: #e9ecef;
+    --opcao-fundo: #ffffff;
+    --opcao-borda: #dddddd;
+    --opcao-hover: #e2e8f0;
+    
+    --cor-sucesso: #22c55e;
+    --cor-erro: #ef4444;
+    --cor-secundaria: #6c757d;
+    
+    --cor-rodape-fundo: #222222;
+    --cor-rodape-texto: #ffffff;
+}
+
+.escondido {
+    display: none !important;
+}
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #ffffff;
-    color: #0056b3;
-    padding-top: 90px; 
+    background-color: var(--fundo-pagina);
+    color: var(--texto-principal);
+    padding-top: 90px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* --- HEADER --- */
 header {
     background-color: var(--azul-industrial);
     color: var(--branco);
@@ -29,6 +65,7 @@ header {
     box-sizing: border-box; 
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 .logo-container {
@@ -64,6 +101,17 @@ nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+nav a:hover {
+    color: var(--azul-alerta);
+}
+
+nav a.btn-sair-nav {
+    color: #ef4444;
+    font-weight: bold;
 }
 
 #avatarUsuario {
@@ -77,27 +125,25 @@ nav a {
     display: inline-block;
 }
 
-.escondido {
-    display: none !important;
-}
-
+/* --- ESTRUTURA PRINCIPAL --- */
 main {
     max-width: 850px;
     width: 100%;
     box-sizing: border-box;
     margin: 30px auto;
     padding: 0 20px;
+    flex: 1;
 }
 
-/* --- MANUAIS DAS MÁQUINAS (LARGURA TOTAL) --- */
+/* --- MANUAIS DAS MÁQUINAS --- */
 #lista-documentos {
     width: 100%;
     box-sizing: border-box;
 }
 
 #lista-documentos h2 {
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
+    color: var(--titulo-secao);
+    border-bottom: 2px solid var(--titulo-secao);
     padding-bottom: 10px;
     margin-bottom: 20px;
 }
@@ -117,12 +163,12 @@ main {
     align-items: center;
     width: 100%;
     box-sizing: border-box;
-    background-color: #ffffff;
+    background-color: var(--card-fundo);
     padding: 16px 24px;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e9ecef;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 6px var(--sombra-card);
+    border: 1px solid var(--card-borda);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s;
 }
 
 .documento:hover {
@@ -133,7 +179,7 @@ main {
 .documento span {
     font-weight: bold;
     font-size: 1.05rem;
-    color: #333333;
+    color: var(--texto-principal);
 }
 
 .documento a {
@@ -152,15 +198,16 @@ main {
     background-color: var(--azul-alerta);
 }
 
+/* --- SEÇÃO DO QUIZ E CARROSSEL --- */
 #informacoes-gerais {
     margin-top: 40px;
     padding: 20px;
-    background-color: #e9ecef;
+    background-color: var(--quiz-secao-fundo);
     border-radius: 8px;
-    color: #333;
+    color: var(--texto-principal);
+    transition: background-color 0.3s;
 }
 
-/* --- CARROSSEL E ANIMAÇÕES DE DESLIZE (SLIDE) --- */
 #quiz-carrossel {
     display: flex;
     align-items: center;
@@ -171,14 +218,14 @@ main {
 }
 
 .card-tema {
-    background-color: var(--branco);
+    background-color: var(--card-fundo);
     border: 2px solid var(--azul-industrial);
     border-radius: 12px;
     padding: 25px;
     text-align: center;
     flex: 1;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    box-shadow: 0 4px 10px var(--sombra-card);
+    transition: transform 0.2s ease, opacity 0.2s ease, background-color 0.3s;
 }
 
 .slide-out-left {
@@ -234,12 +281,12 @@ main {
 
 .card-tema h3 {
     margin: 10px 0;
-    color: #0056b3;
+    color: var(--azul-industrial);
 }
 
 .card-tema p {
     font-size: 0.95rem;
-    color: #555;
+    color: var(--texto-secundario);
     margin-bottom: 20px;
 }
 
@@ -310,14 +357,16 @@ main {
 
 #quiz-pergunta {
     margin: 15px 0;
+    color: var(--texto-principal);
 }
 
 .opcao-btn {
     display: block;
     width: 100%;
     text-align: left;
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: var(--opcao-fundo);
+    border: 1px solid var(--opcao-borda);
+    color: var(--texto-principal);
     padding: 12px;
     margin-bottom: 8px;
     border-radius: 5px;
@@ -327,19 +376,19 @@ main {
 }
 
 .opcao-btn:hover:not(:disabled) {
-    background-color: #e2e8f0;
+    background-color: var(--opcao-hover);
 }
 
 .opcao-btn.correta {
-    background-color: #22c55e !important;
-    color: white;
-    border-color: #22c55e;
+    background-color: var(--cor-sucesso) !important;
+    color: white !important;
+    border-color: var(--cor-sucesso);
 }
 
 .opcao-btn.incorreta {
-    background-color: #ef4444 !important;
-    color: white;
-    border-color: #ef4444;
+    background-color: var(--cor-erro) !important;
+    color: white !important;
+    border-color: var(--cor-erro);
 }
 
 .acoes-resultado {
@@ -350,28 +399,80 @@ main {
 }
 
 .btn-secundario {
-    background-color: #6c757d !important;
+    background-color: var(--cor-secundaria) !important;
+    color: white !important;
 }
 
 .btn-secundario:hover {
-    background-color: #5a6268 !important;
+    filter: brightness(0.9);
 }
 
 footer {
-    background: #222;
-    color: white;
+    background: var(--cor-rodape-fundo);
+    color: var(--cor-rodape-texto);
     text-align: center;
     min-height: 17vh;
     padding: 40px 20px;
     margin-top: 60px;
 }
 
+/* =========================================================
+   1. MODO ESCURO (Dark Mode)
+   ========================================================= */
+body.modo-escuro {
+    --fundo-pagina: #181a1b;
+    --cinza-claro: #2c3032;
+    --branco: #232626;
+    --texto-principal: #e8e6e3;
+    --texto-secundario: #a1b0cb;
+    
+    --azul-industrial: #005ca1;
+    --azul-alerta: #7ac7ff;
+    --titulo-secao: #7ac7ff;
+    
+    --card-fundo: #232626;
+    --card-borda: #34383a;
+    --sombra-card: rgba(0, 0, 0, 0.4);
+    
+    --quiz-secao-fundo: #1c1e1f;
+    --opcao-fundo: #2a2e30;
+    --opcao-borda: #3c4245;
+    --opcao-hover: #373c3e;
+    
+    --cor-rodape-fundo: #101213;
+    --cor-rodape-texto: #d1d5db;
+}
+
+/* =========================================================
+   2. TEMAS PARA DALTONISMO
+   ========================================================= */
+body.daltonismo-protanopia,
+body.daltonismo-deuteranopia {
+    --azul-industrial: #0072b2;
+    --azul-alerta: #e69f00;
+    --titulo-secao: #0072b2;
+    --cor-sucesso: #0072b2;
+    --cor-erro: #d55e00;
+}
+
+body.daltonismo-tritanopia {
+    --azul-industrial: #cc79a7;
+    --azul-alerta: #d55e00;
+    --titulo-secao: #cc79a7;
+    --cor-sucesso: #cc79a7;
+    --cor-erro: #d55e00;
+}
+
+/* =========================================================
+   RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================= */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
         align-items: center;
         padding: 10px 4%;
         gap: 8px;
+        position: relative;
     }
 
     nav ul {
@@ -383,7 +484,7 @@ footer {
     }
 
     body {
-        padding-top: 130px;
+        padding-top: 20px;
     }
 
     main {
@@ -393,10 +494,6 @@ footer {
 }
 
 @media (max-width: 480px) {
-    body {
-        padding-top: 140px;
-    }
-
     #avatarUsuario {
         width: 32px !important;
         height: 32px !important;

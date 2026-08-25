@@ -1,10 +1,17 @@
+/* =========================================================
+   VARIÁVEIS PADRÃO (TEMA CLARO / DEFAULT)
+   ========================================================= */
 :root {
     --azul-industrial: #0664d7;
     --azul-action: #3d92ff;
     --cinza-fundo: #f4f7f6;
     --branco: #ffffff;
     --preto-suave: #333333;
+    --texto-secundario: #666666;
+    --borda-input: #e2e8f0;
+    --fundo-input: #fafafa;
     --transicao-suave: cubic-bezier(0.4, 0, 0.2, 1);
+    --sombra-card: rgba(0, 0, 0, 0.08);
 }
 
 .escondido {
@@ -24,6 +31,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
     color: var(--preto-suave);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 header {
@@ -115,9 +123,10 @@ nav a:hover {
     max-width: 650px;
     padding: 32px 24px;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    box-shadow: 0 10px 30px var(--sombra-card);
     border-top: 6px solid var(--azul-industrial);
     box-sizing: border-box;
+    transition: background 0.3s, border-color 0.3s;
 }
 
 .cadastro-card h2 {
@@ -126,6 +135,13 @@ nav a:hover {
     margin-bottom: 6px;
     font-size: 1.8rem;
     letter-spacing: 0.5px;
+}
+
+.cadastro-card p.subtitulo {
+    text-align: center;
+    color: var(--texto-secundario);
+    margin-bottom: 20px;
+    font-size: 0.95rem;
 }
 
 .form-grid {
@@ -148,11 +164,11 @@ label {
     margin-bottom: 6px;
     font-weight: 600;
     font-size: 0.9rem;
-    color: #444;
+    color: var(--preto-suave);
 }
 
 .perfil-selector {
-    background-color: #f0f7ff;
+    background-color: var(--fundo-input);
     border: 2px solid var(--azul-industrial) !important;
     font-weight: bold;
     color: var(--azul-industrial);
@@ -164,12 +180,12 @@ label {
 input, select {
     width: 100%;
     padding: 12px 14px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--borda-input);
     border-radius: 8px;
     font-size: 1rem;
     color: var(--preto-suave);
-    background-color: #fafafa;
-    transition: border-color 0.2s, background-color 0.2s;
+    background-color: var(--fundo-input);
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
     box-sizing: border-box;
     -webkit-appearance: none;
 }
@@ -195,8 +211,15 @@ input:focus, select:focus {
 }
 
 .btn-upload-custom:hover {
-    background-color: #f0f7ff;
+    background-color: var(--fundo-input);
     border-style: solid;
+}
+
+.nome-arquivo-texto {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: var(--texto-secundario);
 }
 
 .btn-cadastro {
@@ -215,7 +238,7 @@ input:focus, select:focus {
 }
 
 .btn-cadastro:hover {
-    background-color: #0554b7;
+    filter: brightness(0.9);
 }
 
 .btn-cadastro:active {
@@ -228,6 +251,16 @@ input:focus, select:focus {
     font-size: 0.95rem;
 }
 
+.link-login {
+    color: var(--azul-industrial);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-login:hover {
+    text-decoration: underline;
+}
+
 footer {
     background: #222;
     color: white;
@@ -236,6 +269,36 @@ footer {
     font-size: 0.9rem;
 }
 
+/* =========================================================
+   1. MODO ESCURO
+   ========================================================= */
+body.modo-escuro {
+    --cinza-fundo: #181a1b;
+    --branco: #232626;
+    --preto-suave: #e8e6e3;
+    --texto-secundario: #a1b0cb;
+    --borda-input: #34383a;
+    --fundo-input: #1c1e1f;
+    --azul-industrial: #005ca1;
+    --azul-action: #7ac7ff;
+    --sombra-card: rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================================
+   2. DALTONISMO (Ajuste de Paletas Diretas no CSS)
+   ========================================================= */
+body.daltonismo-protanopia,
+body.daltonismo-deuteranopia {
+    --azul-industrial: #0072b2;
+    --azul-action: #e69f00;
+}
+
+body.daltonismo-tritanopia {
+    --azul-industrial: #cc79a7;
+    --azul-action: #d55e00;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
     header {
         flex-direction: column;

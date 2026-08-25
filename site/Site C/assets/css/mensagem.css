@@ -1,23 +1,51 @@
+/* =========================================================
+   VARIÁVEIS PADRÃO (TEMA CLARO / DEFAULT)
+   ========================================================= */
 :root {
     --azul-industrial: #0664d7;
-    --azul-alerta: #3d92ff ;
+    --azul-alerta: #3d92ff;
     --cinza-claro: #f4f4f4;
     --branco: #ffffff;
+    --texto-principal: #333333;
+    --texto-secundario: #666666;
+    --texto-label: #555555;
+    
+    --fundo-pagina: #e9ecef;
+    --card-fundo: #ffffff;
+    --card-borda-header: #eeeeee;
+    --problema-fundo: #f8f9fa;
+    --sombra-card: rgba(0, 0, 0, 0.05);
+    
     --vermelho-remover: #dc3545;
+    --vermelho-hover: #bd2130;
+    
+    --cor-rodape-fundo: #222222;
+    --cor-rodape-texto: #ffffff;
 }
 
 .escondido {
     display: none !important;
 }
 
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     line-height: 1.6;
-    color: #333;
-    background-color: #e9ecef;
+    color: var(--texto-principal);
+    background-color: var(--fundo-pagina);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* --- HEADER --- */
 header {
     background-color: var(--azul-industrial);
     color: var(--branco);
@@ -30,6 +58,7 @@ header {
     box-sizing: border-box; 
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 .logo-container {
@@ -47,6 +76,7 @@ header {
 .logo-texto {
     font-size: 1.5rem;
     letter-spacing: 1px;
+    color: var(--branco);
 }
 
 nav ul {
@@ -57,15 +87,26 @@ nav ul {
     padding: 0;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
+    font-size: 0.95rem;
+    transition: color 0.2s;
 }
 
-/* --- AJUSTE DO AVATAR --- */
+nav a:hover {
+    color: var(--azul-alerta);
+}
+
+nav a.btn-sair-nav {
+    color: #ef4444;
+    font-weight: bold;
+}
+
 #avatarUsuario {
     width: 38px !important;
     height: 38px !important;
@@ -77,23 +118,27 @@ nav a {
     display: inline-block;
 }
 
+/* --- ESTRUTURA PRINCIPAL --- */
 .main-container {
     max-width: 1000px;
+    width: 100%;
     margin: 100px auto 40px auto;
     padding: 20px;
     box-sizing: border-box;
+    flex: 1;
 }
 
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--branco);
+    background: var(--card-fundo);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px var(--sombra-card);
     margin-bottom: 20px;
     gap: 15px;
+    transition: background-color 0.3s;
 }
 
 .page-header h1 {
@@ -115,7 +160,7 @@ nav a {
 }
 
 .btn-limpar:hover {
-    background-color: #bd2130;
+    background-color: var(--vermelho-hover);
 }
 
 .mensagens-lista {
@@ -124,14 +169,15 @@ nav a {
     gap: 15px;
 }
 
+/* --- CARTÕES DE MENSAGENS --- */
 .card-mensagem {
-    background: var(--branco);
+    background: var(--card-fundo);
     border-left: 5px solid var(--azul-industrial);
     padding: 20px;
     border-radius: 0 8px 8px 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px var(--sombra-card);
     position: relative;
-    transition: 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
     word-wrap: break-word;
 }
 
@@ -143,10 +189,10 @@ nav a {
 .card-header-msg {
     display: flex;
     justify-content: space-between;
-    color: #666;
+    color: var(--texto-secundario);
     font-size: 0.85rem;
     margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--card-borda-header);
     padding-bottom: 5px;
     flex-wrap: wrap;
     gap: 5px;
@@ -158,11 +204,11 @@ nav a {
 
 .label {
     font-weight: bold;
-    color: #555;
+    color: var(--texto-label);
 }
 
 .problema-texto {
-    background: #f8f9fa;
+    background: var(--problema-fundo);
     padding: 10px;
     border-radius: 4px;
     border-left: 3px solid var(--azul-alerta);
@@ -184,26 +230,72 @@ nav a {
 
 .sem-mensagens {
     text-align: center;
-    background: var(--branco);
+    background: var(--card-fundo);
     padding: 50px 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    color: #777;
+    box-shadow: 0 4px 10px var(--sombra-card);
+    color: var(--texto-secundario);
+    transition: background-color 0.3s;
 }
 
 .sem-mensagens h3 {
     margin-bottom: 10px;
-    color: #555;
+    color: var(--texto-label);
 }
 
 footer {
-    background: #222;
-    color: white;
+    background: var(--cor-rodape-fundo);
+    color: var(--cor-rodape-texto);
     text-align: center;
     padding: 20px;
     margin-top: 40px;
 }
 
+/* =========================================================
+   1. MODO ESCURO (Dark Mode)
+   ========================================================= */
+body.modo-escuro {
+    --fundo-pagina: #181a1b;
+    --cinza-claro: #2c3032;
+    --branco: #232626;
+    --texto-principal: #e8e6e3;
+    --texto-secundario: #a1b0cb;
+    --texto-label: #d1d5db;
+    
+    --azul-industrial: #005ca1;
+    --azul-alerta: #7ac7ff;
+    
+    --card-fundo: #232626;
+    --card-borda-header: #34383a;
+    --problema-fundo: #1c1e1f;
+    --sombra-card: rgba(0, 0, 0, 0.4);
+    
+    --vermelho-remover: #ef4444;
+    --vermelho-hover: #dc2626;
+    
+    --cor-rodape-fundo: #101213;
+    --cor-rodape-texto: #d1d5db;
+}
+
+/* =========================================================
+   2. TEMAS PARA DALTONISMO
+   ========================================================= */
+body.daltonismo-protanopia,
+body.daltonismo-deuteranopia {
+    --azul-industrial: #0072b2;
+    --azul-alerta: #e69f00;
+    --vermelho-remover: #d55e00;
+}
+
+body.daltonismo-tritanopia {
+    --azul-industrial: #cc79a7;
+    --azul-alerta: #d55e00;
+    --vermelho-remover: #d55e00;
+}
+
+/* =========================================================
+   RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================= */
 @media (max-width: 768px) {
     header {
         flex-direction: column;

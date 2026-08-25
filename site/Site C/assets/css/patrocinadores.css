@@ -1,12 +1,29 @@
+/* =========================================================
+   VARIÁVEIS PADRÃO (TEMA CLARO / DEFAULT)
+   ========================================================= */
 :root {
+    --fundo-pagina: #f4f4f4;
+    --texto-principal: #333333;
+    --texto-secundario: #64748b;
+    --texto-suave: #666666;
+    
     --azul-industrial: #0664d7;
     --azul-alerta: #3d92ff;
-    --cinza-claro: #f4f4f4;
-    --branco: #ffffff;
-    --preto-suave: #333333;
-    --verde-sucesso: #10b981;
+    
+    --card-fundo: #ffffff;
+    --card-borda: #e2e8f0;
+    --item-fundo: #f8fafc;
+    --borda-separador: #eeeeee;
+    
+    --cor-sucesso: #10b981;
+    --cor-destaque: #0664d7;
+    --cor-rodape-fundo: #222222;
+    --cor-rodape-texto: #ffffff;
+    
+    --sombra-card: rgba(0, 0, 0, 0.05);
 }
 
+/* Reset Basico */
 * { 
     box-sizing: border-box; 
     margin: 0; 
@@ -19,17 +36,19 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--cinza-claro);
+    background-color: var(--fundo-pagina);
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    color: var(--preto-suave);
+    color: var(--texto-principal);
     padding-top: 80px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
+/* --- HEADER --- */
 header {
     background-color: var(--azul-industrial);
-    color: var(--branco);
+    color: #ffffff;
     padding: 0.8rem 5%;
     display: flex;
     justify-content: space-between;
@@ -39,6 +58,7 @@ header {
     box-sizing: border-box; 
     top: 0;
     z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
 .logo-container {
@@ -65,10 +85,12 @@ nav ul {
     margin: 0;
     padding: 0;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 nav a {
-    color: white;
+    color: #ffffff;
     text-decoration: none;
     font-weight: bold;
     font-size: 0.95rem;
@@ -79,7 +101,11 @@ nav a:hover {
     color: var(--azul-alerta);
 }
 
-/* --- AJUSTE DO AVATAR --- */
+nav a.btn-sair-nav {
+    color: #ef4444;
+    font-weight: bold;
+}
+
 #avatarUsuario {
     width: 38px !important;
     height: 38px !important;
@@ -91,9 +117,10 @@ nav a:hover {
     display: inline-block;
 }
 
-main {
-    max-width: 900px;
-    margin: 30px auto;
+/* --- CONTEÚDO PRINCIPAL --- */
+main.patrocinador-container {
+    max-width: 1000px;
+    margin: 40px auto;
     padding: 0 20px;
     flex: 1;
     width: 100%;
@@ -108,16 +135,18 @@ main {
 }
 
 .card-patrocinador {
-    background: var(--branco);
+    background: var(--card-fundo);
     border-radius: 8px;
     padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    box-shadow: 0 4px 10px var(--sombra-card);
     border-left: 5px solid var(--azul-industrial);
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
+.card-patrocinador h2,
 .card-patrocinador h3 {
-    color: var(--azul-industrial);
+    color: var(--texto-principal);
     margin-bottom: 15px;
     font-size: 1.3rem;
 }
@@ -129,32 +158,38 @@ main {
 }
 
 .item-metrica {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--item-fundo);
+    border: 1px solid var(--card-borda);
     padding: 15px;
     border-radius: 6px;
     text-align: center;
+    transition: background-color 0.3s, border-color 0.3s;
 }
 
 .item-metrica span {
     display: block;
     font-size: 0.85rem;
-    color: #64748b;
+    color: var(--texto-secundario);
     margin-bottom: 5px;
 }
 
 .item-metrica strong {
     font-size: 1.3rem;
-    color: var(--verde-sucesso);
+    color: var(--cor-sucesso);
+}
+
+.item-metrica strong.destaque {
+    color: var(--cor-destaque);
 }
 
 .lista-projetos {
     list-style: none;
+    padding: 0;
 }
 
 .lista-projetos li {
     padding: 12px 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--borda-separador);
     display: flex;
     flex-direction: column;
 }
@@ -164,51 +199,101 @@ main {
 }
 
 .lista-projetos strong {
-    color: var(--preto-suave);
+    color: var(--texto-principal);
     font-size: 1.05rem;
+    display: block;
 }
 
 .lista-projetos span {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--texto-suave);
     margin-top: 3px;
 }
 
+.lista-projetos small {
+    display: block;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.lista-projetos small.status-captacao,
+.lista-projetos small.status-analise {
+    color: var(--cor-destaque);
+}
+
+.lista-projetos small.status-desenvolvimento {
+    color: var(--cor-sucesso);
+}
+
 footer {
-    background: #222;
-    color: white;
+    background: var(--cor-rodape-fundo);
+    color: var(--cor-rodape-texto);
     text-align: center;
     padding: 20px;
     margin-top: 40px;
 }
 
+/* =========================================================
+   1. MODO ESCURO (Dark Mode)
+   ========================================================= */
+body.modo-escuro {
+    --fundo-pagina: #181a1b;
+    --texto-principal: #e8e6e3;
+    --texto-secundario: #a1b0cb;
+    --texto-suave: #b0b0b0;
+    
+    --azul-industrial: #005ca1;
+    --azul-alerta: #7ac7ff;
+    
+    --card-fundo: #232626;
+    --card-borda: #34383a;
+    --item-fundo: #1c1e1f;
+    --borda-separador: #333739;
+    
+    --cor-sucesso: #34d399;
+    --cor-destaque: #60a5fa;
+    --cor-rodape-fundo: #101213;
+    --cor-rodape-texto: #d1d5db;
+    
+    --sombra-card: rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================================
+   2. TEMAS PARA DALTONISMO
+   ========================================================= */
+body.daltonismo-protanopia,
+body.daltonismo-deuteranopia {
+    --cor-sucesso: #0072b2;
+    --cor-destaque: #e69f00;
+    --azul-industrial: #005b96;
+    --azul-alerta: #f0e442;
+}
+
+body.daltonismo-tritanopia {
+    --cor-sucesso: #009e73;
+    --cor-destaque: #d55e00;
+    --azul-industrial: #cc79a7;
+    --azul-alerta: #d55e00;
+}
+
+/* =========================================================
+   RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================= */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
         padding: 10px;
         position: relative;
     }
-
-    body {
-        padding-top: 0;
+    body { 
+        padding-top: 0; 
     }
-
     nav ul {
         justify-content: center;
         gap: 12px;
         margin-top: 10px;
     }
-
-    .grid-metricas {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    #avatarUsuario {
-        width: 32px !important;
-        height: 32px !important;
-        max-width: 32px !important;
-        max-height: 32px !important;
+    .grid-metricas { 
+        grid-template-columns: 1fr; 
     }
 }
