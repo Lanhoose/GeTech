@@ -128,7 +128,10 @@ document.getElementById('cadastroForm').addEventListener('submit', async functio
 
     if (tipoUsuario === 'gestor') {
         alert("✅ Perfil GESTOR cadastrado com sucesso! Redirecionando para o Painel...");
-        window.location.href = "sistema.html"; 
+        window.location.href = "sistema.html";
+    } else if (tipoUsuario === 'patrocinador') {
+        alert("✅ Perfil PATROCINADOR cadastrado com sucesso! Redirecionando para o seu Painel...");
+        window.location.href = "patrocinadores.html";
     } else {
         alert("✅ Cadastro de CLIENTE concluído! Redirecionando para a Home...");
         window.location.href = "index.html";

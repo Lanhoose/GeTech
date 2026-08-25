@@ -7,20 +7,10 @@
     --base: #f8fafc;
     --dark: #1e293b;
     --branco: #ffffff;
-
-    /* Variáveis do Tema Escuro */
-    --fundo-tema-escuro: #232626;
-    --card-tema-escuro: #005CA1;
-    --listra-card-escuro: #7AC7FF;
 }
 
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ADICIONADO: Regra para sumir com os elementos */
 .escondido {
     display: none !important;
 }
@@ -83,14 +73,20 @@ nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.2s;
 }
 
-nav a:hover {
-    color: var(--azul-alerta);
+/* --- AJUSTE DO AVATAR --- */
+#avatarUsuario {
+    width: 38px !important;
+    height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    vertical-align: middle;
+    display: inline-block;
 }
 
-/* --- CONTEÚDO PRINCIPAL --- */
 .main-content {
     flex: 1;
     display: flex;
@@ -106,7 +102,6 @@ nav a:hover {
     padding: 30px;
     border-radius: 16px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    transition: background-color 0.3s ease;
 }
 
 h2 { 
@@ -201,7 +196,6 @@ td {
     cursor: pointer;
 }
 
-/* Print Rules */
 @media print {
     header, .inputs, .controles-finais, .btn-del {
         display: none !important;
@@ -210,10 +204,6 @@ td {
     .main-content { padding: 0; }
     .card { box-shadow: none; border: none; max-width: 100%; padding: 0; }
 }
-
-/* ==========================================
-   REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
-   ========================================== */
 
 @media (max-width: 768px) {
     header {
@@ -250,6 +240,13 @@ td {
 }
 
 @media (max-width: 480px) {
+    #avatarUsuario {
+        width: 32px !important;
+        height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
+    }
+
     .main-content {
         padding: 160px 12px 30px 12px;
     }
@@ -298,99 +295,4 @@ td {
         padding: 12px;
         text-align: center;
     }
-}
-
-/* ==========================================================================
-   SUPORTE AO MODO ESCURO (TEMA ESCURO - ORÇAMENTO)
-   ========================================================================== */
-
-body.modo-escuro {
-    background: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)), 
-                url('https://www.highsolutions.com.br/wp-content/uploads/2019/10/shutterstock-726510091.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: #f0f0f0 !important;
-}
-
-body.modo-escuro header {
-    background-color: var(--card-tema-escuro) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro .logo-texto {
-    color: #ffffff !important;
-}
-
-/* Card Principal de Orçamento */
-body.modo-escuro .card {
-    background: rgba(0, 92, 161, 0.95) !important; /* var(--card-tema-escuro) com opacidade */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro h2 {
-    color: #ffffff !important;
-    border-bottom-color: var(--listra-card-escuro) !important;
-}
-
-/* Inputs no Modo Escuro */
-body.modo-escuro input {
-    background-color: #1a1d1d !important;
-    color: #ffffff !important;
-    border: 2px solid #333a40 !important;
-}
-
-body.modo-escuro input::placeholder {
-    color: #a0aec0 !important;
-}
-
-body.modo-escuro input:focus {
-    border-color: var(--listra-card-escuro) !important;
-}
-
-/* Tabela no Modo Escuro */
-body.modo-escuro th {
-    background-color: #1a1d1d !important;
-    color: #ffffff !important;
-    border-bottom: 2px solid var(--listra-card-escuro) !important;
-}
-
-body.modo-escuro td {
-    color: #f0f0f0 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Botões no Modo Escuro */
-body.modo-escuro .btn-add {
-    background-color: var(--listra-card-escuro) !important;
-    color: #1a1d1d !important;
-}
-
-body.modo-escuro .btn-del {
-    color: #ff6b6b !important;
-    border-color: #ff6b6b !important;
-}
-
-body.modo-escuro .btn-del:hover {
-    background-color: #ff6b6b !important;
-    color: #ffffff !important;
-}
-
-/* Totalizador */
-body.modo-escuro .total-container {
-    color: #ffffff !important;
-}
-
-body.modo-escuro .total-container span {
-    color: var(--listra-card-escuro) !important;
-}
-
-body.modo-escuro .controles-finais .btn-limpar {
-    background-color: #b80f23 !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro .btn-add:hover {
-    background-color: #044baf !important;
 }

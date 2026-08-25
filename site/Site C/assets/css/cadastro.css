@@ -5,11 +5,6 @@
     --branco: #ffffff;
     --preto-suave: #333333;
     --transicao-suave: cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Variáveis do Tema Escuro */
-    --fundo-tema-escuro: #232626;
-    --card-tema-escuro: #005CA1;
-    --listra-card-escuro: #7AC7FF;
 }
 
 .escondido {
@@ -31,7 +26,6 @@ body {
     color: var(--preto-suave);
 }
 
-/* --- HEADER FLUIDO --- */
 header {
     background-color: var(--azul-industrial);
     color: var(--branco);
@@ -94,17 +88,19 @@ nav a:hover {
     color: var(--azul-action);
 }
 
+/* --- AJUSTE DO AVATAR --- */
 #avatarUsuario {
-    display: inline-block; 
-    width: 38px; 
-    height: 38px; 
-    border-radius: 50%; 
-    vertical-align: middle; 
-    object-fit: cover;
+    width: 38px !important;
+    height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    vertical-align: middle;
+    display: inline-block;
     border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-/* --- CONTEÚDO PRINCIPAL --- */
 .cadastro-container {
     flex: 1;
     display: flex;
@@ -240,10 +236,6 @@ footer {
     font-size: 0.9rem;
 }
 
-/* ==========================================================================
-   REGRAS DE RESPONSIVIDADE
-   ========================================================================== */
-
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -283,8 +275,10 @@ footer {
     }
 
     #avatarUsuario {
-        width: 34px;
-        height: 34px;
+        width: 34px !important;
+        height: 34px !important;
+        max-width: 34px !important;
+        max-height: 34px !important;
     }
 
     .cadastro-container {
@@ -328,102 +322,4 @@ footer {
     .cadastro-container {
         padding-top: 210px;
     }
-}
-
-/* ==========================================================================
-   SUPORTE AO MODO ESCURO (TEMA ESCURO - CADASTRO)
-   ========================================================================== */
-
-body.modo-escuro {
-    background-color: var(--fundo-tema-escuro) !important;
-    color: #f0f0f0 !important;
-}
-
-body.modo-escuro header {
-    background-color: var(--card-tema-escuro) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro .logo-texto {
-    color: #ffffff !important;
-}
-
-/* Card de Cadastro */
-body.modo-escuro .cadastro-card {
-    background-color: var(--card-tema-escuro) !important;
-    border-top: 6px solid var(--listra-card-escuro) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-}
-
-body.modo-escuro .cadastro-card h2 {
-    color: #ffffff !important;
-}
-
-/* Formulário, Labels e Inputs */
-body.modo-escuro label {
-    color: #ffffff !important;
-}
-
-body.modo-escuro input,
-body.modo-escuro select {
-    background-color: #1a1d1d !important;
-    color: #ffffff !important;
-    border: 2px solid #333a40 !important;
-}
-
-body.modo-escuro input:focus,
-body.modo-escuro select:focus {
-    border-color: var(--listra-card-escuro) !important;
-    background-color: #232626 !important;
-}
-
-body.modo-escuro input::placeholder {
-    color: #a0aec0 !important;
-}
-
-/* Selector de Perfil em destaque */
-body.modo-escuro .perfil-selector {
-    background-color: #1a1d1d !important;
-    border: 2px solid var(--listra-card-escuro) !important;
-    color: var(--listra-card-escuro) !important;
-}
-
-/* Botão de Upload Customizado */
-body.modo-escuro .btn-upload-custom {
-    background-color: #1a1d1d !important;
-    color: var(--listra-card-escuro) !important;
-    border: 2px dashed var(--listra-card-escuro) !important;
-}
-
-body.modo-escuro .btn-upload-custom:hover {
-    background-color: #232626 !important;
-    color: #ffffff !important;
-    border-style: solid !important;
-}
-
-/* Botão de Finalizar Cadastro */
-body.modo-escuro .btn-cadastro {
-    background-color: var(--listra-card-escuro) !important;
-    color: #1a1d1d !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-}
-
-body.modo-escuro .btn-cadastro:hover {
-    background-color: #ffffff !important;
-}
-
-body.modo-escuro .links-auxiliares a {
-    color: var(--listra-card-escuro) !important;
-}
-
-/* Rodapé */
-body.modo-escuro footer {
-    background-color: #151717 !important;
-    color: #e2e8f0 !important;
-}
-
-.texto{text-align: center; color: #666; margin-bottom: 20px; font-size: 0.95rem;}
-
-body.modo-escuro .texto {
-    color: #e2e8f0 !important;
 }

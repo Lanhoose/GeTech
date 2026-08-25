@@ -4,11 +4,6 @@
     --cinza-claro: #f4f4f4;
     --branco: #ffffff;
     --preto-suave: #333;
-
-    /* Variáveis do Tema Escuro */
-    --fundo-tema-escuro: #232626;
-    --card-tema-escuro: #005CA1;
-    --listra-card-escuro: #7AC7FF;
 }
 
 body {
@@ -18,7 +13,6 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    color: var(--preto-suave);
 }
 
 header {
@@ -67,21 +61,27 @@ nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.2s;
 }
 
-nav a:hover {
-    color: var(--azul-alerta);
+/* --- AJUSTE DO AVATAR --- */
+#avatarUsuario {
+    width: 38px !important;
+    height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    vertical-align: middle;
+    display: inline-block;
 }
 
-/* Ajuste para o conteúdo não ficar por baixo do header fixo */
 .login-container {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
-    margin-top: 80px; /* Compensa o header fixo */
+    margin-top: 80px;
 }
 
 .login-card {
@@ -92,7 +92,6 @@ nav a:hover {
     width: 100%;
     max-width: 400px;
     border-top: 5px solid var(--azul-industrial);
-    box-sizing: border-box;
 }
 
 .login-card h2 {
@@ -118,8 +117,6 @@ input {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 1rem;
-    box-sizing: border-box;
-    width: 100%;
 }
 
 input:focus {
@@ -167,7 +164,6 @@ footer {
     display: none !important;
 }
 
-/* ===== RESPONSIVIDADE MOBILE ===== */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -201,6 +197,13 @@ footer {
 }
 
 @media (max-width: 480px) {
+    #avatarUsuario {
+        width: 32px !important;
+        height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
+    }
+
     .login-container {
         margin-top: 140px;
         padding: 16px 12px;
@@ -223,74 +226,4 @@ footer {
         font-size: 1rem;
         padding: 11px;
     }
-}
-
-/* ==========================================================================
-   SUPORTE AO MODO ESCURO (TEMA ESCURO - LOGIN)
-   ========================================================================== */
-
-body.modo-escuro {
-    background-color: var(--fundo-tema-escuro) !important;
-    color: #f0f0f0 !important;
-}
-
-body.modo-escuro header {
-    background-color: var(--card-tema-escuro) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro .logo-texto {
-    color: #ffffff !important;
-}
-
-/* Card de Login */
-body.modo-escuro .login-card {
-    background-color: var(--card-tema-escuro) !important;
-    border-top: 5px solid var(--listra-card-escuro) !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
-}
-
-body.modo-escuro .login-card h2 {
-    color: #ffffff !important;
-}
-
-/* Campos de Entrada e Form */
-body.modo-escuro .form-group label {
-    color: #ffffff !important;
-}
-
-body.modo-escuro input {
-    background-color: #1a1d1d !important;
-    color: #ffffff !important;
-    border: 1px solid #333a40 !important;
-}
-
-body.modo-escuro input:focus {
-    border-color: var(--listra-card-escuro) !important;
-    background-color: #232626 !important;
-}
-
-body.modo-escuro input::placeholder {
-    color: #a0aec0 !important;
-}
-
-/* Botão de Entrar */
-body.modo-escuro .btn-login {
-    background-color: var(--listra-card-escuro) !important;
-    color: #1a1d1d !important;
-}
-
-body.modo-escuro .btn-login:hover {
-    background-color: #ffffff !important;
-}
-
-/* Links Auxiliares */
-body.modo-escuro .links-auxiliares a {
-    color: var(--listra-card-escuro) !important;
-}
-
-/* Rodapé */
-body.modo-escuro footer {
-    background-color: #151717 !important;
-    color: #e2e8f0 !important;
 }

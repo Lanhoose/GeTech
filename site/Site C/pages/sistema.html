@@ -6,7 +6,7 @@
   <title>GeTech - Sistema de Manutenção</title>
   <link rel="shortcut icon" href="../assets/img/Getech.png" type="image/x-icon">
   <link rel="stylesheet" href="../assets/css/sistema.css" />
-  <link rel="stylesheet" href="../assets/css/acessibilidade.css">
+  <link rel="stylesheet" href="../assets/css/footer.css" />
 </head>
 <body>
 
@@ -16,20 +16,21 @@
         <span class="logo-texto"><strong>GE</strong>TECH</span>
     </div>
 
-    <nav>
+ <nav>
         <ul>
             <li><a href="index.html">Início</a></li>
-            <li><a href="Contato.html">Contato</a></li>
+            <li><a href="chat.html">ChaBot</a></li>
+            <li><a href="contato.html">Contato</a></li>
             <li><a href="material.html">Materiais</a></li>
-            <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
-            <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
-            <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
-            <li>
-                <a href="cadastro.html">
-                    <img id="avatarUsuario" src="../assets/img/perfil.jpg" alt="Foto de Perfil" style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; object-fit: cover;">
+            <li class="restrito patrocinador escondido"><a href="patrocinadores.html">Patrocinadores</a></li>
+            <li class="restrito gestor escondido"><a href="orcamento.html">Orçamentos</a></li>
+            <li class="restrito gestor escondido"><a href="mensagem.html">Mensagens</a></li>
+            <li class="restrito gestor escondido"><a href="sistema.html">Sistema</a></li>
+            <li id="menuUsuario">
+                <a href="cadastro.html" id="linkPerfil">
+                    <img id="avatarUsuario" src="../assets/img/perfil.jpg" alt="Foto de Perfil" style="display: none;">
                 </a>
             </li>
-            
             <li id="menuSair" style="display: none;"><a href="#" id="btnSair" style="color: #ef4444; font-weight: bold;">Sair</a></li>
         </ul>
     </nav>
@@ -81,7 +82,7 @@
         <input type="text" id="numeroSerie" required />
         <button type="submit">Cadastrar Equipamento</button>
       </form>
-      <p id="dadosmaquina" class="texto"></p>
+      <p id="dadosmaquina" style="text-align: center; margin-top: 10px; color: var(--azul-industrial);"></p>
 
       <h3>Consultar Inventário</h3>
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -105,7 +106,7 @@
         </select>
         <button type="submit">Abrir Ordem de Serviço</button>
       </form>
-      <p id="ordem_servico" class="texto"></p>
+      <p id="ordem_servico" style="text-align: center; margin-top: 10px; color: var(--azul-industrial);"></p>
 
       <h3>Histórico de Intervenções</h3>
       <button id="btnConsultarOS" class="btn-outline">Atualizar Histórico</button>
@@ -120,7 +121,6 @@
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
   <script src="../assets/js/sistema.js"></script>
   <script src="../assets/js/controle.js"></script>
   <script src="../assets/js/acessibilidade.js"></script>

@@ -4,14 +4,8 @@
     --cinza-fundo: #f4f7f6;
     --branco: #ffffff;
     --verde-whatsapp: #25d366;
-
-    /* Váriaveis do Tema Escuro */
-    --fundo-tema-escuro: #232626;
-    --card-tema-escuro: #005CA1;
-    --listra-card-escuro: #7AC7FF;
 }
 
-/* Regra para sumir com os elementos */
 .escondido {
     display: none !important;
 }
@@ -64,7 +58,7 @@ nav ul {
     margin: 0;
     padding: 0;
     align-items: center;
-    flex-wrap: wrap; /* Evita que os itens fujam da tela se houver muitos links */
+    flex-wrap: wrap;
 }
 
 nav a {
@@ -79,13 +73,24 @@ nav a:hover {
     color: var(--azul-action);
 }
 
-/* --- CONTEÚDO PRINCIPAL --- */
+/* --- AJUSTE DO AVATAR --- */
+#avatarUsuario {
+    width: 38px !important;
+    height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    vertical-align: middle;
+    display: inline-block;
+}
+
 .main-wrapper {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 120px 20px 40px 20px; /* Aumentado o padding-top base para prevenir sobreposição */
+    padding: 120px 20px 40px 20px;
 }
 
 .contact-card {
@@ -165,7 +170,6 @@ button.submit-btn:hover {
     transform: translateY(-2px);
 }
 
-/* Botão WhatsApp Flutuante */
 .chatbot-btn {
     position: fixed;
     bottom: 30px;
@@ -200,16 +204,11 @@ button.submit-btn:hover {
     z-index: 1000;
 }
 
-/* ==========================================================================
-   REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
-   ========================================================================== */
-
-/* Tablets e Telas Médias (Até 768px) */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
         padding: 10px;
-        position: relative; /* Evita que o card entre por baixo do menu fixo */
+        position: relative;
     }
 
     .logo-container {
@@ -222,11 +221,10 @@ button.submit-btn:hover {
     }
 
     .main-wrapper {
-        padding-top: 40px; /* Reduz o padding já que o cabeçalho não ocupa mais o topo fixo */
+        padding-top: 40px;
     }
 }
 
-/* Smartphones e Telas Pequenas (Até 480px) */
 @media (max-width: 480px) {
     nav ul {
         gap: 10px;
@@ -239,6 +237,8 @@ button.submit-btn:hover {
     #avatarUsuario {
         width: 32px !important;
         height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
     }
 
     .contact-card {
@@ -250,7 +250,6 @@ button.submit-btn:hover {
         font-size: 1.7rem;
     }
 
-    /* Recolhe a etiqueta de texto do WhatsApp para economizar espaço de tela */
     .chatbot-label {
         display: none;
     }
@@ -266,72 +265,4 @@ button.submit-btn:hover {
         width: 28px;
         height: 28px;
     }
-}
-
-/* ==========================================================================
-   SUPORTE AO MODO ESCURO (TEMA ESCURO - ALTO CONTRASTE)
-   ========================================================================== */
-
-body.modo-escuro {
-    background-color: var(--fundo-tema-escuro) !important;
-    color: #f0f0f0 !important;
-}
-
-body.modo-escuro header {
-    background-color: var(--card-tema-escuro) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro .logo-texto {
-    color: #ffffff !important;
-}
-
-/* Card Principal de Contato / Formulário */
-body.modo-escuro .contact-card {
-    background-color: var(--card-tema-escuro) !important;
-    border-top: 8px solid var(--listra-card-escuro) !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
-}
-
-body.modo-escuro .header-logo h1 {
-    color: #ffffff !important;
-}
-
-body.modo-escuro .header-logo span {
-    color: var(--listra-card-escuro) !important;
-}
-
-body.modo-escuro .header-logo p {
-    color: #e2e8f0 !important;
-}
-
-/* Formulário e Inputs */
-body.modo-escuro label {
-    color: #ffffff !important;
-}
-
-body.modo-escuro input {
-    background-color: #1a1d1d !important;
-    color: #ffffff !important;
-    border: 2px solid #333a40 !important;
-}
-
-body.modo-escuro input:focus {
-    border-color: var(--listra-card-escuro) !important;
-}
-
-body.modo-escuro button.submit-btn {
-    background-color: var(--listra-card-escuro) !important;
-    color: #1a1d1d !important;
-}
-
-body.modo-escuro button.submit-btn:hover {
-    background-color: #ffffff !important;
-}
-
-/* Etiqueta Flutuante do WhatsApp */
-body.modo-escuro .chatbot-label {
-    background-color: var(--card-tema-escuro) !important;
-    color: #ffffff !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
 }

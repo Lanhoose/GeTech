@@ -35,7 +35,10 @@ localStorage.setItem('sessaoGeTech', JSON.stringify(dadosUsuario));
     // 5. Redirecionamento baseado no perfil real do cadastro
     if (usuarioEncontrado.perfil === 'gestor') {
         alert(`✅ Bem-vindo, Gestor ${usuarioEncontrado.nome}! Entrando no sistema administrativo...`);
-        window.location.href = "sistema.html"; 
+        window.location.href = "sistema.html";
+    } else if (usuarioEncontrado.perfil === 'patrocinador') {
+        alert(`✅ Bem-vindo, ${usuarioEncontrado.nome}! Entrando no painel de patrocinador...`);
+        window.location.href = "patrocinadores.html";
     } else {
         alert(`✅ Login efetuado com sucesso! Olá, ${usuarioEncontrado.nome}.`);
         window.location.href = "index.html";

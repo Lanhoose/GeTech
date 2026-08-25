@@ -1,17 +1,11 @@
 :root {
     --azul-industrial: #0664d7;
-    --azul-alerta: #3d92ff;
+    --azul-alerta: #3d92ff ;
     --cinza-claro: #f4f4f4;
     --branco: #ffffff;
     --vermelho-remover: #dc3545;
-
-    /* Variáveis do Tema Escuro */
-    --fundo-tema-escuro: #232626;
-    --card-tema-escuro: #005CA1;
-    --listra-card-escuro: #7AC7FF;
 }
 
-/* ADICIONADO: Regra para sumir com os elementos */
 .escondido {
     display: none !important;
 }
@@ -62,21 +56,27 @@ nav ul {
     margin: 0;
     padding: 0;
     align-items: center;
-    flex-wrap: wrap; /* Permite que o menu quebre linha em telas médias */
+    flex-wrap: wrap;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.2s;
 }
 
-nav a:hover {
-    color: var(--azul-alerta);
+/* --- AJUSTE DO AVATAR --- */
+#avatarUsuario {
+    width: 38px !important;
+    height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    vertical-align: middle;
+    display: inline-block;
 }
 
-/* Container Principal */
 .main-container {
     max-width: 1000px;
     margin: 100px auto 40px auto;
@@ -93,7 +93,7 @@ nav a:hover {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     margin-bottom: 20px;
-    gap: 15px; /* Evita que o título e o botão grudem */
+    gap: 15px;
 }
 
 .page-header h1 {
@@ -111,14 +111,13 @@ nav a:hover {
     cursor: pointer;
     font-weight: bold;
     transition: 0.2s;
-    white-space: nowrap; /* Impede o texto do botão de quebrar em duas linhas */
+    white-space: nowrap;
 }
 
 .btn-limpar:hover {
     background-color: #bd2130;
 }
 
-/* Lista de Mensagens */
 .mensagens-lista {
     display: flex;
     flex-direction: column;
@@ -133,7 +132,7 @@ nav a:hover {
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     position: relative;
     transition: 0.2s;
-    word-wrap: break-word; /* Força quebras de texto longo (como e-mails gigantes) */
+    word-wrap: break-word;
 }
 
 .card-mensagem:hover {
@@ -183,11 +182,10 @@ nav a:hover {
     text-decoration: underline;
 }
 
-/* Estado Vazio */
 .sem-mensagens {
     text-align: center;
     background: var(--branco);
-    padding: 50px 20px; /* Reduzido padding lateral para telas menores */
+    padding: 50px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     color: #777;
@@ -206,21 +204,16 @@ footer {
     margin-top: 40px;
 }
 
-/* ==========================================
-   REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
-   ========================================== */
-
-/* Para telas menores que 768px (Tablets e Celulares grandes) */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
-        position: relative; /* Muda para relativo para não sobrepor o conteúdo no mobile */
+        position: relative;
         padding: 1rem;
         gap: 15px;
     }
 
     .main-container {
-        margin-top: 20px; /* Reduz a margem já que o header não é mais fixo no mobile */
+        margin-top: 20px;
         padding: 10px;
     }
 
@@ -240,7 +233,6 @@ footer {
     }
 }
 
-/* Para telas menores que 480px (Celulares pequenos) */
 @media (max-width: 480px) {
     .logo-texto {
         font-size: 1.2rem;
@@ -253,8 +245,10 @@ footer {
     }
 
     #avatarUsuario {
-        width: 35px;
-        height: 35px;
+        width: 32px !important;
+        height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
     }
 
     .page-header h1 {
@@ -269,82 +263,4 @@ footer {
         flex-direction: column;
         align-items: flex-start;
     }
-}
-
-/* ==========================================================================
-   SUPORTE AO MODO ESCURO (TEMA ESCURO - MENSAGENS)
-   ========================================================================== */
-
-body.modo-escuro {
-    background-color: var(--fundo-tema-escuro) !important;
-    color: #f0f0f0 !important;
-}
-
-body.modo-escuro header {
-    background-color: var(--card-tema-escuro) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro .logo-texto {
-    color: #ffffff !important;
-}
-
-/* Header da Página e Título */
-body.modo-escuro .page-header {
-    background-color: var(--card-tema-escuro) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-}
-
-body.modo-escuro .page-header h1 {
-    color: #ffffff !important;
-}
-
-/* Cards de Mensagem */
-body.modo-escuro .card-mensagem {
-    background-color: var(--card-tema-escuro) !important;
-    border-left: 5px solid var(--listra-card-escuro) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
-}
-
-body.modo-escuro .card-mensagem:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6) !important;
-}
-
-body.modo-escuro .card-header-msg {
-    color: #cbd5e1 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
-}
-
-body.modo-escuro .label {
-    color: #7AC7FF !important;
-}
-
-/* Caixa com o texto do problema */
-body.modo-escuro .problema-texto {
-    background-color: #1a1d1d !important;
-    color: #f0f0f0 !important;
-    border-left: 3px solid var(--listra-card-escuro) !important;
-}
-
-/* Botão de Excluir Única */
-body.modo-escuro .btn-deletar-unica {
-    color: #ff6b6b !important;
-}
-
-/* Estado Vazio */
-body.modo-escuro .sem-mensagens {
-    background-color: var(--card-tema-escuro) !important;
-    color: #e2e8f0 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-}
-
-body.modo-escuro .sem-mensagens h3 {
-    color: #ffffff !important;
-}
-
-/* Rodapé */
-body.modo-escuro footer {
-    background-color: #151717 !important;
-    color: #e2e8f0 !important;
 }

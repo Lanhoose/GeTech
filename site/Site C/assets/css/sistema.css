@@ -1,38 +1,30 @@
 :root {
-    --azul-industrial: #0664d7;
-    --azul-escuro: #004080;
-    --azul-alerta: #3d92ff;
-    --cinza-claro: #f4f6f9;
-    --branco: #ffffff;
-    --sombra: 0 4px 15px rgba(0,0,0,0.1);
-    --radius: 8px;
-
-    /* Variáveis do Tema Escuro */
-    --fundo-tema-escuro: #232626;
-    --card-tema-escuro: #005CA1;
-    --listra-card-escuro: #7AC7FF;
+  --azul-industrial: #0664d7;
+  --azul-escuro: #004080;
+  --cinza-claro: #f4f6f9;
+  --branco: #ffffff;
+  --sombra: 0 4px 15px rgba(0,0,0,0.1);
+  --radius: 8px;
 }
 
-/* Regra para sumir com os elementos */
 .escondido {
     display: none !important;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background: var(--cinza-claro);
-    color: #333;
-    line-height: 1.6;
-    scroll-behavior: smooth;
+  background: var(--cinza-claro);
+  color: #333;
+  line-height: 1.6;
+  scroll-behavior: smooth;
 }
 
-/* Header e Navegação Fixa */
 header {
     background-color: var(--azul-industrial);
     color: var(--branco);
@@ -71,148 +63,145 @@ nav ul {
     margin: 0;
     padding: 0;
     align-items: center;
-    flex-wrap: wrap; /* Força a quebra de linha correta dos links */
+    flex-wrap: wrap;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    transition: color 0.2s;
 }
 
-nav a:hover {
-    color: var(--azul-alerta);
+/* --- AJUSTE DO AVATAR --- */
+#avatarUsuario {
+    width: 38px !important;
+    height: 38px !important;
+    max-width: 38px !important;
+    max-height: 38px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    vertical-align: middle;
+    display: inline-block;
 }
 
-/* Banner Hero */
 .hero {
-    height: 65vh;
-    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                url('https://img.freepik.com/fotos-gratis/administrador-de-uma-fabrica-fotovoltaica-que-acompanha-a-producao-de-energia-renovavel-verde_482257-120078.jpg?semt=ais_hybrid&w=740&q=80');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
-    margin-top: 60px;
-    padding: 20px;
+  height: 65vh;
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+              url('https://img.freepik.com/fotos-gratis/administrador-de-uma-fabrica-fotovoltaica-que-acompanha-a-producao-de-energia-renovavel-verde_482257-120078.jpg?semt=ais_hybrid&w=740&q=80');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  margin-top: 60px;
+  padding: 20px;
 }
 
 .hero h1 { font-size: 2.8rem; margin-bottom: 15px; }
 .hero p { font-size: 1.2rem; max-width: 700px; margin-bottom: 25px; }
 
-/* Estrutura de Conteúdo */
 main {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 20px;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
 }
 
 section {
-    background: var(--branco);
-    border-radius: var(--radius);
-    box-shadow: var(--sombra);
-    padding: 35px;
-    margin-bottom: 50px;
-    border-top: 6px solid var(--azul-industrial);
-    transition: background-color 0.3s ease;
+  background: var(--branco);
+  border-radius: var(--radius);
+  box-shadow: var(--sombra);
+  padding: 35px;
+  margin-bottom: 50px;
+  border-top: 6px solid var(--azul-industrial);
 }
 
 section h2 {
-    color: var(--azul-industrial);
-    margin-bottom: 25px;
-    font-size: 1.8rem;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
+  color: var(--azul-industrial);
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
 }
 
 h3 { color: var(--azul-escuro); margin: 25px 0 15px 0; }
 
-/* Formulários */
 form {
-    display: grid;
-    gap: 15px;
-    background: #fcfcfc;
-    padding: 25px;
-    border: 1px solid #eee;
-    border-radius: var(--radius);
+  display: grid;
+  gap: 15px;
+  background: #fcfcfc;
+  padding: 25px;
+  border: 1px solid #eee;
+  border-radius: var(--radius);
 }
 
 label { font-weight: 600; color: #555; font-size: 0.9rem; }
 
 input, select, textarea {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: 0.3s;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: 0.3s;
 }
 
 input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--azul-industrial);
-    box-shadow: 0 0 0 3px rgba(6, 100, 215, 0.15);
+  outline: none;
+  border-color: var(--azul-industrial);
+  box-shadow: 0 0 0 3px rgba(6, 100, 215, 0.15);
 }
 
-/* Botões */
 button {
-    background: var(--azul-industrial);
-    color: white;
-    padding: 14px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: 0.3s;
+  background: var(--azul-industrial);
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
 }
 
 button:hover {
-    background: var(--azul-escuro);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  background: var(--azul-escuro);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .btn-outline {
-    background: transparent;
-    border: 2px solid var(--azul-industrial);
-    color: var(--azul-industrial);
-    margin-top: 10px;
+  background: transparent;
+  border: 2px solid var(--azul-industrial);
+  color: var(--azul-industrial);
+  margin-top: 10px;
 }
 
-/* Cards de Listagem (Firebase) */
 .card-item {
-    background: #fff;
-    border: 1px solid #eee;
-    padding: 20px;
-    margin-top: 15px;
-    border-radius: var(--radius);
-    border-left: 5px solid var(--azul-industrial);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 20px;
+  margin-top: 15px;
+  border-radius: var(--radius);
+  border-left: 5px solid var(--azul-industrial);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 footer {
-    background: #222;
-    color: white;
-    text-align: center;
-    padding: 40px 20px;
-    margin-top: 60px;
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 60px;
 }
-
-/* ==========================================================================
-   REGRAS DE RESPONSIVIDADE
-   ========================================================================== */
 
 @media (max-width: 768px) {
     header {
         flex-direction: column;
         padding: 10px;
-        position: relative; /* Evita que o card entre por baixo do menu fixo */
+        position: relative;
     }
 
     .logo-container {
@@ -225,7 +214,7 @@ footer {
     }
 
     .hero {
-        margin-top: 0; /* Ajusta o banner por conta do header relativo */
+        margin-top: 0;
         height: auto;
         padding: 60px 20px;
     }
@@ -245,126 +234,7 @@ footer {
     #avatarUsuario {
         width: 32px !important;
         height: 32px !important;
+        max-width: 32px !important;
+        max-height: 32px !important;
     }
-}
-
-/* ==========================================================================
-   SUPORTE AO MODO ESCURO (TEMA ESCURO - SERVIÇOS/CHAMADOS)
-   ========================================================================== */
-
-body.modo-escuro {
-    background-color: var(--fundo-tema-escuro) !important;
-    color: #f0f0f0 !important;
-}
-
-body.modo-escuro header {
-    background-color: var(--card-tema-escuro) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro .logo-texto {
-    color: #ffffff !important;
-}
-
-/* Seções Principais */
-body.modo-escuro section {
-    background-color: var(--card-tema-escuro) !important;
-    border-top: 6px solid var(--listra-card-escuro) !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
-}
-
-body.modo-escuro section h2 {
-    color: #ffffff !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-body.modo-escuro h3 {
-    color: var(--listra-card-escuro) !important;
-}
-
-/* Formulários no Modo Escuro */
-body.modo-escuro form {
-    background-color: #1a1d1d !important;
-    border: 1px solid #333a40 !important;
-}
-
-body.modo-escuro label {
-    color: #e2e8f0 !important;
-}
-
-body.modo-escuro input,
-body.modo-escuro select,
-body.modo-escuro textarea {
-    background-color: #232626 !important;
-    color: #ffffff !important;
-    border: 1px solid #333a40 !important;
-}
-
-body.modo-escuro input::placeholder,
-body.modo-escuro textarea::placeholder {
-    color: #a0aec0 !important;
-}
-
-body.modo-escuro input:focus,
-body.modo-escuro select:focus,
-body.modo-escuro textarea:focus {
-    border-color: var(--listra-card-escuro) !important;
-    box-shadow: 0 0 0 3px rgba(122, 199, 255, 0.25) !important;
-}
-
-/* Botões no Modo Escuro */
-body.modo-escuro button {
-    background-color: var(--azul-industrial) !important;
-    color: #ffffff !important;
-}
-
-body.modo-escuro button:hover {
-    background-color: #044baf !important;
-}
-
-body.modo-escuro .btn-outline {
-    border: 2px solid var(--listra-card-escuro) !important;
-    color: var(--listra-card-escuro) !important;
-    background: transparent !important;
-}
-
-body.modo-escuro .btn-outline:hover {
-    background: var(--listra-card-escuro) !important;
-    color: #1a1d1d !important;
-}
-
-/* Cards de Listagem */
-body.modo-escuro .card-item {
-    background-color: #1a1d1d !important;
-    border: 1px solid #333a40 !important;
-    border-left: 5px solid var(--listra-card-escuro) !important;
-    color: #ffffff !important;
-}
-
-/* Rodapé */
-body.modo-escuro footer {
-    background-color: #151717 !important;
-    color: #e2e8f0 !important;
-}
-
-body.modo-escuro .links-auxiliares a {
-    color: var(--listra-card-escuro) !important;
-}
-
-body.modo-escuro button{
-  background-color: var(--listra-card-escuro) !important;
-  color: #1a1d1d !important;
-}
-
-body.modo-escuro button:hover{
-  background-color: #ffffff !important;
-  color: #1a1d1d !important;
-}
-
-body.modo-escuro .texto{
-  color: #e2e8f0 !important;
-}
-
-body.modo-escuro label {
-  color: #e2e8f0 !important;
 }

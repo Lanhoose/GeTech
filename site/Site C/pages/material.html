@@ -6,7 +6,7 @@
     <title>Materiais da GeTech</title>
     <link rel="shortcut icon" href="../assets/img/Getech.png" type="image/x-icon">
     <link rel="stylesheet" href="../assets/css/material.css">
-    <link rel="stylesheet" href="../assets/css/acessibilidade.css">
+    <link rel="stylesheet" href="../assets/css/footer.css">
 </head>
 <body>
 
@@ -19,17 +19,18 @@
     <nav>
         <ul>
             <li><a href="index.html">Início</a></li>
-            <li><a href="Contato.html">Contato</a></li>
+            <li><a href="chat.html">ChaBot</a></li>
+            <li><a href="contato.html">Contato</a></li>
             <li><a href="material.html">Materiais</a></li>
-            <li class="restrito gestor"><a href="orçamento.html">Orçamentos</a></li>
-            <li class="restrito gestor"><a href="mensagem.html">Mensagens</a></li>
-            <li class="restrito gestor"><a href="sistema.html">Sistema</a></li>
-            <li>
-                <a href="cadastro.html">
-                    <img id="avatarUsuario" src="../assets/img/perfil.jpg" alt="Foto de Perfil" style="display: inline-block; width: 40px; height: 40px; border-radius: 50%; vertical-align: middle; object-fit: cover;">
+            <li class="restrito patrocinador escondido"><a href="patrocinadores.html">Patrocinadores</a></li>
+            <li class="restrito gestor escondido"><a href="orcamento.html">Orçamentos</a></li>
+            <li class="restrito gestor escondido"><a href="mensagem.html">Mensagens</a></li>
+            <li class="restrito gestor escondido"><a href="sistema.html">Sistema</a></li>
+            <li id="menuUsuario">
+                <a href="cadastro.html" id="linkPerfil">
+                    <img id="avatarUsuario" src="../assets/img/perfil.jpg" alt="Foto de Perfil" style="display: none;">
                 </a>
             </li>
-            
             <li id="menuSair" style="display: none;"><a href="#" id="btnSair" style="color: #ef4444; font-weight: bold;">Sair</a></li>
         </ul>
     </nav>
@@ -59,19 +60,45 @@
     </section>
 
     <section id="informacoes-gerais">
-        <h2>Informações Adicionais</h2>
-        <p>
-            Os documentos estão disponíveis em formato PDF ou DOCX.
-            Para visualizar, certifique-se de ter um leitor de PDF ou software de edição de texto instalado.
-        </p>
+        <h2>Quiz de Conhecimentos</h2>
+        <div id="quiz-carrossel">
+            <button id="btn-prev-tema" class="btn-seta" aria-label="Tema anterior">&#10094;</button>
+            <div id="card-tema-ativo" class="card-tema">
+                <span class="tag-tema">Módulo de Estudo</span>
+                <h3 id="titulo-tema-card">Máquinas Agrícolas</h3>
+                <p id="desc-tema-card">Teste seus conhecimentos sobre manutenção, componentes e operação de máquinas agrícolas.</p>
+                <button id="btn-iniciar-quiz" class="btn-quiz">Iniciar Quiz deste Tema</button>
+            </div>
+            <button id="btn-next-tema" class="btn-seta" aria-label="Próximo tema">&#10095;</button>
+        </div>
+
+        <div id="quiz-container" class="escondido">
+            <div id="quiz-header">
+                <button id="btn-voltar-temas" class="btn-voltar">← Voltar para os Temas</button>
+                <span id="quiz-progresso">Pergunta 1 de 10</span>
+            </div>
+            <h3 id="quiz-pergunta"></h3>
+            <div id="quiz-opcoes"></div>
+            <button id="btn-proxima-pergunta" class="btn-quiz escondido">Próxima</button>
+        </div>
+
+        <div id="quiz-resultado" class="escondido">
+            <h3>Resultado Final</h3>
+            <p id="quiz-pontuacao"></p>
+            <div class="acoes-resultado">
+                <button id="btn-reiniciar-quiz" class="btn-quiz">Tentar Novamente</button>
+                <button id="btn-mudar-tema-resultado" class="btn-quiz btn-secundario">Escolher Outro Tema</button>
+            </div>
+        </div>
     </section>
 </main>
 
 <footer>
-    <p>&copy; 2026 GeTech Soluções Industriais.</p>
+    <p>&copy; 2026 GeTech Soluções Industriais. Todos os direitos reservados.</p>
 </footer>
 
 <script src="../assets/js/controle.js"></script>
 <script src="../assets/js/acessibilidade.js"></script>
+<script src="../assets/js/material.js"></script>
 </body>
 </html>
