@@ -463,6 +463,9 @@ body.daltonismo-tritanopia {
     --cor-erro: #d55e00;
 }
 
+#logoTexto {
+    color: #ffffff;
+}
 /* =========================================================
    RESPONSIVIDADE (MEDIA QUERIES)
    ========================================================= */

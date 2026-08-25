@@ -311,6 +311,10 @@ body.daltonismo-tritanopia {
     --perigo: #d55e00;
 }
 
+#logoTexto {
+    color: #ffffff;
+}
+
 /* =========================================================
    ESTILO DE IMPRESSÃO (PDF)
    ========================================================= */

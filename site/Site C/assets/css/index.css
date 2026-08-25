@@ -13,11 +13,6 @@
     --card-borda: #e2e8f0;
     --sombra-card: rgba(0, 0, 0, 0.05);
     
-    --chat-secao-fundo: #e9ecef;
-    --chat-mensagens-fundo: #f8f9fa;
-    --chat-bot-balao: #e1f0ff;
-    --chat-bot-texto: #0c3a66;
-    
     --cor-sucesso: #10b981;
     --cor-destaque: #0664d7;
     --cor-rodape-fundo: #222222;
@@ -96,13 +91,8 @@ nav a {
     transition: color 0.2s;
 }
 
-nav a:hover {
+nav a:hover, nav a.ativo {
     color: var(--azul-alerta);
-}
-
-nav a.btn-sair-nav {
-    color: #ef4444;
-    font-weight: bold;
 }
 
 #avatarUsuario {
@@ -120,7 +110,7 @@ nav a.btn-sair-nav {
 .hero {
     min-height: 80vh;
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1350&q=80');
+                url('https://s2-g1.glbimg.com/5L_c1prNvGv09ZwB-8Hk-Kr9QR0=/0x0:2000x1325/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2018/n/H/Im4udzQpicUr5TwLDyMQ/20170404-452f5afd6f484f7f8c170a11d44ce6f9-montagem-076.jpg');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -136,15 +126,25 @@ nav a.btn-sair-nav {
 
 .hero h1 { 
     font-size: 3rem; 
-    margin-bottom: 10px; 
+    margin-bottom: 15px; 
     word-wrap: break-word;
-    max-width: 800px;
+    max-width: 850px;
 }
 
 .hero p {
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin-bottom: 25px;
+    font-size: 1.25rem;
+    max-width: 650px;
+    margin-bottom: 30px;
+    color: #e2e8f0;
+}
+
+.hero-botoes {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 550px;
 }
 
 .btn-contato {
@@ -157,14 +157,28 @@ nav a.btn-sair-nav {
     cursor: pointer;
     transition: 0.3s;
     font-weight: bold;
-    width: 100%;
-    max-width: 320px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    flex: 1;
+    min-width: 220px;
 }
 
 .btn-contato:hover { 
     background-color: var(--branco); 
     color: var(--texto-principal); 
     border: 2px solid var(--azul-industrial); 
+}
+
+.btn-contato.btn-secundario {
+    background-color: transparent;
+    color: var(--branco);
+    border-color: var(--branco);
+}
+
+.btn-contato.btn-secundario:hover {
+    background-color: var(--branco);
+    color: var(--texto-principal);
 }
 
 /* --- SEÇÃO SOBRE A EMPRESA --- */
@@ -175,7 +189,7 @@ nav a.btn-sair-nav {
 }
 
 .sobre-container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -187,24 +201,33 @@ nav a.btn-sair-nav {
     box-shadow: 0 4px 6px var(--sombra-card);
     text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 40px;
-}
-
-.card-sobre:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 20px var(--sombra-card);
+    margin-bottom: 20px;
 }
 
 .card-sobre h2 {
     margin-top: 0;
     color: var(--azul-industrial);
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.sobre-texto-principal {
+    font-size: 1.1rem;
+    color: var(--texto-principal);
+    margin-bottom: 30px;
 }
 
 .sobre-topicos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+.topico-item {
+    background-color: var(--cinza-claro);
+    padding: 20px;
+    border-radius: 6px;
+    border-top: 3px solid var(--azul-industrial);
 }
 
 .topico-item h4 {
@@ -214,12 +237,35 @@ nav a.btn-sair-nav {
 }
 
 .topico-item p {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--texto-secundario);
     margin: 0;
 }
 
-/* --- SEÇÃO DE SERVIÇOS --- */
+/* Cards Interativos da Seção Sobre */
+.topico-item.clicavel {
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-top-color 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.topico-item.clicavel:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px var(--sombra-card);
+    border-top-color: var(--azul-alerta);
+}
+
+.dica-clique {
+    display: inline-block;
+    margin-top: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--azul-industrial);
+}
+
+/* --- SEÇÃO DE SERVIÇOS E ESPECIALIDADES --- */
 .servicos {
     padding: 60px 5%;
     text-align: center;
@@ -227,15 +273,17 @@ nav a.btn-sair-nav {
 }
 
 .servicos > h2 {
-    margin-bottom: 30px;
+    margin-bottom: 35px;
     font-size: 2rem;
     color: var(--texto-principal);
 }
 
 .grid-servicos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 .card {
@@ -244,133 +292,177 @@ nav a.btn-sair-nav {
     border-radius: 8px;
     border-bottom: 4px solid var(--azul-industrial);
     box-shadow: 0 4px 6px var(--sombra-card);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-bottom-color 0.3s ease;
+    text-align: left;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                box-shadow 0.3s ease, 
+                border-bottom-color 0.3s ease;
 }
 
 .card h3 {
-    color: var(--texto-principal);
-    margin-bottom: 10px;
+    color: var(--azul-industrial);
+    margin-bottom: 12px;
+    font-size: 1.3rem;
 }
 
 .card p {
     color: var(--texto-secundario);
+    font-size: 0.98rem;
 }
 
-.card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 20px var(--sombra-card);
+/* Animação Hover nos Cards de Especialidades */
+.grid-servicos .card:hover {
+    transform: translateY(-8px) scale(1.015);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.12);
     border-bottom-color: var(--azul-alerta);
 }
 
-/* --- ÁREA DO CHATBOT --- */
-.chatbot-section {
-    background: var(--chat-secao-fundo);
-    padding: 60px 5%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.chatbot-section h2 {
-    margin-bottom: 25px;
-    font-size: 2rem;
-    text-align: center;
-    color: var(--texto-principal);
-}
-
-.chat-container {
-    width: 100%;
-    max-width: 500px;
-    background: var(--card-fundo);
-    border-radius: 10px;
-    box-shadow: 0 4px 15px var(--sombra-card);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.chat-header {
-    background: var(--azul-industrial);
-    color: white;
-    padding: 15px;
-    font-weight: bold;
-    text-align: center;
-    font-size: 1.1rem;
-}
-
-.chat-messages {
-    height: 350px;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background: var(--chat-mensagens-fundo);
-}
-
-.message {
-    max-width: 85%;
-    padding: 10px 14px;
-    border-radius: 15px;
-    font-size: 0.95rem;
-    word-wrap: break-word;
-}
-
-.message.bot {
-    background: var(--chat-bot-balao);
-    color: var(--chat-bot-texto);
-    align-self: flex-start;
-    border-top-left-radius: 2px;
-}
-
-.message.user {
-    background: var(--azul-industrial);
-    color: white;
-    align-self: flex-end;
-    border-top-right-radius: 2px;
-}
-
-.chat-input-area {
-    display: flex;
-    padding: 10px;
-    background: var(--card-fundo);
+/* Lista interna de tópicos detalhados */
+.card-lista {
+    list-style: none;
+    margin-top: 15px;
+    padding-top: 12px;
     border-top: 1px solid var(--card-borda);
 }
 
-.chat-input-area input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid var(--card-borda);
-    border-radius: 4px;
-    outline: none;
-    font-size: 1rem;
+.card-lista li {
+    font-size: 0.88rem;
+    color: var(--texto-secundario);
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 18px;
+}
+
+.card-lista li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--azul-industrial);
+    font-weight: bold;
+    transition: transform 0.2s ease, color 0.2s ease;
+    display: inline-block;
+}
+
+.grid-servicos .card:hover .card-lista li::before {
+    transform: scale(1.25);
+    color: var(--azul-alerta);
+}
+
+/* --- BANNER CTA --- */
+.cta-secao {
+    background-color: var(--azul-industrial);
+    color: var(--branco);
+    padding: 60px 5%;
+    text-align: center;
+}
+
+.cta-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-secao h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.cta-secao p {
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    color: #f1f5f9;
+}
+
+.cta-secao .btn-contato {
+    background-color: var(--branco);
+    color: var(--azul-industrial);
+    border-color: var(--branco);
+    max-width: 280px;
+}
+
+.cta-secao .btn-contato:hover {
+    background-color: var(--texto-principal);
+    color: var(--branco);
+    border-color: var(--texto-principal);
+}
+
+/* --- MODAL INTERATIVO --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-content {
     background: var(--card-fundo);
+    color: var(--texto-principal);
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 550px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    border-top: 5px solid var(--azul-industrial);
+    animation: popup 0.3s ease-out;
+}
+
+@keyframes popup {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--texto-secundario);
+}
+
+.modal-close:hover {
+    color: var(--azul-industrial);
+}
+
+.modal-content h3 {
+    color: var(--azul-industrial);
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.modal-descricao-destaque {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 15px;
     color: var(--texto-principal);
 }
 
-.chat-input-area button {
-    background: var(--azul-industrial);
-    color: white;
-    border: none;
-    padding: 0 20px;
-    margin-left: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
-    font-size: 1rem;
+#modalDetalhes ul {
+    margin-left: 20px;
+    margin-top: 10px;
 }
 
-.chat-input-area button:hover {
-    filter: brightness(0.9);
+#modalDetalhes li {
+    margin-bottom: 8px;
+    color: var(--texto-secundario);
 }
 
+/* --- RODAPÉ --- */
 footer {
     background: var(--cor-rodape-fundo);
     color: var(--cor-rodape-texto);
     text-align: center;
     padding: 20px;
     font-size: 0.9rem;
+    margin-top: auto;
 }
 
 /* =========================================================
@@ -389,14 +481,13 @@ body.modo-escuro {
     --card-borda: #34383a;
     --sombra-card: rgba(0, 0, 0, 0.4);
     
-    --chat-secao-fundo: #121415;
-    --chat-mensagens-fundo: #1c1e1f;
-    --chat-bot-balao: #1e3a5f;
-    --chat-bot-texto: #e2f1ff;
-    
     --cor-rodape-fundo: #101213;
     --cor-rodape-texto: #d1d5db;
     --branco: #ffffff;
+}
+
+body.modo-escuro .topico-item {
+    background-color: #1c1e1f;
 }
 
 /* =========================================================
@@ -406,15 +497,11 @@ body.daltonismo-protanopia,
 body.daltonismo-deuteranopia {
     --azul-industrial: #0072b2;
     --azul-alerta: #e69f00;
-    --chat-bot-balao: #0072b2;
-    --chat-bot-texto: #ffffff;
 }
 
 body.daltonismo-tritanopia {
     --azul-industrial: #cc79a7;
     --azul-alerta: #d55e00;
-    --chat-bot-balao: #cc79a7;
-    --chat-bot-texto: #ffffff;
 }
 
 .logo-texto.modo-escuro{
@@ -422,7 +509,7 @@ body.daltonismo-tritanopia {
 }
 
 /* =========================================================
-   REGRAS DE RESPONSIVIDADE
+   RESPONSIVIDADE
    ========================================================= */
 @media (max-width: 768px) {
     header {
@@ -484,24 +571,21 @@ body.daltonismo-tritanopia {
         font-size: 1rem;
     }
 
+    .hero-botoes {
+        flex-direction: column;
+    }
+
     .btn-contato {
+        width: 100%;
         padding: 12px 20px;
         font-size: 1rem;
     }
 
-    .sobre, .servicos, .chatbot-section {
+    .sobre, .servicos, .cta-secao {
         padding: 40px 4%;
     }
 
-    .card-sobre h2, .servicos > h2, .chatbot-section h2 {
+    .card-sobre h2, .servicos > h2, .cta-secao h2 {
         font-size: 1.6rem;
-    }
-
-    .chat-container {
-        height: 450px;
-    }
-
-    .chat-messages {
-        height: 280px;
     }
 }

@@ -276,6 +276,10 @@ body.daltonismo-tritanopia {
     --azul-alerta: #d55e00;
 }
 
+#logoTexto {
+    color: #ffffff;
+}
+
 /* =========================================================
    RESPONSIVIDADE (MEDIA QUERIES)
    ========================================================= */
