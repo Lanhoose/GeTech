@@ -23,3 +23,4 @@ async function fazerLogin() {
     mostrarMensagem(msg, 'E-mail ou senha incorretos!', 'erro');
   }
 }
+
