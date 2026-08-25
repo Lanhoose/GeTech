@@ -1,31 +1,22 @@
 // ==========================================
-// FUNÇÕES DE MÁSCARA / FORMATAÇÃO (Regex)
+// MÁSCARAS (sem alteração)
 // ==========================================
-
-// Formata Telefone dinamicamente: (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
 function formatarTelefone(valor) {
-    valor = valor.replace(/\D/g, ""); // Remove tudo o que não for número
-    
+    valor = valor.replace(/\D/g, "");
     if (valor.length > 10) {
-        // Celular (9 dígitos): (11) 99999-9999
         return valor.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
     } else {
-        // Telefone fixo (8 dígitos): (11) 9999-9999
         return valor.replace(/^(\d{2})(\d{4})(\d{4})$/, "($1) $2-$3");
     }
 }
 
-// Formata CPF (000.000.000-00) ou CNPJ (00.000.000/0000-00)
 function formatarDocumento(valor) {
-    valor = valor.replace(/\D/g, ""); // Remove tudo o que não for número
-
+    valor = valor.replace(/\D/g, "");
     if (valor.length <= 11) {
-        // Máscara de CPF
         valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
         valor = valor.replace(/(\d{3})(\d)/, "$1.$2");
         return valor.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     } else {
-        // Máscara de CNPJ (limita a 14 números)
         valor = valor.substring(0, 14);
         valor = valor.replace(/^(\d{2})(\d)/, "$1.$2");
         valor = valor.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
@@ -34,22 +25,15 @@ function formatarDocumento(valor) {
     }
 }
 
-// ==========================================
-// OUVINTES DE EVENTOS (Máscaras em tempo real)
-// ==========================================
-
-// Aplica máscara ao digitar no campo de Telefone
 document.getElementById('tel').addEventListener('input', function(e) {
     let numeros = e.target.value.replace(/\D/g, "").substring(0, 11);
     e.target.value = formatarTelefone(numeros);
 });
 
-// Aplica máscara ao digitar no campo de CPF/CNPJ
 document.getElementById('doc').addEventListener('input', function(e) {
     let numeros = e.target.value.replace(/\D/g, "").substring(0, 14);
     e.target.value = formatarDocumento(numeros);
 });
-
 
 function converterParaBase64(file) {
     return new Promise((resolve, reject) => {
@@ -63,7 +47,6 @@ function converterParaBase64(file) {
 document.getElementById('foto').addEventListener('change', function() {
     const arquivo = this.files[0];
     const textoFeedback = document.getElementById('nome-arquivo');
-    
     if (arquivo) {
         textoFeedback.textContent = `▶ Ficheiro selecionado: ${arquivo.name}`;
         textoFeedback.style.color = "var(--azul-industrial)";
@@ -73,18 +56,33 @@ document.getElementById('foto').addEventListener('change', function() {
     }
 });
 
+// ==========================================
+// CADASTRO — Firebase Auth + Realtime Database
+// ==========================================
+import { auth, db } from "./firebase-config.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import { ref, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
 document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
-    event.preventDefault(); 
-    
-    const tipoUsuario = document.getElementById('tipo_usuario').value; 
+    event.preventDefault();
+
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    const tipoUsuario = document.getElementById('tipo_usuario').value;
     const nomeUsuario = document.getElementById('nome').value;
     const emailUsuario = document.getElementById('email').value.trim().toLowerCase();
+    const doc = document.getElementById('doc').value;
+    const tel = document.getElementById('tel').value;
+    const setor = document.getElementById('setor').value;
     const s1 = document.getElementById('senha').value;
     const s2 = document.getElementById('senha2').value;
     const fotoInput = document.getElementById('foto').files[0];
 
     if (s1 !== s2) {
         alert("⚠️ As senhas não conferem. Tente novamente.");
+        return;
+    }
+    if (s1.length < 6) {
+        alert("⚠️ A senha precisa ter pelo menos 6 caracteres (exigência do Firebase).");
         return;
     }
 
@@ -100,40 +98,44 @@ document.getElementById('cadastroForm').addEventListener('submit', async functio
         fotoBase64 = "https://cdn-icons-png.flaticon.com/512/149/149071.png";
     }
 
-    let usuariosCadastrados = JSON.parse(localStorage.getItem('usuariosGeTech')) || [];
+    if (submitBtn) submitBtn.disabled = true;
 
-    const usuarioExiste = usuariosCadastrados.some(user => user.email === emailUsuario);
-    if (usuarioExiste) {
-        alert("⚠️ Este e-mail já está cadastrado!");
-        return;
-    }
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, emailUsuario, s1);
+        const uid = cred.user.uid;
 
-    const novoUsuario = {
-        nome: nomeUsuario,
-        email: emailUsuario,
-        senha: s1,
-        perfil: tipoUsuario,
-        foto: fotoBase64
-    };
-    usuariosCadastrados.push(novoUsuario);
-    localStorage.setItem('usuariosGeTech', JSON.stringify(usuariosCadastrados));
+        await set(ref(db, `usuarios/${uid}`), {
+            nome: nomeUsuario,
+            email: emailUsuario,
+            documento: doc,
+            telefone: tel,
+            setor: setor,
+            tipo: tipoUsuario,
+            foto: fotoBase64
+        });
 
-    const dadosSessao = {
-        nome: nomeUsuario,
-        perfil: tipoUsuario,
-        foto: fotoBase64,
-        loginAtivo: true
-    };
-    localStorage.setItem('sessaoGeTech', JSON.stringify(dadosSessao));
-
-    if (tipoUsuario === 'gestor') {
-        alert("✅ Perfil GESTOR cadastrado com sucesso! Redirecionando para o Painel...");
-        window.location.href = "sistema.html";
-    } else if (tipoUsuario === 'patrocinador') {
-        alert("✅ Perfil PATROCINADOR cadastrado com sucesso! Redirecionando para o seu Painel...");
-        window.location.href = "patrocinadores.html";
-    } else {
-        alert("✅ Cadastro de CLIENTE concluído! Redirecionando para a Home...");
-        window.location.href = "index.html";
+        if (tipoUsuario === 'gestor') {
+            alert("✅ Perfil GESTOR cadastrado com sucesso! Redirecionando para o Painel...");
+            window.location.href = "sistema.html";
+        } else if (tipoUsuario === 'patrocinador') {
+            alert("✅ Perfil PATROCINADOR cadastrado com sucesso! Redirecionando para o seu Painel...");
+            window.location.href = "patrocinadores.html";
+        } else {
+            alert("✅ Cadastro de CLIENTE concluído! Redirecionando para a Home...");
+            window.location.href = "index.html";
+        }
+    } catch (erro) {
+        console.error("Erro no cadastro:", erro);
+        if (erro.code === 'auth/email-already-in-use') {
+            alert("⚠️ Este e-mail já está cadastrado!");
+        } else if (erro.code === 'auth/invalid-email') {
+            alert("⚠️ E-mail inválido.");
+        } else if (erro.code === 'auth/weak-password') {
+            alert("⚠️ Senha muito fraca. Use pelo menos 6 caracteres.");
+        } else {
+            alert("⚠️ Não foi possível concluir o cadastro. Tente novamente.");
+        }
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
     }
 });
