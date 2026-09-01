@@ -15,7 +15,7 @@ import {
     get
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-window.BASE_URL = window.location.origin + "/GeTech/site";
+window.BASE_URL = window.location.origin + "/GeTech/site/";
 
 let usuarioAtual = null;
 
@@ -109,7 +109,7 @@ async function redirecionarUsuario() {
     const perfil = await carregarUsuario(user);
 
     if (perfil?.tipo === "gestor") {
-        window.location.href = `${window.BASE_URL}/site/app/app.html`;
+        window.location.href = `${window.BASE_URL}app/app.html`;
     } else {
         alert("Acesso negado. Apenas usuários com perfil Gestor possuem acesso ao painel.");
     }
