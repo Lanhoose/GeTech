@@ -1,10 +1,11 @@
 // =========================================================
-//  verificacaologin.js — integrado ao Firebase Auth + Realtime Database
-//  IMPORTANTE: este arquivo precisa ser carregado como módulo:
-//  <script type="module" src="/site/public/assets/js/verificacaologin.js"></script>
+// verificacaologin.js
+// Fonte de autenticação: o MESMO Firebase Authentication +
+// Realtime Database utilizado pelo "Site C".
+// Não usa localStorage para decidir se o usuário está logado.
 // =========================================================
 
-import { auth, db } from "./firebase-config.js";
+import { auth, db } from "../../Site C/assets/js/firebase-config.js";
 import {
     onAuthStateChanged,
     signOut
@@ -14,73 +15,60 @@ import {
     get
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-// Atribuição global segura para evitar o erro "Identifier 'BASE_URL' has already been declared"
-window.BASE_URL = window.location.origin + "/GeTech";
+window.BASE_URL = window.location.origin + "/GeTech/site";
 
-// Cache em memória do usuário logado (evita bater no banco toda hora)
-let usuarioAtual = null; // { uid, email, tipo, nome }
+let usuarioAtual = null;
 
-// =========================================================
-//  OUVINTE GLOBAL DE AUTENTICAÇÃO
-//  Dispara toda vez que o Firebase confirma se há (ou não)
-//  um usuário logado, inclusive ao recarregar a página.
-// =========================================================
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        try {
-            const snap = await get(ref(db, `usuarios/${user.uid}`));
-            if (snap.exists()) {
-                const dados = snap.val();
-                usuarioAtual = {
-                    uid: user.uid,
-                    email: user.email,
-                    tipo: dados.tipo || null,
-                    nome: dados.nome || null
-                };
-            } else {
-                // Usuário existe no Authentication mas não tem cadastro de permissão no Realtime Database
-                usuarioAtual = { uid: user.uid, email: user.email, tipo: null, nome: null };
-            }
-        } catch (e) {
-            console.error("Erro ao buscar dados do usuário:", e);
-            usuarioAtual = { uid: user.uid, email: user.email, tipo: null, nome: null };
-        }
-    } else {
-        usuarioAtual = null;
+async function carregarUsuario(user) {
+    if (!user) return null;
+
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
+        const dados = snap.exists() ? snap.val() : {};
+
+        return {
+            uid: user.uid,
+            email: user.email || "",
+            nome: dados.nome || "",
+            tipo: (dados.tipo || "").toLowerCase(),
+            foto: dados.foto || ""
+        };
+    } catch (erro) {
+        console.error("Erro ao buscar o perfil do usuário:", erro);
+        return {
+            uid: user.uid,
+            email: user.email || "",
+            nome: "",
+            tipo: "",
+            foto: ""
+        };
     }
+}
 
-    // Sempre que o estado de auth mudar, atualiza a interface
-    verificarStatusLogin();
-});
+async function atualizarInterface(user) {
+    usuarioAtual = await carregarUsuario(user);
 
-// =========================================================
-//  ATUALIZA A INTERFACE (header) COM BASE NO LOGIN ATUAL
-// =========================================================
-function verificarStatusLogin() {
-    const authSection = document.getElementById('auth-section');
-    const menuConfig = document.getElementById('menu-configuracoes');
+    const authSection = document.getElementById("auth-section");
+    const menuConfig = document.getElementById("menu-configuracoes");
 
-    const estaLogado = !!usuarioAtual;
-
-    // --- CONTROLE DO LINK DE CONFIGURAÇÕES NO HEADER ---
     if (menuConfig) {
-        menuConfig.style.display = estaLogado ? "inline-block" : "none";
+        menuConfig.style.display = usuarioAtual ? "inline-block" : "none";
     }
 
-    // --- CONTROLE DOS BOTÕES DE LOGIN / LOGOUT ---
     if (!authSection) return;
 
-    if (estaLogado) {
-        const nomeExibicao = usuarioAtual.nome
-            ? usuarioAtual.nome
-            : usuarioAtual.email.split('@')[0];
+    if (usuarioAtual) {
+        const nomeExibicao =
+            usuarioAtual.nome ||
+            usuarioAtual.email.split("@")[0] ||
+            "Usuário";
 
         authSection.innerHTML = `
             <div class="user-info">
                 <span class="user-logged">
                     Bem-vindo, <strong>${nomeExibicao}</strong>!
                 </span>
-                <button onclick="logout()" class="btn-logout">
+                <button type="button" onclick="logout()" class="btn-logout">
                     Sair
                 </button>
             </div>
@@ -88,47 +76,46 @@ function verificarStatusLogin() {
     } else {
         authSection.innerHTML = `
             <div class="auth-buttons">
-                <a href="${window.BASE_URL}/site/public/pages/login.html" class="btn-login">
-                    Entrar
-                </a>
-                <a href="${window.BASE_URL}/site/public/pages/login.html" class="btn-cadastro">
-                    Cadastrar
-                </a>
+                <a href="${window.BASE_URL}/pages/login.html" class="btn-login">Entrar</a>
+                <a href="${window.BASE_URL}/pages/login.html" class="btn-cadastro">Cadastrar</a>
             </div>
         `;
     }
 }
 
-// =========================================================
-//  LOGOUT
-// =========================================================
+onAuthStateChanged(auth, async (user) => {
+    await atualizarInterface(user);
+});
+
 async function logout() {
     try {
         await signOut(auth);
-    } catch (e) {
-        console.error("Erro ao sair:", e);
-    } finally {
-        usuarioAtual = null;
-        window.location.href = `${window.BASE_URL}/site/public/pages/index.html`;
+    } catch (erro) {
+        console.error("Erro ao sair:", erro);
     }
+    usuarioAtual = null;
+    window.location.href = `${window.BASE_URL}/pages/index.html`;
 }
 
-// =========================================================
-//  REDIRECIONA PARA O APP INTERNO, SE FOR GESTOR
-// =========================================================
-function redirecionarUsuario() {
-    if (usuarioAtual && usuarioAtual.tipo === 'gestor') {
-        window.location.href = `${window.BASE_URL}/site/app/app.html`;
+async function redirecionarUsuario() {
+    // Aguarda diretamente o estado atual do Firebase.
+    const user = auth.currentUser;
+
+    if (!user) {
+        window.location.href = `${window.BASE_URL}/pages/login.html`;
+        return;
+    }
+
+    const perfil = await carregarUsuario(user);
+
+    if (perfil?.tipo === "gestor") {
+        window.location.href = `${window.BASE_URL}/../app/app.html`;
     } else {
-        alert("Acesso negado. Apenas usuários registrados como Gestor possuem acesso a esta área.");
+        alert("Acesso negado. Apenas usuários com perfil Gestor possuem acesso ao painel.");
     }
 }
 
-// =========================================================
-//  Expõe as funções no escopo global
-//  (necessário pois módulos ES não vazam automaticamente
-//  para o window, e o HTML usa onclick="logout()" etc.)
-// =========================================================
-window.verificarStatusLogin = verificarStatusLogin;
+window.usuarioAtual = () => usuarioAtual;
+window.verificarStatusLogin = () => atualizarInterface(auth.currentUser);
 window.logout = logout;
 window.redirecionarUsuario = redirecionarUsuario;

@@ -1,118 +1,158 @@
-document.addEventListener("DOMContentLoaded", () => {
-     const sessao = JSON.parse(localStorage.getItem('sessaoGeTech'));
-    const BASE_URL = window.location.origin + "/GeTech";
+import { auth, db } from "../../Site C/assets/js/firebase-config.js";
+import {
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+    ref,
+    get,
+    set
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-    // Se não houver sessão, se não estiver ativo, ou se o perfil NÃO for gestor
-    if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
-        alert("Acesso restrito. Apenas gestores podem acessar este painel.");
-        // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
-        return; // Para a execução do resto do script
-    }
-});
-// =========================
-//  CADASTRO
-// =========================
-function cadastrar() {
-    const email   = document.getElementById('cadEmail').value.trim();
-    const senha   = document.getElementById('cadSenha').value;
-    const msg     = document.getElementById('mensagem-cad');
+window.BASE_URL = window.location.origin + "/GeTech/site";
 
-    msg.innerText = '';
+function mostrarMensagem(elemento, texto, tipo) {
+    if (!elemento) return;
+    elemento.innerText = texto;
+    elemento.style.color = tipo === "sucesso" ? "var(--accent-green)" : "#f87171";
+}
+
+window.fazerLogin = async function fazerLogin() {
+    const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
+    const senha = document.getElementById("loginSenha")?.value;
+    const msg = document.getElementById("mensagem");
+    const botao = document.querySelector("#pane-login .btn-main");
 
     if (!email || !senha) {
-        mostrarMensagem(msg, 'Preencha todos os campos do cadastro!', 'erro');
+        mostrarMensagem(msg, "Preencha todos os campos do login!", "erro");
+        return;
+    }
+
+    if (botao) botao.disabled = true;
+    if (msg) msg.innerText = "";
+
+    try {
+        // A autenticação é feita pela mesma instância Firebase usada pelo Site C.
+        const cred = await signInWithEmailAndPassword(auth, email, senha);
+        const snap = await get(ref(db, `usuarios/${cred.user.uid}`));
+
+        if (!snap.exists()) {
+            mostrarMensagem(msg, "⚠️ Sua conta existe no Firebase Authentication, mas não possui perfil no banco de dados.", "erro");
+            return;
+        }
+
+        const dados = snap.val();
+
+        // Não criamos uma sessão paralela: Firebase Auth mantém o estado do login.
+        mostrarMensagem(msg, "Login realizado com sucesso!", "sucesso");
+
+        setTimeout(() => {
+            if ((dados.tipo || "").toLowerCase() === "gestor") {
+                window.location.href = `${window.BASE_URL}/../app/app.html`;
+            } else {
+                window.location.href = `${window.BASE_URL}/pages/index.html`;
+            }
+        }, 500);
+
+    } catch (erro) {
+        console.error("Erro no login:", erro);
+        let texto = "⚠️ Não foi possível fazer login. Tente novamente.";
+
+        if (["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found"].includes(erro.code)) {
+            texto = "❌ E-mail ou senha incorretos.";
+        } else if (erro.code === "auth/invalid-email") {
+            texto = "❌ E-mail inválido.";
+        } else if (erro.code === "auth/too-many-requests") {
+            texto = "⚠️ Muitas tentativas. Aguarde um pouco e tente novamente.";
+        }
+
+        mostrarMensagem(msg, texto, "erro");
+    } finally {
+        if (botao) botao.disabled = false;
+    }
+};
+
+window.cadastrar = async function cadastrar() {
+    const email = document.getElementById("cadEmail")?.value.trim().toLowerCase();
+    const senha = document.getElementById("cadSenha")?.value;
+    const msg = document.getElementById("mensagem-cad");
+
+    if (!email || !senha) {
+        mostrarMensagem(msg, "Preencha todos os campos do cadastro!", "erro");
         return;
     }
 
     if (senha.length < 6) {
-        mostrarMensagem(msg, 'A senha deve ter pelo menos 6 caracteres.', 'erro');
+        mostrarMensagem(msg, "A senha deve ter pelo menos 6 caracteres.", "erro");
         return;
     }
 
-    let usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
 
-    if (usuarios.find(u => u.email === email)) {
-        mostrarMensagem(msg, 'Este email já está cadastrado!', 'erro');
-        return;
-    }
+        // Novo cadastro público recebe perfil comum. Gestor/Patrocinador
+        // continua sendo definido pelo banco/perfil administrativo do Site C.
+        await set(ref(db, `usuarios/${cred.user.uid}`), {
+            email,
+            nome: email.split("@")[0],
+            tipo: "usuario"
+        });
 
-    usuarios.push({ email, senha });
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-
-    mostrarMensagem(msg, 'Cadastro realizado com sucesso! Faça o login.', 'sucesso');
-
-    document.getElementById('cadEmail').value = '';
-    document.getElementById('cadSenha').value = '';
-
-    // Redireciona para a aba de login após 1.5s
-    setTimeout(() => {
-        switchTab('login', document.querySelectorAll('.tab-btn')[0]);
-    }, 1500);
-}
-
-
-// =========================
-//  LOGIN
-// =========================
-
-// Modificado para evitar o erro "Identifier 'BASE_URL' has already been declared"
-window.BASE_URL = window.location.origin + "/GeTech";
-
-function fazerLogin() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const senha = document.getElementById('loginSenha').value;
-    const msg   = document.getElementById('mensagem');
-
-    msg.innerText = '';
-
-    if (!email || !senha) {
-        mostrarMensagem(msg, 'Preencha todos os campos do login!', 'erro');
-        return;
-    }
-
-    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    const usuario  = usuarios.find(u => u.email === email && u.senha === senha);
-
-    if (usuario) {
-        mostrarMensagem(msg, 'Login realizado com sucesso!', 'sucesso');
-
-        localStorage.setItem('logado', 'true');
-        localStorage.setItem('usuarioAtual', usuario.email);
+        mostrarMensagem(msg, "Cadastro realizado com sucesso!", "sucesso");
 
         setTimeout(() => {
-            window.location.href = `${window.BASE_URL}/site/public/pages/redimensionamento_app.html`;
-        }, 1000);
-    } else {
-        mostrarMensagem(msg, 'Email ou senha incorretos!', 'erro');
+            window.location.href = `${window.BASE_URL}/pages/index.html`;
+        }, 700);
+
+    } catch (erro) {
+        console.error("Erro no cadastro:", erro);
+
+        let texto = "⚠️ Não foi possível concluir o cadastro.";
+        if (erro.code === "auth/email-already-in-use") {
+            texto = "⚠️ Este e-mail já está cadastrado!";
+        } else if (erro.code === "auth/invalid-email") {
+            texto = "⚠️ E-mail inválido.";
+        } else if (erro.code === "auth/weak-password") {
+            texto = "⚠️ Senha muito fraca. Use pelo menos 6 caracteres.";
+        }
+
+        mostrarMensagem(msg, texto, "erro");
     }
-}
+};
 
-
-// =========================
-//  HELPER — exibe mensagem
-// =========================
-function mostrarMensagem(elemento, texto, tipo) {
-    elemento.innerText = texto;
-    elemento.style.color = tipo === 'sucesso'
-        ? 'var(--accent-green)'
-        : '#f87171';
-}
-
-// ==========================================
-//  ALTERNAR VISIBILIDADE DA SENHA
-// ==========================================
-function togglePasswordVisibility(inputId, buttonElement) {
+window.togglePasswordVisibility = function togglePasswordVisibility(inputId, buttonElement) {
     const inputField = document.getElementById(inputId);
     if (!inputField) return;
 
-    if (inputField.type === 'password') {
-        inputField.type = 'text';
-        buttonElement.textContent = '⊘'; // Ícone/Emoji de ocultar
-        buttonElement.setAttribute('aria-label', 'Esconder senha');
+    if (inputField.type === "password") {
+        inputField.type = "text";
+        buttonElement.textContent = "⊘";
+        buttonElement.setAttribute("aria-label", "Esconder senha");
     } else {
-        inputField.type = 'password';
-        buttonElement.textContent = '◉'; // Ícone/Emoji de mostrar
-        buttonElement.setAttribute('aria-label', 'Mostrar senha');
+        inputField.type = "password";
+        buttonElement.textContent = "◉";
+        buttonElement.setAttribute("aria-label", "Mostrar senha");
     }
-}
+};
+
+// Se o usuário já estiver autenticado pelo Firebase, a tela de login não
+// cria outra sessão e pode encaminhá-lo para a área correspondente.
+onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
+        if (!snap.exists()) return;
+
+        const dados = snap.val();
+        if ((dados.tipo || "").toLowerCase() === "gestor") {
+            // Só redireciona se esta for a página de login.
+            if (window.location.pathname.endsWith("/login.html")) {
+                window.location.href = `${window.BASE_URL}/../app/app.html`;
+            }
+        }
+    } catch (erro) {
+        console.error("Erro ao verificar sessão Firebase:", erro);
+    }
+});

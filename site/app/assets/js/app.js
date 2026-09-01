@@ -1,104 +1,149 @@
-document.addEventListener("DOMContentLoaded", () => {
-     const sessao = JSON.parse(localStorage.getItem('sessaoGeTech'));
-    const BASE_URL = window.location.origin + "/GeTech";
-
-    // Se não houver sessão, se não estiver ativo, ou se o perfil NÃO for gestor
-    if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
-        alert("Acesso restrito. Apenas gestores podem acessar este painel.");
-        // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
-        return; // Para a execução do resto do script
-    }
-});
-
 // ==========================================================================
-//  1. CONFIGURAÇÕES INICIAIS E BASE URL
+// app.js — Painel ERP
+// A autenticação é a mesma do "Site C":
+// Firebase Authentication + Realtime Database.
 // ==========================================================================
+
+import { auth, db } from "../../Site C/assets/js/firebase-config.js";
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import {
+    ref,
+    get
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
 window.BASE_URL = window.location.origin + "/GeTech/site";
 
 // ==========================================================================
-//  2. TEMA — Aplica ANTES do paint (Evita o flash branco)
+// TEMA
 // ==========================================================================
 (function () {
-    const saved = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', saved);
+    const saved = localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", saved);
 })();
 
 // ==========================================================================
-//  3. PROTEÇÃO DE TELA / LOGIN
+// AUTENTICAÇÃO — Firebase é a fonte da verdade
 // ==========================================================================
-if (localStorage.getItem('logado') !== 'true') {
-    window.location.href = `${window.BASE_URL}/public/pages/index.html`;
-}
+let usuarioAtual = null;
+let authInicializado = false;
 
-// ==========================================================================
-//  4. CAPTURA E EXIBIÇÃO DO NOME DO USUÁRIO LOGADO (Estilo login.js)
-// ==========================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // 1. Pega o elemento na tela (Trata tanto id="usuario" quanto id=\"usuario\")
-    const elementoUsuario = document.getElementById('usuario') || document.querySelector('[id*="usuario"]');
-    const emailLogado = localStorage.getItem('usuarioAtual');
+async function obterPerfil(user) {
+    if (!user) return null;
 
-    if (emailLogado && elementoUsuario) {
-        // 2. Busca a lista unificada de usuários, igualzinho ao seu login.js
-        const listaUsuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-        
-        // 3. Procura pelo objeto do usuário atual
-        const usuarioEncontrado = listaUsuarios.find(u => u.email === emailLogado);
-        
-        let nomeParaExibir = "";
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
 
-        // 4. Se encontrou o usuário e ele já configurou o "nome", usa ele
-        if (usuarioEncontrado && usuarioEncontrado.nome) {
-            nomeParaExibir = usuarioEncontrado.nome;
-        } else {
-            // 5. Se não tiver o nome, pega apenas o que vem antes do "@"
-            nomeParaExibir = emailLogado.split('@')[0];
+        if (!snap.exists()) {
+            return {
+                uid: user.uid,
+                email: user.email || "",
+                nome: "",
+                tipo: ""
+            };
         }
 
-        // 6. Injeta o resultado final no topo do painel
-        elementoUsuario.textContent = `Bem-vindo, ${nomeParaExibir}!`;
+        const dados = snap.val();
+
+        return {
+            uid: user.uid,
+            email: user.email || dados.email || "",
+            nome: dados.nome || "",
+            tipo: (dados.tipo || "").toLowerCase(),
+            foto: dados.foto || ""
+        };
+    } catch (erro) {
+        console.error("Erro ao consultar o perfil no Realtime Database:", erro);
+        return null;
     }
-    
-    // Inicializa o gerenciador do botão de tema
-    inicializarToggleTema();
+}
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = `${window.BASE_URL}/pages/login.html`;
+        return;
+    }
+
+    usuarioAtual = await obterPerfil(user);
+
+    if (!usuarioAtual || usuarioAtual.tipo !== "gestor") {
+        alert("Acesso restrito. Apenas usuários com perfil Gestor podem acessar o painel.");
+        await signOut(auth).catch(() => {});
+        window.location.href = `${window.BASE_URL}/pages/index.html`;
+        return;
+    }
+
+    authInicializado = true;
+    atualizarUsuarioNaTela();
 });
 
-// ==========================================================================
-//  5. LOGOUT
-// ==========================================================================
-function logout() {
-    localStorage.removeItem('logado');
-    localStorage.removeItem('usuarioAtual');
-    window.location.href = `${window.BASE_URL}/public/pages/index.html`;
+function atualizarUsuarioNaTela() {
+    const elementoUsuario = document.getElementById("usuario");
+    if (!elementoUsuario || !usuarioAtual) return;
+
+    const nomeExibicao =
+        usuarioAtual.nome ||
+        usuarioAtual.email.split("@")[0] ||
+        "Usuário";
+
+    elementoUsuario.textContent = `Bem-vindo, ${nomeExibicao}!`;
 }
 
 // ==========================================================================
-//  6. NAVEGAÇÃO PARA MÓDULOS
+// LOGOUT — encerra a sessão real do Firebase
 // ==========================================================================
-function abrirModulo(nome) {
-    window.location.href = 'modules/' + nome + '/' + nome + '.html';
-}
+window.logout = async function logout() {
+    try {
+        await signOut(auth);
+    } catch (erro) {
+        console.error("Erro ao sair:", erro);
+    } finally {
+        window.location.href = `${window.BASE_URL}/pages/index.html`;
+    }
+};
 
 // ==========================================================================
-//  7. TOGGLE DE TEMA (SINCRONIZADO)
+// NAVEGAÇÃO PARA MÓDULOS
+// ==========================================================================
+window.abrirModulo = function abrirModulo(nome) {
+    if (!authInicializado || !usuarioAtual || usuarioAtual.tipo !== "gestor") {
+        alert("Acesso restrito. Faça login como Gestor.");
+        return;
+    }
+
+    window.location.href = "modules/" + nome + "/" + nome + ".html";
+};
+
+// ==========================================================================
+// TOGGLE DE TEMA
 // ==========================================================================
 function inicializarToggleTema() {
-    const btn  = document.getElementById('themeToggle');
-    const icon = document.getElementById('themeIcon');
+    const btn = document.getElementById("themeToggle");
+    const icon = document.getElementById("themeIcon");
     if (!btn) return;
 
     const aplicarTema = (tema) => {
-        document.documentElement.setAttribute('data-theme', tema);
-        localStorage.setItem('theme', tema);
-        if (icon) icon.textContent = tema === 'dark' ? '🌙' : '☀️';
-        btn.setAttribute('aria-label', tema === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
+        document.documentElement.setAttribute("data-theme", tema);
+        localStorage.setItem("theme", tema);
+
+        if (icon) {
+            icon.textContent = tema === "dark" ? "🌙" : "☀️";
+        }
+
+        btn.setAttribute(
+            "aria-label",
+            tema === "dark" ? "Ativar tema claro" : "Ativar tema escuro"
+        );
     };
 
-    aplicarTema(localStorage.getItem('theme') || 'dark');
+    aplicarTema(localStorage.getItem("theme") || "dark");
 
-    btn.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        aplicarTema(current === 'dark' ? 'light' : 'dark');
+    btn.addEventListener("click", () => {
+        const atual = document.documentElement.getAttribute("data-theme");
+        aplicarTema(atual === "dark" ? "light" : "dark");
     });
 }
+
+document.addEventListener("DOMContentLoaded", inicializarToggleTema);
