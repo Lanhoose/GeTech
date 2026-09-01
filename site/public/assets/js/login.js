@@ -1,4 +1,4 @@
-import { auth, db } from "../../Site C/assets/js/firebase-config.js";
+import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
