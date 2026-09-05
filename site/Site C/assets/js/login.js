@@ -28,16 +28,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         const usuarioEncontrado = snap.val();
 
-        // 3. Cache local para exibição (menu, avatar etc.)
-        const dadosUsuario = {
-            nome: usuarioEncontrado.nome,
-            perfil: usuarioEncontrado.tipo,
-            foto: usuarioEncontrado.foto || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-            loginAtivo: true
-        };
-        localStorage.setItem('sessaoGeTech', JSON.stringify(dadosUsuario));
-
-        // 4. Redirecionamento por tipo
+        // 3. Redirecionamento por tipo
         if (usuarioEncontrado.tipo === 'gestor') {
             alert(`✅ Bem-vindo, Gestor ${usuarioEncontrado.nome}! Entrando no sistema administrativo...`);
             window.location.href = "sistema.html";

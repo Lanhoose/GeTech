@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auditoria & Logs - ERP Industrial</title>
-    <link rel="stylesheet" href="../../assets/css/layout.css">
     <link rel="stylesheet" href="../../assets/css/logs.css">
 </head>
 <body>
@@ -87,7 +86,7 @@
         </section>
     </main>
 
-    <script src="../../assets/js/logs.js"></script>
+    <script type="module" src="../../assets/js/logs.js"></script>
     <script src="../../assets/js/acessibilidade.js"></script>
     
     <script>
@@ -180,19 +179,44 @@
         tbody.appendChild(row);
     });
 }
-        function carregarTabelaLogs() {
-            _logsCache = Auditoria.obterLogs();
-            renderizarLogs(_logsCache);
-        }
+        async function carregarTabelaLogs() {
+            if (!window.Auditoria) {
+                console.warn('[Logs] Auditoria ainda não foi carregado.');
+                return;
+            }
 
-        // ── AÇÕES DA BARRA ───────────────────────────────────────────────────
-        function limparHistorico() {
-            if (confirm("Tem certeza que deseja apagar permanentemente todos os registros de auditoria?")) {
-                Auditoria.limparLogs();
-                _logsCache = Auditoria.obterLogs();
+            try {
+                _logsCache = await window.Auditoria.obterLogs();
+                renderizarLogs(_logsCache);
+            } catch (erro) {
+                console.error('[Logs] Erro ao carregar tabela:', erro);
+                _logsCache = [];
                 renderizarLogs(_logsCache);
             }
         }
+
+        // ── AÇÕES DA BARRA ───────────────────────────────────────────────────
+        async function limparHistorico() {
+            if (!confirm("Tem certeza que deseja apagar permanentemente todos os registros de auditoria?")) return;
+            if (!window.Auditoria) return alert('O módulo de auditoria ainda está carregando. Tente novamente.');
+
+            const sucesso = await window.Auditoria.limparLogs();
+            if (sucesso) {
+                await carregarTabelaLogs();
+            } else {
+                alert('Não foi possível limpar os logs. Verifique suas permissões no Firebase.');
+            }
+        }
+
+        window.aplicarFiltros = aplicarFiltros;
+        window.limparFiltros = limparFiltros;
+        window.limparHistorico = limparHistorico;
+        window.exportarLogs = exportarLogs;
+
+        window.addEventListener('getech:logs-updated', (evento) => {
+            _logsCache = Array.isArray(evento.detail) ? evento.detail : [];
+            aplicarFiltros();
+        });
 
         function exportarLogs() {
             const logsVisiveis = _logsCache.filter(log => {
@@ -226,9 +250,9 @@
         }
 
         // ── INICIALIZAÇÃO CORRIGIDA ──────────────────────────────────────────
-        document.addEventListener("DOMContentLoaded", () => {
-            // Inicializa primeiro a leitura dos dados em cache
-            carregarTabelaLogs();
+        document.addEventListener("DOMContentLoaded", async () => {
+            // O logs.js é um módulo e pode terminar de inicializar depois do DOM.
+            await carregarTabelaLogs();
 
             // Atribui os escutadores dos filtros em tempo real
             document.getElementById('filtroTexto').addEventListener('input', aplicarFiltros);

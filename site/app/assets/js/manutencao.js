@@ -1,216 +1,85 @@
-document.addEventListener("DOMContentLoaded", () => {
-     const sessao = JSON.parse(localStorage.getItem('sessaoGeTech'));
-    const BASE_URL = window.location.origin + "/GeTech";
+import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+import {
+    ref,
+    onValue,
+    push,
+    set,
+    update,
+    get,
+    serverTimestamp
+} from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 
-    // Se não houver sessão, se não estiver ativo, ou se o perfil NÃO for gestor
-    if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
-        alert("Acesso restrito. Apenas gestores podem acessar este painel.");
-        // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
-        return; // Para a execução do resto do script
-    }
-});
+const BASE_URL = window.location.origin + '/GeTech';
 
-// ==========================================
-// CONFIGURAÇÃO INICIAL
-// ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    trocarTela('cadastro');
-    atualizarSelectMaquinas(); // garante estado inicial correto do select
-});
-
-// ==========================================
-// VARIÁVEIS GLOBAIS
-// ==========================================
 let listaMaquinas = [];
-let historicoOS   = [];
-
-// Variáveis de controle para o modo de edição (Máquinas)
+let historicoOS = [];
 let emModoEdicao = false;
 let idMaquinaSendoEditada = null;
-
-// Variáveis de controle para o modo de edição (Ordens de Serviço)
 let emModoEdicaoOS = false;
 let idOSSendoEditada = null;
+let usuarioAtual = null;
+let listenersIniciados = false;
 
+function escaparHTML(valor) {
+    return String(valor ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
 
-// ==========================================
-// HELPERS
-// ==========================================
 function precisaManutencao(dataStr) {
     if (!dataStr) return false;
-    const diffDias = (new Date() - new Date(dataStr)) / (1000 * 60 * 60 * 24);
+    const data = new Date(`${dataStr}T00:00:00`);
+    if (Number.isNaN(data.getTime())) return false;
+    const diffDias = (new Date() - data) / (1000 * 60 * 60 * 24);
     return diffDias > 90;
 }
 
 function formatarData(dataStr) {
     if (!dataStr) return '—';
-    const [ano, mes, dia] = dataStr.split('-');
+    const partes = String(dataStr).split('-');
+    if (partes.length !== 3) return String(dataStr);
+    const [ano, mes, dia] = partes;
     return `${dia}/${mes}/${ano}`;
 }
 
 function diasDesde(dataStr) {
     if (!dataStr) return null;
-    return Math.floor((new Date() - new Date(dataStr)) / (1000 * 60 * 60 * 24));
+    const data = new Date(`${dataStr}T00:00:00`);
+    if (Number.isNaN(data.getTime())) return null;
+    return Math.floor((new Date() - data) / (1000 * 60 * 60 * 24));
 }
 
+function mostrarMensagem(id, mensagem, tipo = 'info') {
+    const elemento = document.getElementById(id);
+    if (!elemento) return;
+    elemento.innerHTML = mensagem;
+    elemento.dataset.tipo = tipo;
+}
 
-// ==========================================
-// 1. TROCA DE TELAS
-// ==========================================
 function trocarTela(tela) {
-    const sections     = document.querySelectorAll('.card-app');
+    const sections = document.querySelectorAll('.card-app');
     const cardMaquinas = sections[0];
-    const cardOS       = sections[1];
+    const cardOS = sections[1];
+    if (!cardMaquinas || !cardOS) return;
 
     if (tela === 'cadastro') {
         cardMaquinas.style.display = 'block';
-        cardOS.style.display       = 'none';
+        cardOS.style.display = 'none';
     } else {
-        // Ao abrir OS, sincroniza o select com as máquinas mais recentes
         atualizarSelectMaquinas();
         cardMaquinas.style.display = 'none';
-        cardOS.style.display       = 'block';
+        cardOS.style.display = 'block';
     }
 }
+window.trocarTela = trocarTela;
 
-
-// ==========================================
-// 2. GESTÃO DE MÁQUINAS
-// ==========================================
-const formMaquinas = document.querySelector('#cadastroMaquinas');
-
-if (formMaquinas) {
-    formMaquinas.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const nome   = document.querySelector('#nomeMaquina').value.trim();
-        const modelo = document.querySelector('#modelo').value.trim();
-        const serie  = document.querySelector('#numeroSerie').value.trim();
-        const data   = document.querySelector('#dataUltimaManutencao').value;
-
-        // Verifica se o formulário está salvando uma edição ou criando um novo
-        if (emModoEdicao) {
-            // Atualiza os dados no índice correto do Array
-            listaMaquinas[idMaquinaSendoEditada] = { nome, modelo, serie, dataUltimaManutencao: data };
-            
-            // Reseta o estado de edição
-            emModoEdicao = false;
-            idMaquinaSendoEditada = null;
-
-            // Restaura o texto e estilo padrão do botão de envio
-            const btnSub = formMaquinas.querySelector('button[type="submit"]');
-            if (btnSub) {
-                btnSub.textContent = "Cadastrar Máquina";
-                btnSub.style.background = ""; 
-            }
-
-            document.querySelector('#dadosmaquina').innerHTML = `✅ Alterações em <strong>${nome}</strong> salvas com sucesso!`;
-        } else {
-            // Comportamento padrão: Adiciona uma nova máquina à lista
-            listaMaquinas.push({ nome, modelo, serie, dataUltimaManutencao: data });
-
-            const msg    = document.querySelector('#dadosmaquina');
-            const alerta = precisaManutencao(data);
-
-            msg.innerHTML = alerta
-                ? `✅ <strong>${nome}</strong> cadastrado — ⚠️ <span style="color:#856404;">Manutenção preventiva recomendada (última há mais de 3 meses).</span>`
-                : `✅ ${nome} cadastrado com sucesso!`;
-        }
-
-        formMaquinas.reset();
-
-        // Atualiza os componentes dependentes na interface
-        atualizarSelectMaquinas();
-        exibirMaquinas();
-    });
-}
-
-// Preenche o formulário com os dados da máquina selecionada para edição
-function prepararEdicao(index) {
-    const maq = listaMaquinas[index];
-
-    // Joga os valores salvos de volta nos campos de texto
-    document.querySelector('#nomeMaquina').value = maq.nome;
-    document.querySelector('#modelo').value = maq.modelo;
-    document.querySelector('#numeroSerie').value = maq.serie;
-    document.querySelector('#dataUltimaManutencao').value = maq.dataUltimaManutencao;
-
-    // Ativa os sinalizadores de edição
-    emModoEdicao = true;
-    idMaquinaSendoEditada = index;
-
-    // Altera o visual do botão de submit para indicar a alteração
-    const btnSub = formMaquinas.querySelector('button[type="submit"]');
-    if (btnSub) {
-        btnSub.textContent = "💾 Salvar Alterações";
-        btnSub.style.background = "#27ae60"; 
-    }
-
-    // Move o foco da tela de volta para o topo do formulário suavemente
-    formMaquinas.scrollIntoView({ behavior: 'smooth' });
-}
-
-function exibirMaquinas(filtro = '') {
-    const container = document.querySelector('#listaMaquina');
-    container.innerHTML = '';
-
-    const filtradas = listaMaquinas.filter(m =>
-        m.nome.toLowerCase().includes(filtro.toLowerCase())
-    );
-
-    if (filtradas.length === 0) {
-        container.innerHTML = '<p style="color:#999; margin-top:12px;">Nenhuma máquina encontrada.</p>';
-        return;
-    }
-
-    filtradas.forEach((m, index) => {
-        const alerta    = precisaManutencao(m.dataUltimaManutencao);
-        const dias      = diasDesde(m.dataUltimaManutencao);
-        const badge     = alerta
-            ? `<span class="badge-alerta">⚠️ Manutenção Preventiva</span>`
-            : `<span class="badge-ok">✔ Em dia</span>`;
-        const cardClass = alerta ? 'maq-card alerta' : 'maq-card ok';
-
-        container.innerHTML += `
-            <div class="${cardClass}" style="position: relative; padding-bottom: 40px;">
-                <strong>MAQ:</strong> ${m.nome} ${badge}
-                &nbsp;|&nbsp; <strong>MOD:</strong> ${m.modelo}<br>
-                <small style="color:#666;">
-                    Série: ${m.serie}
-                    &nbsp;·&nbsp;
-                    Última manutenção: ${formatarData(m.dataUltimaManutencao)}
-                    ${dias !== null ? `(${dias} dia${dias !== 1 ? 's' : ''} atrás)` : ''}
-                </small>
-                <button onclick="prepararEdicao(${index})" class="btn-app btn-outline-app" style="position: absolute; bottom: 8px; right: 8px; width: auto; padding: 4px 10px; font-size: 0.8rem;">
-                    ✏️ Editar
-                </button>
-            </div>`;
-    });
-}
-
-const btnBuscarMaquinas = document.querySelector('#btnBuscarMaquinas');
-if (btnBuscarMaquinas) {
-    btnBuscarMaquinas.addEventListener('click', () => {
-        exibirMaquinas(document.querySelector('#buscaNomeMaquinas').value);
-    });
-}
-
-const btnConsultarMaquinas = document.querySelector('#btnConsultarMaquinas');
-if (btnConsultarMaquinas) {
-    btnConsultarMaquinas.addEventListener('click', () => {
-        document.querySelector('#buscaNomeMaquinas').value = '';
-        exibirMaquinas();
-    });
-}
-
-
-// ==========================================
-// 2b. SINCRONIZAR SELECT DE MÁQUINAS NA OS
-// ==========================================
 function atualizarSelectMaquinas() {
     const select = document.querySelector('#maquinaOS');
-    const aviso  = document.querySelector('#avisoMaquinaOS');
+    const aviso = document.querySelector('#avisoMaquinaOS');
     if (!select) return;
 
     const selecaoAtual = select.value;
@@ -218,102 +87,134 @@ function atualizarSelectMaquinas() {
 
     if (listaMaquinas.length === 0) {
         select.innerHTML = '<option value="">-- Nenhuma máquina cadastrada --</option>';
-        select.disabled  = true;
+        select.disabled = true;
         if (aviso) aviso.style.display = 'block';
-    } else {
-        select.disabled  = false;
-        if (aviso) aviso.style.display = 'none';
+        return;
+    }
 
-        select.innerHTML = '<option value="">-- Selecione uma máquina --</option>';
+    select.disabled = false;
+    if (aviso) aviso.style.display = 'none';
+    select.innerHTML = '<option value="">-- Selecione uma máquina --</option>';
 
-        listaMaquinas.forEach((m) => {
-            const opt       = document.createElement('option');
-            opt.value       = m.nome;
-            opt.textContent = `${m.nome} — ${m.modelo} (Série: ${m.serie})`;
-            select.appendChild(opt);
-        });
+    listaMaquinas.forEach((maquina) => {
+        const opt = document.createElement('option');
+        opt.value = maquina.nome;
+        opt.textContent = `${maquina.nome} — ${maquina.modelo} (Série: ${maquina.serie})`;
+        select.appendChild(opt);
+    });
 
-        if (selecaoAtual) select.value = selecaoAtual;
+    if (selecaoAtual && listaMaquinas.some(m => m.nome === selecaoAtual)) {
+        select.value = selecaoAtual;
     }
 }
 
+function exibirMaquinas(filtro = '') {
+    const container = document.querySelector('#listaMaquina');
+    if (!container) return;
 
-// ==========================================
-// 3. ORDENS DE SERVIÇO
-// ==========================================
-const formOS = document.querySelector('#ordemServico');
+    const termo = String(filtro).toLowerCase().trim();
+    const filtradas = listaMaquinas.filter(m =>
+        String(m.nome || '').toLowerCase().includes(termo)
+    );
 
-if (formOS) {
-    formOS.addEventListener('submit', (e) => {
-        e.preventDefault();
+    container.innerHTML = '';
+    if (filtradas.length === 0) {
+        container.innerHTML = '<p style="color:#999; margin-top:12px;">Nenhuma máquina encontrada.</p>';
+        return;
+    }
 
-        const selectMaq = document.querySelector('#maquinaOS');
+    filtradas.forEach((m) => {
+        const alerta = precisaManutencao(m.dataUltimaManutencao);
+        const dias = diasDesde(m.dataUltimaManutencao);
+        const badge = alerta
+            ? '<span class="badge-alerta">⚠️ Manutenção Preventiva</span>'
+            : '<span class="badge-ok">✔ Em dia</span>';
+        const cardClass = alerta ? 'maq-card alerta' : 'maq-card ok';
 
-        if (!selectMaq.value) {
-            document.querySelector('#ordem_servico').innerHTML =
-                '⚠️ Selecione uma máquina válida antes de abrir a Ordem de Serviço.';
-            return;
-        }
+        const card = document.createElement('div');
+        card.className = cardClass;
+        card.style.cssText = 'position: relative; padding-bottom: 40px;';
+        card.innerHTML = `
+            <strong>MAQ:</strong> ${escaparHTML(m.nome)} ${badge}
+            &nbsp;|&nbsp; <strong>MOD:</strong> ${escaparHTML(m.modelo)}<br>
+            <small style="color:#666;">
+                Série: ${escaparHTML(m.serie)}
+                &nbsp;·&nbsp;
+                Última manutenção: ${formatarData(m.dataUltimaManutencao)}
+                ${dias !== null ? `(${dias} dia${dias !== 1 ? 's' : ''} atrás)` : ''}
+            </small>
+        `;
 
-        if (emModoEdicaoOS) {
-            // Preserva a data original da OS
-            const dataOriginal = historicoOS[idOSSendoEditada].data;
-
-            historicoOS[idOSSendoEditada] = {
-                maquina:   selectMaq.value,
-                descricao: document.querySelector('#descricaoOS').value,
-                status:    document.querySelector('#statusOS').value,
-                data:      dataOriginal
-            };
-
-            // Reseta o estado de edição
-            emModoEdicaoOS = false;
-            idOSSendoEditada = null;
-
-            const btnSub = formOS.querySelector('button[type="submit"]');
-            if (btnSub) {
-                btnSub.textContent = "Abrir Ordem de Serviço";
-                btnSub.style.background = "";
-            }
-
-            document.querySelector('#ordem_servico').innerHTML =
-                `✅ Ordem de Serviço atualizada com sucesso!`;
-        } else {
-            historicoOS.push({
-                maquina:   selectMaq.value,
-                descricao: document.querySelector('#descricaoOS').value,
-                status:    document.querySelector('#statusOS').value,
-                data:      new Date().toLocaleString('pt-BR')
-            });
-
-            document.querySelector('#ordem_servico').textContent = '🚀 Ordem de Serviço aberta com sucesso!';
-        }
-
-        formOS.reset();
-        exibirHistoricoOS();
+        const botao = document.createElement('button');
+        botao.className = 'btn-app btn-outline-app';
+        botao.style.cssText = 'position: absolute; bottom: 8px; right: 8px; width: auto; padding: 4px 10px; font-size: 0.8rem;';
+        botao.textContent = '✏️ Editar';
+        botao.addEventListener('click', () => prepararEdicao(m.id));
+        card.appendChild(botao);
+        container.appendChild(card);
     });
 }
 
-function prepararEdicaoOS(index) {
-    const os = historicoOS[index];
+async function prepararEdicao(id) {
+    const maq = listaMaquinas.find(m => m.id === id);
+    if (!maq) return;
 
-    // Garante que o select está atualizado antes de tentar setar o valor
-    atualizarSelectMaquinas();
+    document.querySelector('#nomeMaquina').value = maq.nome || '';
+    document.querySelector('#modelo').value = maq.modelo || '';
+    document.querySelector('#numeroSerie').value = maq.serie || '';
+    document.querySelector('#dataUltimaManutencao').value = maq.dataUltimaManutencao || '';
 
-    document.querySelector('#maquinaOS').value   = os.maquina;
-    document.querySelector('#descricaoOS').value = os.descricao;
-    document.querySelector('#statusOS').value    = os.status;
+    emModoEdicao = true;
+    idMaquinaSendoEditada = id;
 
-    emModoEdicaoOS   = true;
-    idOSSendoEditada = index;
-
-    const btnSub = formOS.querySelector('button[type="submit"]');
+    const btnSub = document.querySelector('#cadastroMaquinas button[type="submit"]');
     if (btnSub) {
-        btnSub.textContent = "💾 Salvar Alterações";
-        btnSub.style.background = "#27ae60";
+        btnSub.textContent = '💾 Salvar Alterações';
+        btnSub.style.background = '#27ae60';
     }
 
-    formOS.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('#cadastroMaquinas')?.scrollIntoView({ behavior: 'smooth' });
+}
+window.prepararEdicao = prepararEdicao;
+
+async function salvarMaquina(dados) {
+    if (!usuarioAtual) throw new Error('Usuário não autenticado.');
+
+    if (emModoEdicao && idMaquinaSendoEditada) {
+        const atualizacao = {
+            ...dados,
+            atualizadoEm: serverTimestamp(),
+            atualizadoPor: usuarioAtual.uid
+        };
+        await update(ref(db, `maquinas/${idMaquinaSendoEditada}`), atualizacao);
+        mostrarMensagem('dadosmaquina', `✅ Alterações em <strong>${escaparHTML(dados.nome)}</strong> salvas com sucesso!`);
+    } else {
+        const novaRef = push(ref(db, 'maquinas'));
+        await set(novaRef, {
+            ...dados,
+            criadoEm: serverTimestamp(),
+            atualizadoEm: serverTimestamp(),
+            criadoPor: usuarioAtual.uid,
+            atualizadoPor: usuarioAtual.uid
+        });
+
+        const alerta = precisaManutencao(dados.dataUltimaManutencao);
+        mostrarMensagem(
+            'dadosmaquina',
+            alerta
+                ? `✅ <strong>${escaparHTML(dados.nome)}</strong> cadastrado — ⚠️ <span style="color:#856404;">Manutenção preventiva recomendada (última há mais de 3 meses).</span>`
+                : `✅ ${escaparHTML(dados.nome)} cadastrado com sucesso!`
+        );
+    }
+
+    emModoEdicao = false;
+    idMaquinaSendoEditada = null;
+    const btnSub = document.querySelector('#cadastroMaquinas button[type="submit"]');
+    if (btnSub) {
+        btnSub.textContent = 'Cadastrar Equipamento';
+        btnSub.style.background = '';
+    }
+    document.querySelector('#cadastroMaquinas')?.reset();
 }
 
 function exibirHistoricoOS() {
@@ -326,130 +227,292 @@ function exibirHistoricoOS() {
         return;
     }
 
-    historicoOS.forEach((os, index) => {
-        const cor = os.status === 'concluido'    ? '#27ae60'
-                  : os.status === 'em andamento' ? '#f39c12'
-                  : '#e74c3c';
+    historicoOS.forEach((os) => {
+        const cor = os.status === 'concluido'
+            ? '#27ae60'
+            : os.status === 'em andamento'
+                ? '#f39c12'
+                : '#e74c3c';
 
-        container.innerHTML += `
-            <div style="border:1px solid var(--mod-input-border,#ddd); padding:15px; padding-bottom:45px; margin-top:10px; border-radius:6px; position:relative; background:var(--mod-card-bg,white);">
-                <span style="position:absolute; top:15px; right:15px; color:${cor}; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">
-                    ● ${os.status}
-                </span>
-                <strong>Equipamento:</strong> ${os.maquina}<br>
-                <p style="margin:5px 0; color:var(--mod-label,#555);">${os.descricao}</p>
-                <small style="color:#999;">Data: ${os.data}</small>
-                <button onclick="prepararEdicaoOS(${index})" class="btn-app btn-outline-app" style="position:absolute; bottom:8px; right:8px; width:auto; padding:4px 10px; font-size:0.8rem;">
-                    ✏️ Editar
-                </button>
-            </div>`;
+        const card = document.createElement('div');
+        card.style.cssText = 'border:1px solid var(--mod-input-border,#ddd); padding:15px; padding-bottom:45px; margin-top:10px; border-radius:6px; position:relative; background:var(--mod-card-bg,white);';
+        card.innerHTML = `
+            <span style="position:absolute; top:15px; right:15px; color:${cor}; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">
+                ● ${escaparHTML(os.status)}
+            </span>
+            <strong>Equipamento:</strong> ${escaparHTML(os.maquina)}<br>
+            <p style="margin:5px 0; color:var(--mod-label,#555);">${escaparHTML(os.descricao)}</p>
+            <small style="color:#999;">Data: ${escaparHTML(os.data)}</small>
+        `;
+
+        const botao = document.createElement('button');
+        botao.className = 'btn-app btn-outline-app';
+        botao.style.cssText = 'position:absolute; bottom:8px; right:8px; width:auto; padding:4px 10px; font-size:0.8rem;';
+        botao.textContent = '✏️ Editar';
+        botao.addEventListener('click', () => prepararEdicaoOS(os.id));
+        card.appendChild(botao);
+        container.appendChild(card);
     });
 }
 
-const btnConsultarOS = document.querySelector('#btnConsultarOS');
-if (btnConsultarOS) {
-    btnConsultarOS.addEventListener('click', exibirHistoricoOS);
+function prepararEdicaoOS(id) {
+    const os = historicoOS.find(item => item.id === id);
+    if (!os) return;
+
+    atualizarSelectMaquinas();
+    document.querySelector('#maquinaOS').value = os.maquina || '';
+    document.querySelector('#descricaoOS').value = os.descricao || '';
+    document.querySelector('#statusOS').value = os.status || 'pendente';
+
+    emModoEdicaoOS = true;
+    idOSSendoEditada = id;
+
+    const btnSub = document.querySelector('#ordemServico button[type="submit"]');
+    if (btnSub) {
+        btnSub.textContent = '💾 Salvar Alterações';
+        btnSub.style.background = '#27ae60';
+    }
+
+    document.querySelector('#ordemServico')?.scrollIntoView({ behavior: 'smooth' });
+}
+window.prepararEdicaoOS = prepararEdicaoOS;
+window.exibirHistoricoOS = exibirHistoricoOS;
+
+async function salvarOrdemServico(dados) {
+    if (!usuarioAtual) throw new Error('Usuário não autenticado.');
+
+    if (emModoEdicaoOS && idOSSendoEditada) {
+        const atual = historicoOS.find(item => item.id === idOSSendoEditada);
+        await update(ref(db, `ordensServico/${idOSSendoEditada}`), {
+            ...dados,
+            data: atual?.data || new Date().toLocaleString('pt-BR'),
+            atualizadoEm: serverTimestamp(),
+            atualizadoPor: usuarioAtual.uid
+        });
+        mostrarMensagem('ordem_servico', '✅ Ordem de Serviço atualizada com sucesso!');
+    } else {
+        const novaRef = push(ref(db, 'ordensServico'));
+        await set(novaRef, {
+            ...dados,
+            data: new Date().toLocaleString('pt-BR'),
+            criadoEm: serverTimestamp(),
+            atualizadoEm: serverTimestamp(),
+            criadoPor: usuarioAtual.uid,
+            atualizadoPor: usuarioAtual.uid
+        });
+        mostrarMensagem('ordem_servico', '🚀 Ordem de Serviço aberta com sucesso!');
+    }
+
+    emModoEdicaoOS = false;
+    idOSSendoEditada = null;
+    const btnSub = document.querySelector('#ordemServico button[type="submit"]');
+    if (btnSub) {
+        btnSub.textContent = 'Abrir Ordem de Serviço';
+        btnSub.style.background = '';
+    }
+    document.querySelector('#ordemServico')?.reset();
 }
 
+function iniciarListenersFirebase() {
+    if (listenersIniciados) return;
+    listenersIniciados = true;
 
-// ==========================================
-// EXPORTAÇÃO E IMPORTAÇÃO (EXCEL & PDF)
-// ==========================================
+    onValue(ref(db, 'maquinas'), (snapshot) => {
+        const dados = snapshot.val() || {};
+        listaMaquinas = Object.entries(dados).map(([id, valor]) => ({ id, ...valor }));
+        listaMaquinas.sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR'));
+        exibirMaquinas(document.querySelector('#buscaNomeMaquinas')?.value || '');
+        atualizarSelectMaquinas();
+    });
 
-// 1. Exportar para Excel (.xlsx)
+    onValue(ref(db, 'ordensServico'), (snapshot) => {
+        const dados = snapshot.val() || {};
+        historicoOS = Object.entries(dados).map(([id, valor]) => ({ id, ...valor }));
+        historicoOS.sort((a, b) => String(b.data || '').localeCompare(String(a.data || ''), 'pt-BR'));
+        exibirHistoricoOS();
+    });
+}
+
+function configurarEventos() {
+    const formMaquinas = document.querySelector('#cadastroMaquinas');
+    formMaquinas?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const dados = {
+            nome: document.querySelector('#nomeMaquina').value.trim(),
+            modelo: document.querySelector('#modelo').value.trim(),
+            serie: document.querySelector('#numeroSerie').value.trim(),
+            dataUltimaManutencao: document.querySelector('#dataUltimaManutencao').value
+        };
+        try {
+            await salvarMaquina(dados);
+        } catch (erro) {
+            console.error(erro);
+            mostrarMensagem('dadosmaquina', `❌ Não foi possível salvar a máquina: ${escaparHTML(erro.message)}`, 'erro');
+        }
+    });
+
+    document.querySelector('#btnBuscarMaquinas')?.addEventListener('click', () => {
+        exibirMaquinas(document.querySelector('#buscaNomeMaquinas')?.value || '');
+    });
+
+    document.querySelector('#btnConsultarMaquinas')?.addEventListener('click', () => {
+        const busca = document.querySelector('#buscaNomeMaquinas');
+        if (busca) busca.value = '';
+        exibirMaquinas();
+    });
+
+    const formOS = document.querySelector('#ordemServico');
+    formOS?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const maquina = document.querySelector('#maquinaOS')?.value;
+        if (!maquina) {
+            mostrarMensagem('ordem_servico', '⚠️ Selecione uma máquina válida antes de abrir a Ordem de Serviço.', 'erro');
+            return;
+        }
+
+        const dados = {
+            maquina,
+            descricao: document.querySelector('#descricaoOS').value.trim(),
+            status: document.querySelector('#statusOS').value
+        };
+
+        try {
+            await salvarOrdemServico(dados);
+        } catch (erro) {
+            console.error(erro);
+            mostrarMensagem('ordem_servico', `❌ Não foi possível salvar a Ordem de Serviço: ${escaparHTML(erro.message)}`, 'erro');
+        }
+    });
+
+    document.querySelector('#btnConsultarOS')?.addEventListener('click', exibirHistoricoOS);
+}
+
 function exportarExcel() {
     if (listaMaquinas.length === 0) {
-        alert("Não há máquinas cadastradas para exportar.");
+        alert('Não há máquinas cadastradas para exportar.');
         return;
     }
 
-    const wsMaquinas = XLSX.utils.json_to_sheet(listaMaquinas);
+    const maquinasExport = listaMaquinas.map(({ id, criadoEm, atualizadoEm, criadoPor, atualizadoPor, ...m }) => m);
+    const osExport = historicoOS.map(({ id, criadoEm, atualizadoEm, criadoPor, atualizadoPor, ...os }) => os);
+    const wsMaquinas = XLSX.utils.json_to_sheet(maquinasExport);
     const wb = XLSX.utils.book_new();
-    
-    XLSX.utils.book_append_sheet(wb, wsMaquinas, "Máquinas");
-
-    if (historicoOS.length > 0) {
-        const wsOS = XLSX.utils.json_to_sheet(historicoOS);
-        XLSX.utils.book_append_sheet(wb, wsOS, "Ordens de Serviço");
-    }
-
-    XLSX.writeFile(wb, "Relatorio_Manutencao_MAP.xlsx");
+    XLSX.utils.book_append_sheet(wb, wsMaquinas, 'Máquinas');
+    if (osExport.length > 0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(osExport), 'Ordens de Serviço');
+    XLSX.writeFile(wb, 'Relatorio_Manutencao_MAP.xlsx');
 }
+window.exportarExcel = exportarExcel;
 
-// 2. Exportar para PDF (.pdf)
 function exportarPDF() {
     if (listaMaquinas.length === 0) {
-        alert("Não há máquinas cadastradas para exportar.");
+        alert('Não há máquinas cadastradas para exportar.');
         return;
     }
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-
     doc.setFontSize(16);
-    doc.text("M.A.P - Relatório de Máquinas e Equipamentos", 14, 15);
+    doc.text('M.A.P - Relatório de Máquinas e Equipamentos', 14, 15);
     doc.setFontSize(10);
-    doc.text("Gerado em: " + new Date().toLocaleDateString(), 14, 22);
+    doc.text('Gerado em: ' + new Date().toLocaleDateString('pt-BR'), 14, 22);
 
-    const colunas = ["Nome da Máquina", "Modelo", "Número de Série", "Última Manutenção"];
-    
-    const linhas = listaMaquinas.map(m => [
-        m.nome, 
-        m.modelo, 
-        m.serie, 
-        formatarData(m.dataUltimaManutencao)
-    ]);
-
+    const linhas = listaMaquinas.map(m => [m.nome, m.modelo, m.serie, formatarData(m.dataUltimaManutencao)]);
     doc.autoTable({
-        head: [colunas],
+        head: [['Nome da Máquina', 'Modelo', 'Número de Série', 'Última Manutenção']],
         body: linhas,
         startY: 28,
         theme: 'striped',
         headStyles: { fillColor: [6, 100, 215] }
     });
-
-    doc.save("Relatorio_Manutencao_MAP.pdf");
+    doc.save('Relatorio_Manutencao_MAP.pdf');
 }
+window.exportarPDF = exportarPDF;
 
-// 3. Importar do Excel (.xlsx)
 function importarExcel(event) {
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
         try {
             const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, {type: 'array'});
+            const workbook = XLSX.read(data, { type: 'array' });
+            let importadosMaquinas = 0;
+            let importadosOS = 0;
 
-            if (workbook.SheetNames.includes("Máquinas")) {
-                const sheetMaquinas = workbook.Sheets["Máquinas"];
-                const jsonMaquinas = XLSX.utils.sheet_to_json(sheetMaquinas);
-                if (jsonMaquinas.length > 0) {
-                    listaMaquinas = jsonMaquinas;
+            if (workbook.SheetNames.includes('Máquinas')) {
+                const dados = XLSX.utils.sheet_to_json(workbook.Sheets['Máquinas']);
+                for (const maquina of dados) {
+                    if (!maquina.nome) continue;
+                    const novaRef = push(ref(db, 'maquinas'));
+                    await set(novaRef, {
+                        nome: String(maquina.nome),
+                        modelo: String(maquina.modelo || ''),
+                        serie: String(maquina.serie || maquina['Número de Série'] || ''),
+                        dataUltimaManutencao: String(maquina.dataUltimaManutencao || maquina['Última Manutenção'] || ''),
+                        criadoEm: serverTimestamp(),
+                        atualizadoEm: serverTimestamp(),
+                        criadoPor: usuarioAtual.uid,
+                        atualizadoPor: usuarioAtual.uid
+                    });
+                    importadosMaquinas++;
                 }
             }
 
-            if (workbook.SheetNames.includes("Ordens de Serviço")) {
-                const sheetOS = workbook.Sheets["Ordens de Serviço"];
-                const jsonOS = XLSX.utils.sheet_to_json(sheetOS);
-                if (jsonOS.length > 0) {
-                    historicoOS = jsonOS;
+            if (workbook.SheetNames.includes('Ordens de Serviço')) {
+                const dados = XLSX.utils.sheet_to_json(workbook.Sheets['Ordens de Serviço']);
+                for (const os of dados) {
+                    if (!os.maquina) continue;
+                    const novaRef = push(ref(db, 'ordensServico'));
+                    await set(novaRef, {
+                        maquina: String(os.maquina),
+                        descricao: String(os.descricao || ''),
+                        status: String(os.status || 'pendente'),
+                        data: String(os.data || new Date().toLocaleString('pt-BR')),
+                        criadoEm: serverTimestamp(),
+                        atualizadoEm: serverTimestamp(),
+                        criadoPor: usuarioAtual.uid,
+                        atualizadoPor: usuarioAtual.uid
+                    });
+                    importadosOS++;
                 }
             }
 
-            if (typeof atualizarTabelaMaquinas === "function") atualizarTabelaMaquinas();
-            if (typeof atualizarSelectMaquinas === "function") atualizarSelectMaquinas();
-            if (typeof exibirHistoricoOS === "function") exibirHistoricoOS();
-            
-            alert("Dados importados com sucesso!");
+            alert(`Importação concluída! ${importadosMaquinas} máquina(s) e ${importadosOS} ordem(ns) foram enviados ao Firebase.`);
         } catch (error) {
-            alert("Erro ao ler o arquivo Excel. Certifique-se de que é um formato válido.");
             console.error(error);
+            alert('Erro ao ler ou salvar o arquivo Excel. Certifique-se de que é um formato válido.');
+        } finally {
+            event.target.value = '';
         }
-        
-        event.target.value = "";
     };
-    
     reader.readAsArrayBuffer(file);
-}   
+}
+window.importarExcel = importarExcel;
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        alert('Acesso restrito. Faça login para acessar este painel.');
+        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
+        return;
+    }
+
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
+        const perfil = snap.exists() ? snap.val() : {};
+        if (perfil.tipo !== 'gestor') {
+            alert('Acesso restrito. Apenas gestores podem acessar este painel.');
+            window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
+            return;
+        }
+
+        usuarioAtual = user;
+        configurarEventos();
+        trocarTela('cadastro');
+        iniciarListenersFirebase();
+    } catch (erro) {
+        console.error(erro);
+        alert('Não foi possível validar seu acesso.');
+        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
+    }
+});

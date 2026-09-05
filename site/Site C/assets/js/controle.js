@@ -41,25 +41,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     perfil = (dados.tipo || '').toLowerCase();
                     nome = dados.nome || null;
                     foto = dados.foto || null;
-
-                    // Mantém um cache local só para leitura rápida por outras telas,
-                    // mas quem decide acesso é sempre a checagem acima, feita a cada carregamento.
-                    localStorage.setItem('sessaoGeTech', JSON.stringify({
-                        loginAtivo: true,
-                        perfil,
-                        nome,
-                        foto,
-                        email: user.email
-                    }));
                 } else {
                     // Autenticado no Firebase, mas sem registro de permissão no banco
-                    localStorage.removeItem('sessaoGeTech');
                 }
             } catch (erro) {
                 console.error("Erro ao buscar dados do usuário:", erro);
             }
         } else {
-            localStorage.removeItem('sessaoGeTech');
         }
 
         aplicarInterface(perfil, nome, foto);
@@ -133,8 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (erro) {
                 console.error("Erro ao sair:", erro);
             } finally {
-                localStorage.removeItem("sessaoGeTech");
-                localStorage.removeItem("usuarioLogado");
                 alert("Sessão encerrada com sucesso!");
                 window.location.href = "login.html";
             }

@@ -268,19 +268,49 @@
         </div>
     </div>
 
-    <script>
-    /* ============================================================
-       LOGISTOCK PRO — ENGINE COMPLETA (portado do sistema Python)
-    ============================================================ */
+    <script type="module">    // ---- FIREBASE ----
+    import { auth, db } from '../../../../Site C/assets/js/firebase-config.js';
+    import { ref, push, set, update, remove, onValue, get } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
 
-    // ---- STORAGE ----
-    function getOrdens() { return JSON.parse(localStorage.getItem('lsp_ordens') || '[]'); }
-    function setOrdens(arr) { localStorage.setItem('lsp_ordens', JSON.stringify(arr)); }
-    function getLogs() { return JSON.parse(localStorage.getItem('lsp_logs') || '[]'); }
-    function registrarLog(msg) {
-        const logs = getLogs();
-        logs.unshift({ data: new Date().toLocaleString('pt-BR'), acao: msg });
-        localStorage.setItem('lsp_logs', JSON.stringify(logs.slice(0, 500)));
+    let ordensCache = [];
+    let logsCache = [];
+    let usuarioAtual = null;
+
+    function getOrdens() { return [...ordensCache]; }
+    function getLogs() { return [...logsCache]; }
+
+    async function registrarLog(msg) {
+        if (!usuarioAtual) return;
+        try {
+            const r = push(ref(db, 'pedidosLogs'));
+            await set(r, {
+                data: new Date().toLocaleString('pt-BR'),
+                dataHora: new Date().toISOString(),
+                acao: msg,
+                usuario: usuarioAtual.email || '',
+                usuarioUid: usuarioAtual.uid
+            });
+        } catch (erro) { console.error('Erro ao registrar log:', erro); }
+    }
+
+    function carregarDadosIniciais() {
+        onValue(ref(db, 'pedidos'), snapshot => {
+            const dados = snapshot.val() || {};
+            ordensCache = Object.entries(dados).map(([id, o]) => ({ id, ...o }));
+            renderizarKanban();
+            renderizarTabelaGen('tabela-ordens');
+            renderizarTabelaGen('tabela-ordens-2');
+            renderizarEntregador();
+        });
+
+        onValue(ref(db, 'pedidosLogs'), snapshot => {
+            const dados = snapshot.val() || {};
+            logsCache = Object.entries(dados).map(([id, l]) => ({ id, ...l }))
+                .sort((x,y) => new Date(y.dataHora || y.data) - new Date(x.dataHora || x.data))
+                .slice(0, 500);
+            renderizarLogs();
+        });
     }
 
     // ---- ESTADO ----
@@ -292,13 +322,6 @@
     // ---- TEMA ----
     // Subsitua as funções correspondentes no bloco de script do pedidos.html por estas:
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Inicializa o tema e atualiza os elementos visuais do botão
-    inicializarTema();
-    
-    carregarDadosIniciais();
-    renderizarDashboard();
-});
 
 function inicializarTema() {
     const temaSalvo = localStorage.getItem('theme') || 'dark';
@@ -432,25 +455,21 @@ function alternarTema() {
         });
     }
 
-    function avancarOrdem(id) {
-        const ordens = getOrdens();
-        const idx = ordens.findIndex(o=>o.id===id);
-        if (idx===-1) return;
-        const next = fluxo[fluxo.indexOf(ordens[idx].status)+1];
+    async function avancarOrdem(id) {
+        const ordem = ordensCache.find(o => String(o.id) === String(id));
+        if (!ordem) return;
+        const next = fluxo[fluxo.indexOf(ordem.status) + 1];
         if (!next) return;
-        ordens[idx].status = next;
-        setOrdens(ordens);
-        registrarLog(`OP ${ordens[idx].numero} avançou para "${next}"`);
-        renderizarKanban();
+        await update(ref(db, `pedidos/${ordem.id}`), { status: next, atualizadoEm: new Date().toISOString(), atualizadoPor: usuarioAtual?.uid || null });
+        await registrarLog(`OP ${ordem.numero} avançou para "${next}"`);
     }
 
-    function excluirPorId(id) {
+    async async function excluirPorId(id) {
         if (!confirm('Deseja remover permanentemente esta ordem?')) return;
-        let ordens = getOrdens();
-        const op = ordens.find(o=>o.id===id);
-        setOrdens(ordens.filter(o=>o.id!==id));
-        if (op) registrarLog(`OP ${op.numero} excluída.`);
-        renderizarKanban();
+        const op = ordensCache.find(o => String(o.id) === String(id));
+        if (!op) return;
+        await remove(ref(db, `pedidos/${op.id}`));
+        await registrarLog(`OP ${op.numero} excluída.`);
     }
 
     // ---- DETALHES ----
@@ -491,52 +510,41 @@ function alternarTema() {
         bu.classList.toggle('urgente', p==='Urgente');
     }
 
-    function salvarNovaOP() {
+    async function salvarNovaOP() {
         const numero = document.getElementById('m-numero').value.trim();
         const cliente = document.getElementById('m-cliente').value.trim();
         const produto = document.getElementById('m-produto').value.trim();
         const quantidade = document.getElementById('m-quantidade').value.trim();
-        if (!numero||!cliente||!produto||!quantidade) { alert('Preencha os campos obrigatórios (*).'); return; }
-        const ordens = getOrdens();
-        const id = Date.now();
-        ordens.push({ id, numero, cliente, produto, quantidade,
-            cep:document.getElementById('m-cep').value.trim(),
-            bairro:document.getElementById('m-bairro').value.trim(),
-            rua:document.getElementById('m-rua').value.trim(),
-            casa:document.getElementById('m-casa').value.trim(),
-            cidade:document.getElementById('m-cidade').value.trim(),
-            responsavel:'', prazo:'',
-            prioridade:prioridadeModal, status:'A Fazer',
-            descricao:document.getElementById('m-descricao').value.trim() });
-        setOrdens(ordens);
-        registrarLog(`Nova OP ${numero} cadastrada para ${cliente}.`);
+        if (!numero || !cliente || !produto || !quantidade) { alert('Preencha os campos obrigatórios (*).'); return; }
+        const r = push(ref(db, 'pedidos'));
+        const agora = new Date().toISOString();
+        await set(r, { numero, cliente, produto, quantidade,
+            cep: document.getElementById('m-cep').value.trim(), bairro: document.getElementById('m-bairro').value.trim(),
+            rua: document.getElementById('m-rua').value.trim(), casa: document.getElementById('m-casa').value.trim(),
+            cidade: document.getElementById('m-cidade').value.trim(), responsavel: '', prazo: '',
+            prioridade: prioridadeModal, status: 'A Fazer', descricao: document.getElementById('m-descricao').value.trim(),
+            criadoEm: agora, atualizadoEm: agora, criadoPor: usuarioAtual?.uid || null
+        });
+        await registrarLog(`Nova OP ${numero} cadastrada para ${cliente}.`);
         fecharModal();
-        renderizarKanban();
     }
 
     // ---- SALVAR ORDEM (cadastro) ----
-    function salvarOrdem() {
+    async function salvarOrdem() {
         const cliente = document.getElementById('cliente').value.trim();
         const produto = document.getElementById('produto').value.trim();
-        if (!cliente||!produto) { alert('Preencha os campos obrigatórios.'); return; }
-        const ordens = getOrdens();
-        const id = Date.now();
-        const numero = document.getElementById('numero-op').value.trim() || `OP-${id}`;
-        ordens.push({ id, numero, cliente, produto,
-            quantidade:document.getElementById('quantidade').value.trim(),
-            responsavel:document.getElementById('responsavel').value.trim(),
-            cep:document.getElementById('cep').value.trim(),
-            rua:document.getElementById('rua').value.trim(),
-            casa:document.getElementById('numero-casa').value.trim(),
-            bairro:document.getElementById('bairro').value.trim(),
-            cidade:document.getElementById('cidade').value.trim(),
-            status:document.getElementById('status').value,
-            prioridade:document.getElementById('prioridade').value,
-            prazo:document.getElementById('prazo').value,
-            descricao:document.getElementById('descricao').value.trim() });
-        setOrdens(ordens);
-        registrarLog(`Nova OP ${numero} cadastrada via formulário.`);
-        renderizarTabelaGen('tabela-ordens');
+        if (!cliente || !produto) { alert('Preencha os campos obrigatórios.'); return; }
+        const r = push(ref(db, 'pedidos'));
+        const agora = new Date().toISOString();
+        const numero = document.getElementById('numero-op').value.trim() || `OP-${Date.now()}`;
+        await set(r, { numero, cliente, produto,
+            quantidade: document.getElementById('quantidade').value.trim(), responsavel: document.getElementById('responsavel').value.trim(),
+            cep: document.getElementById('cep').value.trim(), rua: document.getElementById('rua').value.trim(), casa: document.getElementById('numero-casa').value.trim(),
+            bairro: document.getElementById('bairro').value.trim(), cidade: document.getElementById('cidade').value.trim(),
+            status: document.getElementById('status').value, prioridade: document.getElementById('prioridade').value, prazo: document.getElementById('prazo').value,
+            descricao: document.getElementById('descricao').value.trim(), criadoEm: agora, atualizadoEm: agora, criadoPor: usuarioAtual?.uid || null
+        });
+        await registrarLog(`Nova OP ${numero} cadastrada via formulário.`);
         limparCampos();
         alert('Ordem registrada com sucesso!');
     }
@@ -548,17 +556,13 @@ function alternarTema() {
         document.getElementById('prioridade').value='Normal';
     }
 
-    function excluirOrdem() {
+    async function excluirOrdem() {
         const numero = prompt('Digite o número da OP a excluir (ex: OP-001):');
         if (!numero) return;
-        let ordens = getOrdens();
-        const antes = ordens.length;
-        ordens = ordens.filter(o=>o.numero!==numero.trim());
-        if (ordens.length===antes) { alert('Ordem não encontrada.'); return; }
-        setOrdens(ordens);
-        registrarLog(`OP ${numero} excluída via tabela.`);
-        renderizarTabelaGen('tabela-ordens');
-        renderizarKanban();
+        const ordem = ordensCache.find(o => o.numero === numero.trim());
+        if (!ordem) { alert('Ordem não encontrada.'); return; }
+        await remove(ref(db, `pedidos/${ordem.id}`));
+        await registrarLog(`OP ${numero} excluída via tabela.`);
     }
 
     // ---- TABELA ----
@@ -651,14 +655,11 @@ function alternarTema() {
         }).join('');
     }
 
-    function mudarStatusEntrega(id, novoStatus) {
-        const ordens=getOrdens();
-        const idx=ordens.findIndex(o=>o.id===id);
-        if (idx===-1) return;
-        ordens[idx].status=novoStatus;
-        setOrdens(ordens);
-        registrarLog(`OP ${ordens[idx].numero} atualizada para "${novoStatus}" pelo entregador.`);
-        renderizarEntregador();
+    async function mudarStatusEntrega(id, novoStatus) {
+        const ordem = ordensCache.find(o => String(o.id) === String(id));
+        if (!ordem) return;
+        await update(ref(db, `pedidos/${ordem.id}`), { status: novoStatus, atualizadoEm: new Date().toISOString(), atualizadoPor: usuarioAtual?.uid || null });
+        await registrarLog(`OP ${ordem.numero} atualizada para "${novoStatus}" pelo entregador.`);
     }
 
     // ---- LOGS ----
@@ -670,10 +671,9 @@ function alternarTema() {
             ? logs.map(l=>`<div class="log-item">[${l.data}] — ${l.acao}</div>`).join('')
             : '<p style="color:var(--texto-leve);text-align:center;padding:30px;">Nenhum log registrado.</p>';
     }
-    function limparLogs() {
+    async function limparLogs() {
         if (!confirm('Apagar todos os logs?')) return;
-        localStorage.removeItem('lsp_logs');
-        renderizarLogs();
+        await set(ref(db, 'pedidosLogs'), null);
     }
 
     // ---- PDF INDIVIDUAL (por OP, portado do gerar_pdf_simples) ----
@@ -734,8 +734,21 @@ function alternarTema() {
     document.getElementById('modal-detalhes').addEventListener('click',function(e){ if(e.target===this) fecharModalDetalhes(); });
 
     // ---- INIT ----
-    renderizarKanban();
-    </script>
+    onAuthStateChanged(auth, user => {
+        usuarioAtual = user || null;
+        if (!user) {
+            alert('Sua sessão expirou. Faça login novamente.');
+            return;
+        }
+        const usuario = document.getElementById('usuario');
+        if (usuario) usuario.textContent = `Bem-vindo, ${user.displayName || user.email || 'Usuário'}!`;
+        carregarDadosIniciais();
+    });
+
+    window.getOrdens = getOrdens;
+    window.registrarLog = registrarLog;
+    window.carregarDadosIniciais = carregarDadosIniciais;
+</script>
         <script defer src="../../assets/js/acessibilidade.js"></script>
         <script src="../../assets/js/logs.js"></script>
 

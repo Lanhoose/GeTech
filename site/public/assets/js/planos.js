@@ -1,103 +1,104 @@
-document.addEventListener("DOMContentLoaded", () => {
-     const sessao = JSON.parse(localStorage.getItem('sessaoGeTech'));
-    const BASE_URL = window.location.origin + "/GeTech";
+import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+import { ref, get, update } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 
-    // Se não houver sessão, se não estiver ativo, ou se o perfil NÃO for gestor
-    if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
-        alert("Acesso restrito. Apenas gestores podem acessar este painel.");
-        // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
-        return; // Para a execução do resto do script
-    }
-});
+const BASE_URL = window.location.origin + '/GeTech';
+let usuarioAtual = null;
 
-// Dicionário com dados exclusivos que serão injetados dinamicamente na Overlay
 const planosExclusivosInfo = {
-    "Essencial": [
-        "Acesso à manutenção Corretiva Agendada",
-        "Relatórios Mensais consolidados em PDF",
-        "Suporte técnico ágil em até 24h",
-        "Gestão monitorada de até 5 Máquinas simultâneas",
-        "Acesso básico ao painel de controle"
+    'Essencial': [
+        'Acesso à manutenção Corretiva Agendada',
+        'Relatórios Mensais consolidados em PDF',
+        'Suporte técnico ágil em até 24h',
+        'Gestão monitorada de até 5 Máquinas simultâneas',
+        'Acesso básico ao painel de controle'
     ],
-    "Pro Performance": [
-        "Tecnologia de Manutenção Preditiva com sensores IoT",
-        "Dashboard industrial atualizado em Tempo Real",
-        "Suporte Prioritário Emergencial com SLA de 4h",
-        "Gestão expandida para até 20 Máquinas",
-        "Análise gráfica de Vibração e Temperatura inclusa",
-        "Estatísticas de OEE integradas"
+    'Pro Performance': [
+        'Tecnologia de Manutenção Preditiva com sensores IoT',
+        'Dashboard industrial atualizado em Tempo Real',
+        'Suporte Prioritário Emergencial com SLA de 4h',
+        'Gestão expandida para até 20 Máquinas',
+        'Análise gráfica de Vibração e Temperatura inclusa',
+        'Estatísticas de OEE integradas'
     ],
-    "Enterprise": [
-        "Gestão de Parque Industrial Ilimitado",
-        "Consultoria Técnica e de Engenharia Dedicada",
-        "Integração total via API RESTful (SAP, TOTVS, etc)",
-        "Treinamento operacional de Equipe In-loco",
-        "Customização completa de alertas e relatórios de métricas",
-        "Acordo de Nível de Serviço (SLA) Personalizado"
+    'Enterprise': [
+        'Gestão de Parque Industrial Ilimitado',
+        'Consultoria Técnica e de Engenharia Dedicada',
+        'Integração total via API RESTful (SAP, TOTVS, etc)',
+        'Treinamento operacional de Equipe In-loco',
+        'Customização completa de alertas e relatórios de métricas',
+        'Acordo de Nível de Serviço (SLA) Personalizado'
     ]
 };
 
-function selectPlan(planName) {
-    // 1. Salva a escolha do usuário no localStorage
-    localStorage.setItem('planoAdquirido', planName);
-    
-    // 2. Captura os elementos da Modal
+async function selectPlan(planName) {
     const modal = document.getElementById('planModal');
     const modalPlanName = document.getElementById('modalPlanName');
     const modalBenefitsList = document.getElementById('modalBenefitsList');
 
-    if (!modal || !modalPlanName || !modalBenefitsList) return;
+    if (modalPlanName) modalPlanName.innerText = planName;
+    if (modalBenefitsList) {
+        modalBenefitsList.innerHTML = '';
+        const beneficios = planosExclusivosInfo[planName] || ['Benefícios padrão do sistema GeTech.'];
+        beneficios.forEach(beneficio => {
+            const li = document.createElement('li');
+            li.innerText = beneficio;
+            modalBenefitsList.appendChild(li);
+        });
+    }
+    if (modal) modal.classList.add('active');
 
-    // 3. Atualiza os textos da Modal baseados no plano clicado
-    modalPlanName.innerText = planName;
-    
-    // Limpa a lista anterior de benefícios
-    modalBenefitsList.innerHTML = "";
+    if (!usuarioAtual) {
+        console.warn('Plano selecionado apenas visualmente: usuário não autenticado.');
+        return;
+    }
 
-    // Procura os benefícios no objeto. Se não achar (ex: se mudar o nome do botão), mostra um padrão.
-    const beneficios = planosExclusivosInfo[planName] || ["Benefícios padrão do sistema GeTech."];
+    try {
+        await update(ref(db, `usuarios/${usuarioAtual.uid}`), {
+            planoAdquirido: planName,
+            planoAtualizadoEm: Date.now()
+        });
+        console.log(`Plano ${planName} salvo no Firebase.`);
+    } catch (erro) {
+        console.error('Erro ao salvar plano:', erro);
+        alert('O plano foi selecionado, mas não foi possível salvar a escolha no Firebase.');
+    }
+}
+window.selectPlan = selectPlan;
 
-    // Injeta os novos itens de lista dinamicamente
-    beneficios.forEach(beneficio => {
-        const li = document.createElement('li');
-        li.innerText = beneficio;
-        modalBenefitsList.appendChild(li);
-    });
-
-    // 4. Exibe a modal adicionando a classe "active"
-    modal.classList.add('active');
+async function carregarPlanoAtual(user) {
+    if (!user) return;
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
+        const perfil = snap.exists() ? snap.val() : {};
+        const plano = perfil.planoAdquirido;
+        if (plano) document.body.dataset.planoAtual = plano;
+    } catch (erro) {
+        console.error('Erro ao carregar plano:', erro);
+    }
 }
 
-// Configura o fechamento da modal clicando no 'X' ou fora da caixa
-document.addEventListener("DOMContentLoaded", () => {
+onAuthStateChanged(auth, async (user) => {
+    usuarioAtual = user;
+    if (user) await carregarPlanoAtual(user);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('planModal');
     const closeModal = document.getElementById('closeModal');
 
-    if (closeModal && modal) {
-        // Fecha no botão X
-        closeModal.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
+    closeModal?.addEventListener('click', () => modal?.classList.remove('active'));
+    modal?.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+    });
 
-        // Fecha se o usuário clicar no fundo escuro (fora do card)
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
-    }
-
-    // --- Código de animação dos cartões (Corrigido as aspas com escape inválido) ---
-    const cards = document.querySelectorAll('.plan-card');
-    cards.forEach((card, index) => {
-        card.style.opacity = "0";
-        card.style.transform = "translateY(20px)";
-        card.style.transition = "all 0.4s ease";
-
+    document.querySelectorAll('.plan-card').forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'all 0.4s ease';
         setTimeout(() => {
-            card.style.opacity = "1";
-            card.style.transform = "translateY(0)";
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
         }, index * 200);
     });
 });

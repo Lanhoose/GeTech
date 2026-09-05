@@ -1,76 +1,36 @@
-document.addEventListener("DOMContentLoaded", () => {
-     const sessao = JSON.parse(localStorage.getItem('sessaoGeTech'));
-    const BASE_URL = window.location.origin + "/GeTech";
-
-    // Se não houver sessão, se não estiver ativo, ou se o perfil NÃO for gestor
-    if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
-        alert("Acesso restrito. Apenas gestores podem acessar este painel.");
-        // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
-        return; // Para a execução do resto do script
-    }
-});
-// =========================
-//  TEMA — aplica ANTES do paint (evita flash)
-// =========================
-(function () {
-    const saved = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', saved);
+// Componentes das páginas públicas — sem bloqueio de autenticação.
+(function(){
+  document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
 })();
 
-// =========================
-//  COMPONENTES
-// =========================
-function carregarComponente(id, arquivo) {
-    return fetch(arquivo)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById(id).innerHTML = data;
-        })
-        .catch(error => console.error('Erro ao carregar componente:', error));
+function carregarComponente(id, arquivo){
+  return fetch(arquivo).then(r=>{
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.text();
+  }).then(html=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=html;
+  }).catch(err=>console.error(`Erro ao carregar componente ${id}:`,err));
 }
- 
- 
-// =========================
-//  TOGGLE DE TEMA
-// =========================
-function inicializarToggleTema() {
-    const btn  = document.getElementById('themeToggle');
-    const icon = document.getElementById('themeIcon');
- 
-    if (!btn) return; // sai se o header ainda não tiver o botão
- 
-    const aplicarTema = (tema) => {
-        document.documentElement.setAttribute('data-theme', tema);
-        localStorage.setItem('theme', tema);    
-        if (icon) icon.textContent = tema === 'dark' ? '🌙' : '☀️';
-        btn.setAttribute('aria-label', tema === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
-    };
- 
-    // Sincroniza ícone com o tema já aplicado pelo IIFE acima
-    const temaAtual = document.documentElement.getAttribute('data-theme') || 'dark';
-    aplicarTema(temaAtual);
- 
-    btn.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        aplicarTema(current === 'dark' ? 'light' : 'dark');
-    });
+
+function inicializarToggleTema(){
+  const btn=document.getElementById('themeToggle');
+  const icon=document.getElementById('themeIcon');
+  if(!btn) return;
+  const aplicar=tema=>{
+    document.documentElement.setAttribute('data-theme',tema);
+    localStorage.setItem('theme',tema);
+    if(icon) icon.textContent=tema==='dark'?'🌙':'☀️';
+    btn.setAttribute('aria-label',tema==='dark'?'Ativar tema claro':'Ativar tema escuro');
+  };
+  aplicar(document.documentElement.getAttribute('data-theme')||'dark');
+  btn.addEventListener('click',()=>aplicar((document.documentElement.getAttribute('data-theme')||'dark')==='dark'?'light':'dark'));
 }
- 
- 
-// =========================
-//  INICIALIZAÇÃO
-// =========================
-document.addEventListener('DOMContentLoaded', () => {
- 
-    // Carrega header e SÓ DEPOIS inicializa toggle e login
-    carregarComponente('header', '../components/header.html').then(() => {
-        inicializarToggleTema();
- 
-        if (typeof verificarStatusLogin === 'function') {
-            verificarStatusLogin();
-        }
-    });
- 
-    carregarComponente('footer', '../components/footer.html');
+
+document.addEventListener('DOMContentLoaded',()=>{
+  carregarComponente('header','../components/header.html').then(inicializarToggleTema);
+  carregarComponente('footer','../components/footer.html');
 });
+
+window.carregarComponente=carregarComponente;
+window.inicializarToggleTema=inicializarToggleTema;

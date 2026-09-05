@@ -1,0 +1,82 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "usuarios": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+        ".write": "auth != null && (root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && !data.exists()))",
+        ".validate": "newData.hasChildren(['email','tipo']) && (!data.exists() || newData.child('tipo').val() === data.child('tipo').val() || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+      }
+    },
+
+    "estoque": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "maquinas": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "ordensServico": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "ordens": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "pedidos": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "pedidosLogs": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "funcionarios": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "pontos": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "postsBlog": {
+      "$id": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "auditoria": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      }
+    },
+    "chamadosChatbot": {
+      "$id": {
+        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "(!data.exists() && newData.hasChildren(['nome','email','problema','data','status'])) || (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+        ".validate": "newData.hasChildren(['nome','email','problema','data','status'])"
+      }
+    }
+  }
+}

@@ -1,151 +1,197 @@
-document.addEventListener("DOMContentLoaded", () => {
-     const sessao = JSON.parse(localStorage.getItem('sessaoGeTech'));
-    const BASE_URL = window.location.origin + "/GeTech";
+import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
+import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+import {
+    ref,
+    push,
+    set,
+    get,
+    remove,
+    query,
+    orderByChild,
+    limitToLast
+} from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 
-    // Se não houver sessão, se não estiver ativo, ou se o perfil NÃO for gestor
-    if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
-        alert("Acesso restrito. Apenas gestores podem acessar este painel.");
-        // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
-        return; // Para a execução do resto do script
-    }
-});
+const BASE_URL = window.location.origin + '/GeTech';
 
-// ==========================================
-// SISTEMA GLOBAL DE AUDITORIA
-// ==========================================
-const Auditoria = {
-    MAX_LOGS: 500, // Limite de segurança para não estourar o localStorage
+async function obterPerfilAtual(user) {
+    if (!user) return null;
+    const snap = await get(ref(db, `usuarios/${user.uid}`));
+    return snap.exists() ? snap.val() : {};
+}
 
-    registrar: function(usuario, acao, detalhe, criticidade = 'info') {
-        let logs;
+export const Auditoria = {
+    MAX_LOGS: 500,
+
+    async registrar(usuario, acao, detalhe, criticidade = 'info') {
         try {
-            logs = JSON.parse(localStorage.getItem('erp_auditoria_logs')) || [];
-        } catch (e) {
-            // JSON corrompido: reinicia o array limpo
-            logs = [];
+            const user = auth.currentUser;
+            const perfil = await obterPerfilAtual(user);
+            const nome = usuario || perfil?.nome || user?.displayName || user?.email || 'Convidado/Sistema';
+
+            const novoLog = {
+                id: 'LOG-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                dataHora: new Date().toISOString(),
+                usuario: nome,
+                usuarioUid: user?.uid || null,
+                acao: acao || 'Evento',
+                detalhe: detalhe || '',
+                criticidade: criticidade || 'info'
+            };
+
+            const novaRef = push(ref(db, 'auditoria'));
+            await set(novaRef, novoLog);
+            console.log(`[Auditoria] ${novoLog.acao}: ${novoLog.detalhe}`);
+
+            await podarLogs();
+            return novoLog;
+        } catch (erro) {
+            console.error('[Auditoria] Erro ao registrar:', erro);
+            return null;
         }
-
-        const novoLog = {
-            id: 'LOG-' + Math.floor(100000 + Math.random() * 900000),
-            dataHora: new Date().toISOString(),
-            usuario: usuario || 'Convidado/Sistema',
-            acao: acao,
-            detalhe: detalhe,
-            criticidade: criticidade
-        };
-
-        logs.unshift(novoLog);
-
-        // Mantém apenas os últimos MAX_LOGS registros para não estourar o localStorage
-        if (logs.length > this.MAX_LOGS) {
-            logs = logs.slice(0, this.MAX_LOGS);
-        }
-
-        try {
-            localStorage.setItem('erp_auditoria_logs', JSON.stringify(logs));
-        } catch (e) {
-            // localStorage cheio: descarta metade dos logs mais antigos e tenta de novo
-            logs = logs.slice(0, Math.floor(this.MAX_LOGS / 2));
-            localStorage.setItem('erp_auditoria_logs', JSON.stringify(logs));
-        }
-
-        console.log(`[Auditoria] ${acao}: ${detalhe}`);
     },
 
-    obterLogs: function() {
+    async obterLogs() {
         try {
-            return JSON.parse(localStorage.getItem('erp_auditoria_logs')) || [];
-        } catch (e) {
+            const consulta = query(ref(db, 'auditoria'), orderByChild('dataHora'), limitToLast(this.MAX_LOGS));
+            const snap = await get(consulta);
+            if (!snap.exists()) return [];
+
+            return Object.entries(snap.val())
+                .map(([firebaseId, log]) => ({ firebaseId, ...log }))
+                .sort((a, b) => new Date(b.dataHora).getTime() - new Date(a.dataHora).getTime());
+        } catch (erro) {
+            console.error('[Auditoria] Erro ao obter logs:', erro);
             return [];
         }
     },
 
-    limparLogs: function() {
-        localStorage.removeItem('erp_auditoria_logs');
-        this.registrar('Sistema', 'Limpeza de Logs', 'O histórico de auditoria foi reinicializado.', 'aviso');
+    async limparLogs() {
+        try {
+            await remove(ref(db, 'auditoria'));
+            console.log('[Auditoria] Histórico de auditoria apagado.');
+            return true;
+        } catch (erro) {
+            console.error('[Auditoria] Erro ao limpar logs:', erro);
+            return false;
+        }
     }
 };
+window.Auditoria = Auditoria;
 
-// ==========================================
-// CAPTURA AUTOMÁTICA CONTROLADA POR SESSÃO
-// ==========================================
-document.addEventListener("DOMContentLoaded", () => {
-    const usuarioAtual = localStorage.getItem('usuario_logado') || 'Usuário Convidado';
+async function podarLogs() {
+    try {
+        const snap = await get(ref(db, 'auditoria'));
+        if (!snap.exists()) return;
+        const entradas = Object.entries(snap.val());
+        if (entradas.length <= Auditoria.MAX_LOGS) return;
 
-    const nomeAmigavel = document.title || 'Página sem Título';
+        entradas.sort(([, a], [, b]) => new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime());
+        const quantidadeRemover = entradas.length - Auditoria.MAX_LOGS;
+        await Promise.all(
+            entradas.slice(0, quantidadeRemover).map(([id]) => remove(ref(db, `auditoria/${id}`)))
+        );
+    } catch (erro) {
+        console.error('[Auditoria] Erro ao podar logs:', erro);
+    }
+}
 
-    // FIX: pathname terminando em "/" retornava string vazia, colidindo a chave entre páginas
-    const pathParts   = window.location.pathname.split('/').filter(Boolean);
+async function obterNomeUsuario(user) {
+    const perfil = await obterPerfilAtual(user);
+    return perfil?.nome || user?.displayName || user?.email || 'Usuário Convidado';
+}
+
+async function registrarAcessoAutomatico() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
     const nomeArquivo = pathParts.pop() || 'index.html';
-
-    // ── 1. REGISTRO DE ACESSO À PÁGINA ──────────────────────────────────────
-    // Chave única por aba: evita re-registro no F5 sem bloquear navegação normal
     const chaveSessaoPagina = `acessou_${nomeArquivo}`;
 
     if (!sessionStorage.getItem(chaveSessaoPagina)) {
-        Auditoria.registrar(
-            usuarioAtual,
+        const nomeUsuario = await obterNomeUsuario(user);
+        await Auditoria.registrar(
+            nomeUsuario,
             'Acesso à Página',
-            `Entrou em: "${nomeAmigavel}" (${nomeArquivo})`,
+            `Entrou em: "${document.title || 'Página sem Título'}" (${nomeArquivo})`,
             'info'
         );
         sessionStorage.setItem(chaveSessaoPagina, 'true');
     }
+}
 
-    // ── 2. DETECTOR DE CLIQUES ───────────────────────────────────────────────
-    // FIX: usamos Set para não registrar o mesmo clique duas vezes quando
-    // um elemento é ao mesmo tempo botão e filho de um card.
-    document.addEventListener('click', (evento) => {
-        const elemento = evento.target;
+function iniciarDetectorCliques() {
+    document.addEventListener('click', async (evento) => {
+        const elemento = evento.target instanceof Element ? evento.target : null;
+        if (!elemento || elemento.dataset?.auditoriaIgnorar === 'true') return;
 
         const botaoAlvo = elemento.closest('button');
-        const linkAlvo  = !botaoAlvo && elemento.closest('a');           // link só se não for botão
-        const cardAlvo  = !botaoAlvo && !linkAlvo && (                   // card só se não for botão nem link
+        const linkAlvo = !botaoAlvo && elemento.closest('a');
+        const cardAlvo = !botaoAlvo && !linkAlvo && (
             elemento.closest('.stat-card') ||
             elemento.closest('.module-shortcut')
-            // Removido '.card' genérico: era muito amplo e capturava cliques dentro
-            // de cards de listagem (maq-card, OS cards), gerando logs duplicados
         );
 
         const alvo = botaoAlvo || linkAlvo || cardAlvo;
         if (!alvo) return;
 
-        let textoIdentificador = alvo.innerText?.trim() || alvo.id || alvo.className || 'Elemento sem texto';
-        if (textoIdentificador.length > 50) {
-            textoIdentificador = textoIdentificador.substring(0, 47) + '...';
-        }
+        let texto = alvo.innerText?.trim() || alvo.id || alvo.className || 'Elemento sem texto';
+        if (texto.length > 50) texto = texto.substring(0, 47) + '...';
 
         let tipoAcao = 'Clique em Botão';
-        if (linkAlvo)                               tipoAcao = 'Clique em Link';
-        if (cardAlvo?.classList.contains('stat-card'))       tipoAcao = 'Clique em Estatística';
+        if (linkAlvo) tipoAcao = 'Clique em Link';
+        if (cardAlvo?.classList.contains('stat-card')) tipoAcao = 'Clique em Estatística';
         if (cardAlvo?.classList.contains('module-shortcut')) tipoAcao = 'Acesso a Módulo';
 
+        const nomeUsuario = await obterNomeUsuario(auth.currentUser);
         Auditoria.registrar(
-            usuarioAtual,
+            nomeUsuario,
             tipoAcao,
-            `Clicou em "${textoIdentificador}" na página "${nomeArquivo}"`,
+            `Clicou em "${texto}" na página "${window.location.pathname.split('/').filter(Boolean).pop() || 'index.html'}"`,
             'info'
         );
     });
+}
 
-    // ── 3. DETECTOR DE MUDANÇA DE TEMA ──────────────────────────────────────
-    // FIX: monitorava o .theme-toggle-wrap (pai), mas o detector de cliques acima
-    // também capturava o button filho — gerando dois logs por clique.
-    // Solução: escuta apenas o button diretamente e marca o evento como já tratado.
+function iniciarDetectorTema() {
     const btnTema = document.getElementById('themeToggle') || document.querySelector('.theme-toggle');
-    if (btnTema) {
-        btnTema.addEventListener('click', (e) => {
-            // Pequeno delay para esperar o data-theme ser atualizado no DOM
-            setTimeout(() => {
-                const temaAtual = document.documentElement.getAttribute('data-theme') || 'dark';
-                Auditoria.registrar(
-                    usuarioAtual,
-                    'Alteração de Interface',
-                    `Alterou o tema visual do ERP para: ${temaAtual.toUpperCase()} MODE`,
-                    'info'
-                );
-            }, 50);
-        });
-    }
+    if (!btnTema) return;
+    btnTema.addEventListener('click', () => {
+        setTimeout(async () => {
+            const temaAtual = document.documentElement.getAttribute('data-theme') || 'dark';
+            const nomeUsuario = await obterNomeUsuario(auth.currentUser);
+            Auditoria.registrar(
+                nomeUsuario,
+                'Alteração de Interface',
+                `Alterou o tema visual para: ${temaAtual.toUpperCase()} MODE`,
+                'info'
+            );
+        }, 100);
+    });
+}
+
+async function iniciarPaginaLogs() {
+    if (!document.getElementById('log-table-body')) return;
+
+    const carregar = async () => {
+        const logs = await Auditoria.obterLogs();
+        window.dispatchEvent(new CustomEvent('getech:logs-updated', { detail: logs }));
+        return logs;
+    };
+
+    window.addEventListener('getech:solicitar-logs', carregar);
+    window.carregarLogsFirebase = carregar;
+    await carregar();
+}
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+    await registrarAcessoAutomatico();
+    iniciarDetectorCliques();
+    iniciarDetectorTema();
+    await iniciarPaginaLogs();
 });
+
+window.solicitarLogsFirebase = async function() {
+    return Auditoria.obterLogs();
+};
