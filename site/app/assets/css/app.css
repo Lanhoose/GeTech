@@ -350,3 +350,62 @@ body {
         gap: 16px;
     }
 }
+
+/* ==========================================================================
+   GeTech ERP — RESPONSIVIDADE MOBILE
+   ========================================================================== */
+html { overflow-x: hidden; }
+body { width: 100%; overflow-x: hidden; }
+img, video, iframe { max-width: 100%; height: auto; }
+
+@media (max-width: 900px) {
+    body { padding: 16px; }
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+        padding: 18px;
+    }
+    .header-left { text-align: center; }
+    .header-left h1 { font-size: clamp(1.4rem, 5vw, 1.8rem); }
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .grid-modulos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    body { padding: 10px; }
+    .header {
+        padding: 16px 12px;
+        border-radius: 12px;
+        margin-bottom: 18px;
+    }
+    .header-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .header-actions .theme-toggle-wrap {
+        grid-column: 1 / -1;
+        justify-content: center;
+    }
+    .header-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+    .grid-modulos { grid-template-columns: 1fr; gap: 12px; }
+    .card { padding: 20px 16px; }
+    .card h3 { font-size: 1.05rem; }
+    .card p { font-size: .92rem; }
+}
+
+@media (max-width: 380px) {
+    .header-actions { grid-template-columns: 1fr; }
+    .header-actions .theme-toggle-wrap { grid-column: auto; }
+}

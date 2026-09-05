@@ -113,3 +113,69 @@ footer { margin-top: auto; }
         padding: 15px;           /* Reduz ligeiramente o espaçamento lateral em telas pequenas */
     }
 }
+
+/* ==========================================================================
+   GeTech ERP — PATCH DE RESPONSIVIDADE DOS MÓDULOS
+   ========================================================================== */
+html { overflow-x: hidden; }
+body { max-width: 100%; overflow-x: hidden; }
+img, video, iframe { max-width: 100%; height: auto; }
+
+@media (max-width: 768px) {
+    .header-modulo, .topbar, .logs-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px 12px;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .header-actions > button { flex: 1 1 180px; min-height: 44px; }
+    nav {
+        width: 100%;
+        overflow-x: auto;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    nav button { flex: 0 0 auto; min-height: 44px; }
+    .container, .main-content, .content-wrapper,
+    .rh-container, .logs-container, .form-container {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .form-grid, .grid, .cards-grid, .stats-grid,
+    .kanban-board, .frete-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .card { width: 100%; }
+    .table-wrapper, .table-container, .responsive-table,
+    .tabela-wrapper, .logs-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table { min-width: 620px; }
+    .modal-content {
+        width: min(94vw, 600px);
+        max-height: 90vh;
+        overflow-y: auto;
+        margin: 5vh auto;
+    }
+    input, select, textarea, button { font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+    .header-modulo h1, .header-modulo h2,
+    .topbar h1, .logs-header h1 { font-size: 1.15rem; }
+    .header-actions { flex-direction: column; }
+    .header-actions > * { width: 100%; }
+    .card, form { padding: 16px 12px; }
+    .visor { font-size: clamp(2.2rem, 15vw, 3.2rem); }
+    .modal-content { width: calc(100vw - 20px); padding: 18px 14px; }
+}

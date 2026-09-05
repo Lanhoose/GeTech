@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GeTech - Redirecionando</title>
   <script>
     const BASE_URL = window.location.origin + "/GeTech";
@@ -11,6 +12,11 @@
       window.location.href = BASE_URL + "/site/Site C/pages/index.html";
     }, 1000);
   </script>
+<style>
+/* RESPONSIVO REDIRECIONAMENTO */
+html, body { width:100%; max-width:100%; overflow-x:hidden; }
+body { margin:0; padding:16px; box-sizing:border-box; }
+</style>
 </head>
 <body>
   <div style="text-align: center; margin-top: 50px; font-family: sans-serif; color: #333;">

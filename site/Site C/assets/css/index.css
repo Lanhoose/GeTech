@@ -589,3 +589,98 @@ body.daltonismo-tritanopia {
         font-size: 1.6rem;
     }
 }
+
+/* ==========================================================================
+   GeTech Site C — RESPONSIVIDADE COMPLETA
+   ========================================================================== */
+html { overflow-x: hidden; }
+body { width: 100%; max-width: 100%; overflow-x: hidden; }
+img, video, iframe { max-width: 100%; height: auto; }
+input, select, textarea, button { max-width: 100%; }
+
+@media (max-width: 768px) {
+    header {
+        position: relative;
+        width: 100%;
+        padding: 12px;
+        gap: 10px;
+    }
+    .logo-container { justify-content: center; flex-wrap: wrap; }
+    .logo-texto { font-size: 1.25rem; }
+    nav ul {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 10px;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+    }
+    nav a { flex: 0 0 auto; white-space: nowrap; padding: 8px 4px; }
+
+    main, .main-container, .main-content, .main-wrapper,
+    .contact-card, .cadastro-container, .login-container,
+    .patrocinador-container {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .hero {
+        margin-top: 0;
+        min-height: 70vh;
+        padding: 48px 16px;
+    }
+    .hero h1 { font-size: clamp(1.8rem, 8vw, 2.5rem); }
+    .hero p { font-size: 1rem; }
+
+    .hero-botoes, .acoes-resultado, .controles-finais {
+        flex-direction: column;
+        width: 100%;
+    }
+    .hero-botoes > *, .btn-contato {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .grid-servicos, .sobre-topicos, .grid-metricas,
+    .form-grid, .grid, .cards-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .card, .card-sobre, .cadastro-card, .login-card,
+    .contact-card, form { width: 100%; }
+
+    .table-wrapper, .table-container, .responsive-table {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table { min-width: 600px; }
+
+    .chat-container { width: 100%; max-width: 100%; }
+    .chat-messages { max-height: 55vh; }
+    .chat-input-area { flex-wrap: wrap; }
+    .chat-input-area input { flex: 1 1 100%; }
+
+    .modal-overlay, .plan-overlay { padding: 10px; }
+    .modal-card { width: 100%; max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+    body { font-size: 15px; }
+    .logo-img { height: 42px; }
+    .logo-texto { font-size: 1.1rem; }
+    .hero { padding: 38px 14px; }
+    .hero h1 { font-size: 1.75rem; }
+    .hero p { font-size: .95rem; }
+    .sobre, .servicos, .cta-secao { padding: 38px 14px; }
+    .card, .card-sobre, .cadastro-card, .login-card { padding: 18px 14px; }
+    .form-grid { gap: 10px; }
+    button, .btn-contato, .btn-login { min-height: 44px; }
+}
+
+@media (max-width: 360px) {
+    .logo-texto { font-size: 1rem; }
+    nav a { font-size: .82rem; }
+    .hero h1 { font-size: 1.55rem; }
+}
