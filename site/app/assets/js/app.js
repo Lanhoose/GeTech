@@ -13,6 +13,7 @@ import {
     ref,
     get
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { registrarAuditoria } from './auditoria.js';
 
 window.BASE_URL = window.location.origin + "/GeTech/site";
 
@@ -96,6 +97,7 @@ function atualizarUsuarioNaTela() {
 // ==========================================================================
 window.logout = async function logout() {
     try {
+        await registrarAuditoria('Logout', 'Usuário encerrou a sessão.', 'info');
         await signOut(auth);
     } catch (erro) {
         console.error("Erro ao sair:", erro);

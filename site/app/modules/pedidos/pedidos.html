@@ -272,6 +272,7 @@
     import { auth, db } from '../../../../Site C/assets/js/firebase-config.js';
     import { ref, push, set, update, remove, onValue, get } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
     import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
+    import { registrarAuditoria } from '../../assets/js/auditoria.js';
 
     let ordensCache = [];
     let logsCache = [];
@@ -291,6 +292,9 @@
                 usuario: usuarioAtual.email || '',
                 usuarioUid: usuarioAtual.uid
             });
+            // Mantém o histórico específico de pedidos e também registra no
+            // histórico central da aplicação.
+            await registrarAuditoria('Pedidos/Operações', msg, 'info');
         } catch (erro) { console.error('Erro ao registrar log:', erro); }
     }
 
@@ -750,7 +754,7 @@ function alternarTema() {
     window.carregarDadosIniciais = carregarDadosIniciais;
 </script>
         <script defer src="../../assets/js/acessibilidade.js"></script>
-        <script src="../../assets/js/logs.js"></script>
+        <script type="module" src="../../assets/js/logs.js"></script>
 
 
 </body>

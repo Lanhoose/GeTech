@@ -1,4 +1,5 @@
 import { auth, db } from "./firebase-config.js";
+import { registrarAuditoria } from "../../../app/assets/js/auditoria.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
@@ -13,6 +14,7 @@ async function fazerLogin() {
       mostrarMensagem(msg, 'Usuário sem perfil cadastrado.', 'erro');
       return;
     }
+    await registrarAuditoria('Login', `Login realizado por ${snap.val().nome || email}.`, 'info');
     const tipo = (snap.val().tipo || '').toLowerCase();
     window.location.href = `${window.BASE_URL || '/GeTech/site/'}/public/pages/redimensionamento_app.html`;
   } catch (e) {
