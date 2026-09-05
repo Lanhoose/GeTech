@@ -68,10 +68,7 @@
       ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
       "$id": {
         ".validate": "newData.hasChildren(['id','dataHora','usuario','acao'])"
-      },
-      ".indexOn": [
-        "dataHora"
-      ]
+      }
     },
     "chamadosChatbot": {
       "$id": {

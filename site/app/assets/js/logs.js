@@ -8,8 +8,7 @@ import {
     remove,
     query,
     orderByChild,
-    limitToLast,
-    onValue
+    limitToLast
 } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 
 const BASE_URL = window.location.origin + '/GeTech';
@@ -174,36 +173,11 @@ function iniciarDetectorTema() {
 async function iniciarPaginaLogs() {
     if (!document.getElementById('log-table-body')) return;
 
-    const atualizarTela = (logs) => {
-        window.dispatchEvent(new CustomEvent('getech:logs-updated', { detail: logs }));
-    };
-
     const carregar = async () => {
         const logs = await Auditoria.obterLogs();
-        atualizarTela(logs);
+        window.dispatchEvent(new CustomEvent('getech:logs-updated', { detail: logs }));
         return logs;
     };
-
-    // Escuta o Firebase em tempo real: qualquer novo log, alteração ou exclusão
-    // atualiza a tabela automaticamente, sem F5.
-    const consulta = query(
-        ref(db, 'auditoria'),
-        orderByChild('dataHora'),
-        limitToLast(Auditoria.MAX_LOGS)
-    );
-
-    onValue(consulta, (snapshot) => {
-        const logs = snapshot.exists()
-            ? Object.entries(snapshot.val())
-                .map(([firebaseId, log]) => ({ firebaseId, ...log }))
-                .sort((a, b) => new Date(b.dataHora).getTime() - new Date(a.dataHora).getTime())
-            : [];
-
-        atualizarTela(logs);
-        console.log(`[Auditoria] ${logs.length} logs sincronizados em tempo real.`);
-    }, (erro) => {
-        console.error('[Auditoria] Erro na sincronização em tempo real:', erro);
-    });
 
     window.addEventListener('getech:solicitar-logs', carregar);
     window.carregarLogsFirebase = carregar;
