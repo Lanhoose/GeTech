@@ -141,8 +141,8 @@ function iniciarDetectorCliques() {
 
         let tipoAcao = 'Clique em Botão';
         if (linkAlvo) tipoAcao = 'Clique em Link';
-        if (cardAlvo?.classList.contains('stat-card')) tipoAcao = 'Clique em Estatística';
-        if (cardAlvo?.classList.contains('module-shortcut')) tipoAcao = 'Acesso a Módulo';
+        if (cardAlvo?.classList?.contains('stat-card')) tipoAcao = 'Clique em Estatística';
+        if (cardAlvo?.classList?.contains('module-shortcut')) tipoAcao = 'Acesso a Módulo';
 
         const nomeUsuario = await obterNomeUsuario(auth.currentUser);
         Auditoria.registrar(
