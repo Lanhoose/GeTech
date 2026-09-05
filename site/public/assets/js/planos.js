@@ -1,7 +1,6 @@
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
 import { ref, get, update } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
-import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
 const BASE_URL = window.location.origin + '/GeTech';
 let usuarioAtual = null;
@@ -59,7 +58,6 @@ async function selectPlan(planName) {
             planoAdquirido: planName,
             planoAtualizadoEm: Date.now()
         });
-        await registrarAuditoria('Planos: plano selecionado', `Plano ${planName} selecionado.`, 'info');
         console.log(`Plano ${planName} salvo no Firebase.`);
     } catch (erro) {
         console.error('Erro ao salvar plano:', erro);

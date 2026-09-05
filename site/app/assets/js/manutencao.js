@@ -9,7 +9,6 @@ import {
     get,
     serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
-import { registrarAuditoria } from './auditoria.js';
 
 const BASE_URL = window.location.origin + '/GeTech';
 
@@ -188,7 +187,6 @@ async function salvarMaquina(dados) {
             atualizadoPor: usuarioAtual.uid
         };
         await update(ref(db, `maquinas/${idMaquinaSendoEditada}`), atualizacao);
-        await registrarAuditoria('Manutenção: máquina atualizada', `Máquina ${atualizacao.nome || idMaquinaSendoEditada} atualizada.`, 'info');
         mostrarMensagem('dadosmaquina', `✅ Alterações em <strong>${escaparHTML(dados.nome)}</strong> salvas com sucesso!`);
     } else {
         const novaRef = push(ref(db, 'maquinas'));
@@ -199,7 +197,6 @@ async function salvarMaquina(dados) {
             criadoPor: usuarioAtual.uid,
             atualizadoPor: usuarioAtual.uid
         });
-        await registrarAuditoria('Manutenção: máquina cadastrada', `Máquina ${dados.nome || 'sem nome'} cadastrada.`, 'info');
 
         const alerta = precisaManutencao(dados.dataUltimaManutencao);
         mostrarMensagem(
@@ -292,7 +289,6 @@ async function salvarOrdemServico(dados) {
             atualizadoEm: serverTimestamp(),
             atualizadoPor: usuarioAtual.uid
         });
-        await registrarAuditoria('Manutenção: ordem de serviço atualizada', `OS ${idOSSendoEditada} atualizada.`, 'info');
         mostrarMensagem('ordem_servico', '✅ Ordem de Serviço atualizada com sucesso!');
     } else {
         const novaRef = push(ref(db, 'ordensServico'));
@@ -304,7 +300,6 @@ async function salvarOrdemServico(dados) {
             criadoPor: usuarioAtual.uid,
             atualizadoPor: usuarioAtual.uid
         });
-        await registrarAuditoria('Manutenção: ordem de serviço criada', `OS da máquina ${dados.maquina || 'sem máquina'} criada.`, 'info');
         mostrarMensagem('ordem_servico', '🚀 Ordem de Serviço aberta com sucesso!');
     }
 
@@ -462,7 +457,6 @@ function importarExcel(event) {
                     });
                     importadosMaquinas++;
                 }
-                if (importadosMaquinas) await registrarAuditoria('Manutenção: máquinas importadas', `${importadosMaquinas} máquina(s) importada(s) por planilha.`, 'info');
             }
 
             if (workbook.SheetNames.includes('Ordens de Serviço')) {
@@ -482,7 +476,6 @@ function importarExcel(event) {
                     });
                     importadosOS++;
                 }
-                if (importadosOS) await registrarAuditoria('Manutenção: OS importadas', `${importadosOS} ordem(ns) de serviço importada(s) por planilha.`, 'info');
             }
 
             alert(`Importação concluída! ${importadosMaquinas} máquina(s) e ${importadosOS} ordem(ns) foram enviados ao Firebase.`);

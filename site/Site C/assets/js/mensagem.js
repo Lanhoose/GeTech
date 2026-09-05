@@ -10,7 +10,6 @@ import {
     set
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { registrarAuditoria } from "../../app/assets/js/auditoria.js";
 
 const containerMensagens = document.getElementById("containerMensagens");
 const btnLimparTudo = document.getElementById("btnLimparTudo");
@@ -95,7 +94,6 @@ async function deletarMensagem(id) {
 
     try {
         await remove(ref(db, `chamadosChatbot/${id}`));
-        await registrarAuditoria('Mensagens: chamado excluído', `Chamado ${id} excluído da caixa de mensagens.`, 'warning');
     } catch (erro) {
         console.error("Erro ao excluir chamado:", erro);
         alert("Não foi possível excluir o registro.");
@@ -109,7 +107,6 @@ async function limparTodasMensagens() {
 
     try {
         await set(chamadosRef, null);
-        await registrarAuditoria('Mensagens: caixa limpa', 'Todos os chamados da caixa de mensagens foram excluídos.', 'warning');
     } catch (erro) {
         console.error("Erro ao limpar chamados:", erro);
         alert("Não foi possível limpar a caixa de mensagens.");

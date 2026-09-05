@@ -3,7 +3,6 @@
 // ===========================================================================
 
 import { auth, db } from "./firebase-config.js";
-import { registrarAuditoria } from "../../app/assets/js/auditoria.js";
 import {
     ref,
     push,
@@ -55,7 +54,6 @@ async function salvarMensagemNoSistema() {
     };
 
     await set(chamadoRef, chamado);
-    await registrarAuditoria('Chatbot: chamado aberto', `Chamado aberto por ${dadosColetados.nome || dadosColetados.email || 'usuário'}.`, 'info');
 
     console.log("Chamado salvo no Firebase:", chamadoRef.key);
 }

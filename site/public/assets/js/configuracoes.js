@@ -1,7 +1,6 @@
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 import { onAuthStateChanged, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
 import { ref, get, update } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
-import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
 window.BASE_URL = window.location.origin + '/GeTech';
 let usuarioAtual = null;
@@ -98,7 +97,6 @@ async function salvarPerfil() {
             atualizadoEm: Date.now()
         });
 
-        await registrarAuditoria('Configurações: perfil atualizado', `Perfil alterado para ${nome} / ${novoEmail}.`, 'info');
         perfilAtual = { ...perfilAtual, nome, email: novoEmail };
         const strongUser = document.querySelector('.user-logged strong');
         if (strongUser) strongUser.textContent = nome;
@@ -148,7 +146,6 @@ async function alterarSenha() {
         const credencial = EmailAuthProvider.credential(usuarioAtual.email, senhaAtual);
         await reauthenticateWithCredential(usuarioAtual, credencial);
         await updatePassword(usuarioAtual, novaSenha);
-        await registrarAuditoria('Configurações: senha alterada', 'Senha da conta alterada com sucesso.', 'warning');
 
         document.getElementById('senha-atual').value = '';
         document.getElementById('nova-senha').value = '';

@@ -1,7 +1,6 @@
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
 import { ref, get, push, set, onValue, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
-import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
 let usuarioAtual = null;
 let perfilAtual = {};
@@ -134,7 +133,6 @@ async function publicarPost(evento) {
             criadoPor: usuarioAtual.uid
         });
 
-        await registrarAuditoria('Blog: post publicado', `Post '${title}' publicado.`, 'info');
         form.reset();
         fecharModal();
     } catch (erro) {
