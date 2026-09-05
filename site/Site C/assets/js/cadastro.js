@@ -25,12 +25,12 @@ function formatarDocumento(valor) {
     }
 }
 
-document.getElementById('tel').addEventListener('input', function(e) {
+document.getElementById('tel')?.addEventListener('input', function(e) {
     let numeros = e.target.value.replace(/\D/g, "").substring(0, 11);
     e.target.value = formatarTelefone(numeros);
 });
 
-document.getElementById('doc').addEventListener('input', function(e) {
+document.getElementById('doc')?.addEventListener('input', function(e) {
     let numeros = e.target.value.replace(/\D/g, "").substring(0, 14);
     e.target.value = formatarDocumento(numeros);
 });
@@ -44,7 +44,7 @@ function converterParaBase64(file) {
     });
 }
 
-document.getElementById('foto').addEventListener('change', function() {
+document.getElementById('foto')?.addEventListener('change', function() {
     const arquivo = this.files[0];
     const textoFeedback = document.getElementById('nome-arquivo');
     if (arquivo) {
@@ -64,19 +64,19 @@ import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebase
 import { ref, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 import { registrarAuditoria } from "../../../app/assets/js/auditoria.js";
 
-document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
+document.getElementById('cadastroForm')?.addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const submitBtn = event.target.querySelector('button[type="submit"]');
-    const tipoUsuario = document.getElementById('tipo_usuario').value;
-    const nomeUsuario = document.getElementById('nome').value;
-    const emailUsuario = document.getElementById('email').value.trim().toLowerCase();
-    const doc = document.getElementById('doc').value;
-    const tel = document.getElementById('tel').value;
-    const setor = document.getElementById('setor').value;
-    const s1 = document.getElementById('senha').value;
-    const s2 = document.getElementById('senha2').value;
-    const fotoInput = document.getElementById('foto').files[0];
+    const tipoUsuario = document.getElementById('tipo_usuario')?.value || '';
+    const nomeUsuario = document.getElementById('nome')?.value || '';
+    const emailUsuario = document.getElementById('email')?.value || ''.trim().toLowerCase();
+    const doc = document.getElementById('doc')?.value || '';
+    const tel = document.getElementById('tel')?.value || '';
+    const setor = document.getElementById('setor')?.value || '';
+    const s1 = document.getElementById('senha')?.value || '';
+    const s2 = document.getElementById('senha2')?.value || '';
+    const fotoInput = document.getElementById('foto')?.files?.[0];
 
     if (s1 !== s2) {
         alert("⚠️ As senhas não conferem. Tente novamente.");

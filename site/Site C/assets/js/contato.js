@@ -18,8 +18,8 @@ const phoneInput = document.getElementById('phone');
         e.preventDefault(); 
 
         const btn = document.getElementById('submitBtn');
-        const nome = document.getElementById('name').value;
-        const telefone = document.getElementById('phone').value;
+        const nome = document.getElementById('name')?.value || '';
+        const telefone = document.getElementById('phone')?.value || '';
 
         const meuNumero = "5511999999999"; 
 

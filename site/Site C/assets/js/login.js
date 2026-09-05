@@ -2,12 +2,12 @@ import { auth, db } from "./firebase-config.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-document.getElementById('loginForm').addEventListener('submit', async function(event) {
+document.getElementById('loginForm')?.addEventListener('submit', async function(event) {
     event.preventDefault();
 
     const submitBtn = event.target.querySelector('button[type="submit"]');
-    const usuarioInput = document.getElementById('usuario').value.trim().toLowerCase();
-    const senhaInput = document.getElementById('senha').value;
+    const usuarioInput = document.getElementById('usuario')?.value || ''.trim().toLowerCase();
+    const senhaInput = document.getElementById('senha')?.value || '';
     const msg = document.getElementById('mensagem');
 
     if (msg) msg.textContent = '';

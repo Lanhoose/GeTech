@@ -1,9 +1,9 @@
 let totalGeral = 0;
 
     function adicionarItem() {
-        const desc = document.getElementById('desc').value;
-        const valor = parseFloat(document.getElementById('valor').value);
-        const qtd = parseInt(document.getElementById('qtd').value);
+        const desc = document.getElementById('desc')?.value || '';
+        const valor = parseFloat(document.getElementById('valor')?.value);
+        const qtd = parseInt(document.getElementById('qtd')?.value || '0');
 
         if (!desc || isNaN(valor) || valor <= 0) {
             alert("Preencha os campos corretamente!");
@@ -14,6 +14,7 @@ let totalGeral = 0;
         totalGeral += subtotal;
 
         const tabela = document.querySelector('#tabela tbody');
+        if (!tabela) return;
         const novaLinha = document.createElement('tr');
         novaLinha.setAttribute('data-subtotal', subtotal);
 
@@ -40,19 +41,19 @@ let totalGeral = 0;
 
     function atualizarTotal() {
         if (totalGeral < 0) totalGeral = 0;
-        document.getElementById('valorTotal').innerText = totalGeral.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        if (document.getElementById('valorTotal')) document.getElementById('valorTotal').innerText = totalGeral.toLocaleString('pt-BR', {minimumFractionDigits: 2});
     }
 
     function limparCampos() {
-        document.getElementById('desc').value = '';
-        document.getElementById('valor').value = '';
-        document.getElementById('qtd').value = '1';
-        document.getElementById('desc').focus();
+        if (document.getElementById('desc')) document.getElementById('desc').value = '';
+        if (document.getElementById('valor')) document.getElementById('valor').value = '';
+        if (document.getElementById('qtd')) document.getElementById('qtd').value = '1';
+        document.getElementById('desc')?.focus();
     }
 
     function limparTudo() {
         if(confirm("Limpar todo o orçamento?")) {
-            document.querySelector('#tabela tbody').innerHTML = '';
+            const corpoTabela = document.querySelector('#tabela tbody'); if (corpoTabela) corpoTabela.innerHTML = '';
             totalGeral = 0;
             atualizarTotal();
         }

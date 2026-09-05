@@ -60,12 +60,12 @@
     }
 
     // Eventos de Cadastro (Máquinas)
-    document.getElementById('cadastroMaquinas').addEventListener('submit', function(e) {
+    document.getElementById('cadastroMaquinas')?.addEventListener('submit', function(e) {
       e.preventDefault();
       database.ref('maquinas').push({
-        nomeMaquina: document.getElementById('nomeMaquina').value,
-        modeloMaquina: document.getElementById('modelo').value,
-        numeroDeSerie: document.getElementById('numeroSerie').value
+        nomeMaquina: document.getElementById('nomeMaquina')?.value || '',
+        modeloMaquina: document.getElementById('modelo')?.value || '',
+        numeroDeSerie: document.getElementById('numeroSerie')?.value || ''
       }).then(() => {
         document.getElementById('dadosmaquina').innerText = 'Máquina cadastrada com sucesso!';
         this.reset();
@@ -73,21 +73,21 @@
     });
 
     // Botões de Consulta
-    document.getElementById('btnConsultarMaquinas').addEventListener('click', () => {
+    document.getElementById('btnConsultarMaquinas')?.addEventListener('click', () => {
       database.ref('maquinas').once('value').then(snap => exibirMaquinas(snap.val(), document.getElementById('listaMaquina')));
     });
 
-    document.getElementById('btnConsultarOS').addEventListener('click', () => {
+    document.getElementById('btnConsultarOS')?.addEventListener('click', () => {
       database.ref('ordemservico').once('value').then(snap => exibirOS(snap.val(), document.getElementById('listaOS')));
     });
 
     // Cadastro OS
-    document.getElementById('ordemServico').addEventListener('submit', function(e) {
+    document.getElementById('ordemServico')?.addEventListener('submit', function(e) {
       e.preventDefault();
       database.ref('ordemservico').push({
-        maquinaOs: document.getElementById('maquinaOS').value,
-        descricaoOs: document.getElementById('descricaoOS').value,
-        statusOs: document.getElementById('statusOS').value
+        maquinaOs: document.getElementById('maquinaOS')?.value || '',
+        descricaoOs: document.getElementById('descricaoOS')?.value || '',
+        statusOs: document.getElementById('statusOS')?.value || ''
       }).then(() => {
         document.getElementById('ordem_servico').innerText = 'O.S. Registrada!';
         this.reset();

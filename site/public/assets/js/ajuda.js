@@ -124,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!query) { resetUI(); return; }
 
         cards.forEach(card => {
-            const title = card.querySelector('h3').innerText.toLowerCase();
-            const desc = card.querySelector('p').innerText.toLowerCase();
+            const title = card.querySelector('h3')?.innerText?.toLowerCase() || '';
+            const desc = card.querySelector('p')?.innerText?.toLowerCase() || '';
             card.style.display = (title.includes(query) || desc.includes(query)) ? 'block' : 'none';
         });
 

@@ -753,14 +753,14 @@ function initModalScene(idx, accentColor) {
 }
 
 function closeModal() {
-    document.getElementById('arModal').classList.remove('open');
+    document.getElementById('arModal')?.classList.remove('open');
     document.body.style.overflow = '';
 
     if (modalAnimId)   { cancelAnimationFrame(modalAnimId); modalAnimId = null; }
     if (modalRenderer) { modalRenderer.dispose(); modalRenderer = null; }
 }
 
-document.getElementById('arModal').addEventListener('click', function (e) {
+document.getElementById('arModal')?.addEventListener('click', function (e) {
     if (e.target === this) closeModal();
 });
 

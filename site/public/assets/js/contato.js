@@ -1,8 +1,9 @@
+document.addEventListener("DOMContentLoaded", () => {
 
 
 // 1. Máscara para o telefone
     const phoneInput = document.getElementById('phone');
-    phoneInput.addEventListener('input', (e) => {
+    phoneInput?.addEventListener('input', (e) => {
         let value = e.target.value.replace(/\D/g, "");
         if (value.length > 11) value = value.slice(0, 11);
         
@@ -17,12 +18,13 @@
     // 2. Lógica de envio direto para o WhatsApp
     const form = document.getElementById('contactForm');
     
+    if (!form) return;
     form.onsubmit = function(e) {
         e.preventDefault(); // Impede o envio tradicional
 
         const btn = document.getElementById('submitBtn');
-        const nome = document.getElementById('name').value;
-        const telefone = document.getElementById('phone').value;
+        const nome = document.getElementById('name')?.value || '';
+        const telefone = document.getElementById('phone')?.value || '';
 
         // IMPORTANTE: COLOQUE SEU NÚMERO AQUI (País + DDD + Número)
         const meuNumero = "5511999999999"; 
@@ -35,6 +37,7 @@
         const url = `https://wa.me/${meuNumero}?text=${mensagem}`;
 
         // Feedback de carregamento
+        if (!btn) return;
         btn.innerText = "Abrindo WhatsApp...";
         btn.style.opacity = "0.7";
         btn.disabled = true;
@@ -49,3 +52,4 @@
             btn.disabled = false;
         }, 800);
     };
+});

@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSalvar = document.getElementById('btn-salvar');
     const grid = document.getElementById('grid-depoimentos');
 
+    if (!formOverlay || !btnAbrirForm || !btnCancelar || !btnSalvar || !grid) return;
+
     // Abre e fecha o overlay de forma limpa
     btnAbrirForm.onclick = () => formOverlay.classList.remove('hidden');
     btnCancelar.onclick = () => formOverlay.classList.add('hidden');
@@ -29,10 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     btnSalvar.onclick = () => {
-        const nome = document.getElementById('nome').value;
-        const cargo = document.getElementById('cargo').value;
-        const texto = document.getElementById('texto').value;
-        const nota = document.getElementById('nota').value; 
+        const nome = document.getElementById('nome')?.value || '';
+        const cargo = document.getElementById('cargo')?.value || '';
+        const texto = document.getElementById('texto')?.value || '';
+        const nota = document.getElementById('nota')?.value || ''; 
 
         if (nome && cargo && texto) {
             const card = document.createElement('article');

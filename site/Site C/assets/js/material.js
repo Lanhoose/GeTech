@@ -179,14 +179,15 @@ btnProxima.addEventListener("click", () => {
 function mostrarResultado() {
     containerQuiz.classList.add("escondido");
     quizResultado.classList.remove("escondido");
-    document.getElementById("quiz-pontuacao").innerText = `Você acertou ${pontuacao} de 10 perguntas no tema ${listaTemas[indiceTema].titulo}!`;
+    const pontuacaoEl = document.getElementById("quiz-pontuacao");
+    if (pontuacaoEl) pontuacaoEl.innerText = `Você acertou ${pontuacao} de 10 perguntas no tema ${listaTemas[indiceTema].titulo}!`;
 }
 
 // Botões de retorno
-document.getElementById("btn-voltar-temas").addEventListener("click", voltarParaCarrossel);
-document.getElementById("btn-mudar-tema-resultado").addEventListener("click", voltarParaCarrossel);
+document.getElementById("btn-voltar-temas")?.addEventListener("click", voltarParaCarrossel);
+document.getElementById("btn-mudar-tema-resultado")?.addEventListener("click", voltarParaCarrossel);
 
-document.getElementById("btn-reiniciar-quiz").addEventListener("click", () => {
+document.getElementById("btn-reiniciar-quiz")?.addEventListener("click", () => {
     quizResultado.classList.add("escondido");
     containerQuiz.classList.remove("escondido");
     indicePergunta = 0;

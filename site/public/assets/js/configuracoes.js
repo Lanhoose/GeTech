@@ -150,9 +150,9 @@ async function alterarSenha() {
         await updatePassword(usuarioAtual, novaSenha);
         await registrarAuditoria('Configurações: senha alterada', 'Senha da conta alterada com sucesso.', 'warning');
 
-        document.getElementById('senha-atual').value = '';
-        document.getElementById('nova-senha').value = '';
-        document.getElementById('confirma-senha').value = '';
+        if (document.getElementById('senha-atual')) document.getElementById('senha-atual').value = '';
+        if (document.getElementById('nova-senha')) document.getElementById('nova-senha').value = '';
+        if (document.getElementById('confirma-senha')) document.getElementById('confirma-senha').value = '';
         mostrarFeedback('feedback-senha', '✅ Senha alterada com sucesso!', 'sucesso');
     } catch (erro) {
         console.error(erro);

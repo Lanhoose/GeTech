@@ -160,10 +160,10 @@ async function prepararEdicao(id) {
     const maq = listaMaquinas.find(m => m.id === id);
     if (!maq) return;
 
-    document.querySelector('#nomeMaquina').value = maq.nome || '';
-    document.querySelector('#modelo').value = maq.modelo || '';
-    document.querySelector('#numeroSerie').value = maq.serie || '';
-    document.querySelector('#dataUltimaManutencao').value = maq.dataUltimaManutencao || '';
+    const campo_nomeMaquina=document.querySelector('#nomeMaquina'); if(campo_nomeMaquina) campo_nomeMaquina.value = maq.nome || '';
+    const campo_modelo=document.querySelector('#modelo'); if(campo_modelo) campo_modelo.value = maq.modelo || '';
+    const campo_numeroSerie=document.querySelector('#numeroSerie'); if(campo_numeroSerie) campo_numeroSerie.value = maq.serie || '';
+    const campo_dataUltimaManutencao=document.querySelector('#dataUltimaManutencao'); if(campo_dataUltimaManutencao) campo_dataUltimaManutencao.value = maq.dataUltimaManutencao || '';
 
     emModoEdicao = true;
     idMaquinaSendoEditada = id;
@@ -263,9 +263,9 @@ function prepararEdicaoOS(id) {
     if (!os) return;
 
     atualizarSelectMaquinas();
-    document.querySelector('#maquinaOS').value = os.maquina || '';
-    document.querySelector('#descricaoOS').value = os.descricao || '';
-    document.querySelector('#statusOS').value = os.status || 'pendente';
+    const campo_maquinaOS=document.querySelector('#maquinaOS'); if(campo_maquinaOS) campo_maquinaOS.value = os.maquina || '';
+    const campo_descricaoOS=document.querySelector('#descricaoOS'); if(campo_descricaoOS) campo_descricaoOS.value = os.descricao || '';
+    const campo_statusOS=document.querySelector('#statusOS'); if(campo_statusOS) campo_statusOS.value = os.status || 'pendente';
 
     emModoEdicaoOS = true;
     idOSSendoEditada = id;
@@ -343,10 +343,10 @@ function configurarEventos() {
     formMaquinas?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const dados = {
-            nome: document.querySelector('#nomeMaquina').value.trim(),
-            modelo: document.querySelector('#modelo').value.trim(),
-            serie: document.querySelector('#numeroSerie').value.trim(),
-            dataUltimaManutencao: document.querySelector('#dataUltimaManutencao').value
+            nome: document.querySelector('#nomeMaquina')?.value?.trim() || '',
+            modelo: document.querySelector('#modelo')?.value?.trim() || '',
+            serie: document.querySelector('#numeroSerie')?.value?.trim() || '',
+            dataUltimaManutencao: document.querySelector('#dataUltimaManutencao')?.value || ''
         };
         try {
             await salvarMaquina(dados);
@@ -377,8 +377,8 @@ function configurarEventos() {
 
         const dados = {
             maquina,
-            descricao: document.querySelector('#descricaoOS').value.trim(),
-            status: document.querySelector('#statusOS').value
+            descricao: document.querySelector('#descricaoOS')?.value?.trim() || '',
+            status: document.querySelector('#statusOS')?.value || ''
         };
 
         try {
