@@ -245,6 +245,12 @@ body {
     flex-shrink: 0; /* Bloqueia terminantemente a compressão ou quebra dos botões */
 }
 
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .auth a {
     padding: 8px 16px;
     border-radius: 8px;
@@ -667,62 +673,208 @@ main { flex: 1; }
     }
 }
 
-/* ==========================================================================
-   GeTech — RESPONSIVIDADE GLOBAL (PATCH)
-   ========================================================================== */
-html { overflow-x: hidden; }
-body { width: 100%; max-width: 100%; overflow-x: hidden; }
-img, video, iframe { max-width: 100%; height: auto; }
-button, a, input, select, textarea { max-width: 100%; }
-table { max-width: 100%; }
-
-@media (max-width: 768px) {
-    body { padding-left: 12px; padding-right: 12px; }
-    main, section, article, .container, .content-wrapper {
-        max-width: 100%;
-    }
-    h1 { font-size: clamp(1.6rem, 6vw, 2.3rem); }
-    h2 { font-size: clamp(1.3rem, 5vw, 1.9rem); }
-    h3 { font-size: clamp(1.05rem, 4vw, 1.35rem); }
-    p { overflow-wrap: anywhere; }
-
-    .hero-card, .hero, .card, .module-shortcut, .stat-card,
-    .contact-card, .plan-card, .modal-card, .faq-item {
-        max-width: 100%;
-    }
-
-    .hero-actions, .hero-botoes, .acoes, .actions,
-    .button-group, .btn-group {
-        flex-wrap: wrap;
-    }
-
-    .hero-actions > *, .hero-botoes > * {
-        min-width: min(100%, 240px);
-    }
-
-    .modules-grid, .stats-grid, .grid, .grid-servicos,
-    .plans-grid, .sobre-topicos {
-        grid-template-columns: 1fr !important;
-    }
-
-    .table-wrapper, .table-container, .tabela-container,
-    .responsive-table, .table-responsive {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    table { min-width: 600px; }
+/* =========================================================
+   HEADER RESPONSIVO — BASEADO NO HEADER DO PUBLIC
+   ========================================================= */
+.header {
+    width: 100%;
+    min-width: 0;
 }
 
-@media (max-width: 480px) {
-    body { padding-left: 8px; padding-right: 8px; }
-    .header { border-radius: 10px; }
-    .hero, .hero-card { padding: 28px 16px !important; }
-    .card, .module-shortcut, .stat-card { padding: 18px 14px; }
-    .auth a, .btn-primary, .btn-secondary, .btn-contato {
-        width: 100%;
+.header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    min-width: 0;
+}
+
+.menu-mobile {
+    display: none;
+    width: 44px;
+    height: 40px;
+    padding: 8px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 9px;
+    background: var(--bg-login-btn);
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+.menu-mobile span {
+    display: block;
+    width: 100%;
+    height: 2px;
+    margin: 5px 0;
+    border-radius: 2px;
+    background: var(--text-primary);
+    transition: transform .25s ease, opacity .25s ease;
+}
+
+.menu-mobile.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.menu-mobile.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-mobile.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 1100px) {
+    .header {
+        padding: 12px 16px;
+        gap: 10px;
+    }
+
+    .logo h2 {
+        font-size: 1.2rem;
+    }
+
+    .menu {
+        gap: 1px;
+    }
+
+    .menu a {
+        padding: 7px 8px;
+        font-size: .78rem;
+    }
+}
+
+@media (max-width: 800px) {
+    .header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        padding: 10px 14px;
+        margin-bottom: 25px;
+        gap: 10px 12px;
+    }
+
+    .header-top {
+        display: contents;
+    }
+
+    .logo {
         min-width: 0;
     }
-    .modal-card { width: calc(100vw - 20px); padding: 24px 16px; }
+
+    .logo h2 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1.08rem;
+    }
+
+    .menu-mobile {
+        display: block;
+        justify-self: end;
+    }
+
+    .menu {
+        grid-column: 1 / -1;
+        display: none;
+        width: 100%;
+        max-height: min(65vh, 480px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        gap: 4px;
+        padding: 8px 0;
+        border-top: 1px solid var(--border-subtle);
+        scrollbar-width: thin;
+    }
+
+    .menu.active {
+        display: flex;
+    }
+
+    .menu a {
+        width: 100%;
+        padding: 11px 12px;
+        text-align: left;
+        font-size: .9rem;
+        white-space: normal;
+    }
+
+    .menu a::after {
+        display: none;
+    }
+
+    .menu a:hover {
+        background: rgba(255,255,255,.06);
+    }
+
+    .theme-toggle-wrap {
+        width: 100%;
+        justify-content: space-between;
+        border-left: 0;
+        border-top: 1px solid var(--border-subtle);
+        padding: 10px 12px 4px;
+        margin-top: 4px;
+    }
+
+    .auth {
+        grid-column: 1 / -1;
+        width: 100%;
+        justify-content: stretch;
+        padding-top: 0;
+        border-top: 0;
+    }
+
+    .auth-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 8px;
+    }
+
+    .auth a {
+        width: 100%;
+        min-width: 0;
+        text-align: center;
+        padding: 9px 10px;
+    }
+
+    .user-info {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 420px) {
+    .header {
+        padding: 9px 10px;
+    }
+
+    .logo h2 {
+        font-size: 1rem;
+    }
+
+    .menu-mobile {
+        width: 42px;
+        height: 38px;
+    }
+
+    .auth-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .user-info {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .btn-logout {
+        width: 100%;
+    }
 }

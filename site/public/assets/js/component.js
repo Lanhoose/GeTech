@@ -13,7 +13,34 @@ function carregarComponente(id, arquivo){
   }).catch(err=>console.error(`Erro ao carregar componente ${id}:`,err));
 }
 
+function inicializarMenuMobile(){
+  const btn = document.getElementById('menuMobile');
+  const menu = document.getElementById('mainMenu');
+  if(!btn || !menu) return;
+
+  const fechar = () => {
+    menu.classList.remove('active');
+    btn.classList.remove('active');
+    btn.setAttribute('aria-expanded','false');
+    btn.setAttribute('aria-label','Abrir menu');
+  };
+
+  btn.addEventListener('click', () => {
+    const aberto = menu.classList.toggle('active');
+    btn.classList.toggle('active', aberto);
+    btn.setAttribute('aria-expanded', String(aberto));
+    btn.setAttribute('aria-label', aberto ? 'Fechar menu' : 'Abrir menu');
+  });
+
+  menu.querySelectorAll('a').forEach(link => link.addEventListener('click', fechar));
+
+  window.addEventListener('resize', () => {
+    if(window.innerWidth > 800) fechar();
+  });
+}
+
 function inicializarToggleTema(){
+  inicializarMenuMobile();
   const btn=document.getElementById('themeToggle');
   const icon=document.getElementById('themeIcon');
   if(!btn) return;
