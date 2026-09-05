@@ -179,6 +179,10 @@
         tbody.appendChild(row);
     });
 }
+        // Disponibiliza a renderização para o listener em tempo real do logs.js.
+        // Isso garante atualização imediata quando outro módulo grava no Firebase.
+        window.renderizarLogs = renderizarLogs;
+
         async function carregarTabelaLogs() {
             if (!window.Auditoria) {
                 console.warn('[Logs] Auditoria ainda não foi carregado.');

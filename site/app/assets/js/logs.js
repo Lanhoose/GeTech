@@ -175,7 +175,32 @@ async function iniciarPaginaLogs() {
     if (!document.getElementById('log-table-body')) return;
 
     const atualizarTela = (logs) => {
+        // Atualiza a página de logs imediatamente. O evento continua sendo
+        // disparado para manter compatibilidade com a implementação existente.
         window.dispatchEvent(new CustomEvent('getech:logs-updated', { detail: logs }));
+
+        // Fallback direto: evita qualquer corrida entre o callback do Firebase
+        // e o listener do HTML. Assim a tabela muda sem precisar de F5.
+        if (typeof window.renderizarLogs === 'function') {
+            const texto = document.getElementById('filtroTexto')?.value?.toLowerCase().trim() || '';
+            const criticidade = document.getElementById('filtroCriticidade')?.value || '';
+            const dataInicio = document.getElementById('filtroDataInicio')?.value || '';
+            const dataFim = document.getElementById('filtroDataFim')?.value || '';
+
+            const filtrados = logs.filter(log => {
+                const haystack = [log.id, log.usuario, log.acao, log.detalhe].join(' ').toLowerCase();
+                if (texto && !haystack.includes(texto)) return false;
+                if (criticidade && log.criticidade !== criticidade) return false;
+
+                const dataLog = String(log.dataHora || '').slice(0, 10);
+                if (dataInicio && dataLog < dataInicio) return false;
+                if (dataFim && dataLog > dataFim) return false;
+
+                return true;
+            });
+
+            window.renderizarLogs(filtrados);
+        }
     };
 
     const carregar = async () => {
