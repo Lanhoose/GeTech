@@ -1,4 +1,5 @@
 import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
+import { registrarAuditoria } from "../../../app/assets/js/auditoria.js";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -43,6 +44,7 @@ window.fazerLogin = async function fazerLogin() {
         }
 
         const dados = snap.val();
+        await registrarAuditoria('Login', `Login realizado por ${dados.nome || email}.`, 'info');
 
         // Não criamos uma sessão paralela: Firebase Auth mantém o estado do login.
         mostrarMensagem(msg, "Login realizado com sucesso!", "sucesso");
@@ -99,6 +101,7 @@ window.cadastrar = async function cadastrar() {
             tipo: "usuario"
         });
 
+        await registrarAuditoria('Cadastro: usuário criado', `Novo usuário ${email} cadastrado.`, 'info');
         mostrarMensagem(msg, "Cadastro realizado com sucesso!", "sucesso");
 
         setTimeout(() => {

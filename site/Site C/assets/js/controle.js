@@ -9,6 +9,7 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { registrarAuditoria } from "../../app/assets/js/auditoria.js";
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -117,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         botaoSairLink.addEventListener("click", async function (event) {
             event.preventDefault();
             try {
+                await registrarAuditoria('Logout', 'Usuário encerrou a sessão.', 'info');
                 await signOut(auth);
             } catch (erro) {
                 console.error("Erro ao sair:", erro);

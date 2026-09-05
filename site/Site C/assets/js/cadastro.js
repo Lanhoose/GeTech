@@ -62,6 +62,7 @@ document.getElementById('foto').addEventListener('change', function() {
 import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { ref, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { registrarAuditoria } from "../../app/assets/js/auditoria.js";
 
 document.getElementById('cadastroForm').addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -113,6 +114,7 @@ document.getElementById('cadastroForm').addEventListener('submit', async functio
             tipo: tipoUsuario,
             foto: fotoBase64
         });
+        await registrarAuditoria('Cadastro: usuário criado', `Perfil ${tipoUsuario} criado para ${nomeUsuario} (${emailUsuario}).`, 'info');
 
         if (tipoUsuario === 'gestor') {
             alert("✅ Perfil GESTOR cadastrado com sucesso! Redirecionando para o Painel...");
