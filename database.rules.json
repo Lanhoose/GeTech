@@ -2,7 +2,6 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "usuarios": {
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
@@ -10,7 +9,6 @@
         ".validate": "newData.hasChildren(['email','tipo']) && (!data.exists() || newData.child('tipo').val() === data.child('tipo').val() || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
       }
     },
-
     "estoque": {
       "$id": {
         ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
@@ -66,9 +64,10 @@
       }
     },
     "auditoria": {
+      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
       "$id": {
-        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+        ".validate": "newData.hasChildren(['id','dataHora','usuario','acao'])"
       }
     },
     "chamadosChatbot": {
