@@ -48,7 +48,11 @@
     "auditoria": {
       ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
       ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      "$id": { ".validate": "newData.hasChildren(['id','dataHora','usuario','acao'])" }
+      ".indexOn": ["dataHora"],
+      "$id": {
+        ".write": "auth != null && (!data.exists() || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+        ".validate": "newData.hasChildren(['id','dataHora','usuario','acao'])"
+      }
     },
     "chamadosChatbot": {
       ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
