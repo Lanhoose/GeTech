@@ -738,12 +738,31 @@ function alternarTema() {
     document.getElementById('modal-detalhes').addEventListener('click',function(e){ if(e.target===this) fecharModalDetalhes(); });
 
     // ---- INIT ----
-    onAuthStateChanged(auth, user => {
+    onAuthStateChanged(auth, async (user) => {
         usuarioAtual = user || null;
+
         if (!user) {
             alert('Sua sessão expirou. Faça login novamente.');
+            window.location.href = '../../Site C/pages/login.html';
             return;
         }
+
+        try {
+            const snapPerfil = await get(ref(db, `usuarios/${user.uid}`));
+            const perfil = snapPerfil.exists() ? snapPerfil.val() : {};
+
+            if (String(perfil.tipo || '').toLowerCase() !== 'gestor') {
+                alert('Acesso restrito. Apenas gestores podem acessar este módulo.');
+                window.location.href = '../../Site C/pages/login.html';
+                return;
+            }
+        } catch (erro) {
+            console.error('[Pedidos] Erro ao verificar o perfil do usuário:', erro);
+            alert('Não foi possível verificar seu perfil de acesso.');
+            window.location.href = '../../Site C/pages/login.html';
+            return;
+        }
+
         const usuario = document.getElementById('usuario');
         if (usuario) usuario.textContent = `Bem-vindo, ${user.displayName || user.email || 'Usuário'}!`;
         carregarDadosIniciais();
