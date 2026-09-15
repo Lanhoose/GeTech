@@ -3,7 +3,12 @@ import { onAuthStateChanged, updateEmail, updatePassword, reauthenticateWithCred
 import { ref, get, update } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
-window.BASE_URL = window.location.origin + '/GeTech';
+// Constante própria — NÃO usar window.BASE_URL aqui.
+// verificacaologin.js também define window.BASE_URL (com um valor diferente,
+// "/GeTech/site/"), e como os dois módulos são carregados na mesma página,
+// o valor deste arquivo era sobrescrito e o redirecionamento de usuário
+// deslogado apontava para uma URL quebrada (".../site//site/...").
+const BASE_URL = window.location.origin + '/GeTech';
 let usuarioAtual = null;
 let perfilAtual = {};
 
@@ -23,7 +28,7 @@ window.mostrarFeedback = mostrarFeedback;
 async function inicializarDadosUsuario(user = auth.currentUser) {
     if (!user) {
         alert('Acesso restrito! Por favor, faça login para acessar as configurações.');
-        window.location.href = `${window.BASE_URL}/site/public/pages/login.html`;
+        window.location.href = `${BASE_URL}/site/public/pages/login.html`;
         return false;
     }
 
@@ -193,13 +198,17 @@ async function iniciar() {
     configurarAbas();
     document.getElementById('btn-salvar-perfil')?.addEventListener('click', salvarPerfil);
     document.getElementById('btn-salvar-senha')?.addEventListener('click', alterarSenha);
-    await inicializarDadosUsuario();
+    // A carga dos dados do usuário (e o eventual redirecionamento por falta
+    // de login) fica só por conta do onAuthStateChanged abaixo: no momento em
+    // que a página termina de carregar, o Firebase ainda pode não ter
+    // restaurado a sessão salva, e "auth.currentUser" chegaria null mesmo
+    // para quem está logado — o que derrubava o usuário por engano.
 }
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
         alert('Acesso restrito! Por favor, faça login para acessar as configurações.');
-        window.location.href = `${window.BASE_URL}/site/public/pages/login.html`;
+        window.location.href = `${BASE_URL}/site/public/pages/login.html`;
         return;
     }
     await inicializarDadosUsuario(user);
