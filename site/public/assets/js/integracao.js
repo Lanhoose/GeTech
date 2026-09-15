@@ -1,15 +1,21 @@
-document.addEventListener("DOMContentLoaded", () => {
-     const sessao = JSON.parse(localStorage.getItem('sessaoGeTech'));
-    const BASE_URL = window.location.origin + "/GeTech";
+// ===========================================================================
+// integracao.js
+// Painel de integrações — restrito a usuários com tipo === "gestor".
+//
+// A verificação antiga lia localStorage.getItem('sessaoGeTech'), um resquício
+// do sistema de login por localStorage que o projeto usava antes de migrar
+// para o Firebase. Como nada no projeto grava mais essa chave (login.js e
+// cadastro.js usam Firebase Authentication + Realtime Database), a condição
+// nunca era satisfeita e QUALQUER usuário — inclusive um gestor de verdade
+// logado — era barrado. A verificação foi trocada pelo mesmo padrão usado
+// nos outros módulos: onAuthStateChanged + usuarios/{uid}/tipo.
+// ===========================================================================
 
-    // Se não houver sessão, se não estiver ativo, ou se o perfil NÃO for gestor
-    if (!sessao || !sessao.loginAtivo || sessao.perfil !== 'gestor') {
-        alert("Acesso restrito. Apenas gestores podem acessar este painel.");
-        // Redireciona para a página de login
-        window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
-        return; // Para a execução do resto do script
-    }
-});
+import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+const BASE_URL = window.location.origin + "/GeTech";
 
 const mockPartnersData = [
     {
@@ -22,7 +28,7 @@ const mockPartnersData = [
     {
         nome: "FedEx",
         descricao: "Integração completa de entrega e rastreio.",
-        url: "https://www.fedex.com/pt-br/home.html?cmp=KNC-1009093-1-1-950-1000000-LAC-BR-PT-SearchPmaxBrand&gclsrc=aw.ds&gad_source=1&gad_campaignid=23350632180&gbraid=0AAAAADlsr1Y0obO2Lt7tHZ5BTQJhqC9xN&gclid=Cj0KCQjw_IXQBhCkARIsADqELbJ425llrGH-ek8_VaIcM27WywTnm2eHNH-e-CXkavUqhtGe7NpMSrkaAvfMEALw_wcB",
+        url: "https://www.fedex.com/pt-br/home.html",
         destaque: false,
         beneficios: ["Rastreio em tempo real", "Segurança"]
     },
@@ -51,18 +57,17 @@ const mockPartnersData = [
 
 function renderPartners(partners) {
     const grid = document.getElementById('partners-grid');
-    if (!grid) return; 
-    
+    if (!grid) return;
+
     grid.innerHTML = '';
 
     partners.forEach(partner => {
         const card = document.createElement('div');
         card.className = `plan-card ${partner.destaque ? 'featured' : ''}`;
 
-        // Estrutura limpa: sem estilos inline fixos para não quebrar o modo claro
         card.innerHTML = `
             ${partner.destaque ? '<div class="badge">Destaque</div>' : ''}
-            
+
             <div class="plan-info">
                 <h3>${partner.nome}</h3>
                 <span class="partner-tag">GeTech Partner</span>
@@ -72,16 +77,48 @@ function renderPartners(partners) {
                 </ul>
             </div>
 
-            <button class="connect-btn" onclick=\"window.open('${partner.url}', '_blank')\">Conectar</button>
+            <button class="connect-btn" onclick="window.open('${partner.url}', '_blank')">Conectar</button>
         `;
 
         grid.appendChild(card);
     });
 }
 
-// Inicializa a renderização assim que o script carregar
-window.onload = () => {
-    setTimeout(() => {
-        renderPartners(mockPartnersData);
-    }, 800); 
-};
+function mostrarCarregando() {
+    const grid = document.getElementById('partners-grid');
+    if (grid) grid.innerHTML = '<p>Carregando parceiros integrados...</p>';
+}
+
+function bloquearAcesso(mensagem) {
+    alert(mensagem);
+    window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
+}
+
+// ==========================================================================
+// VERIFICAÇÃO DE ACESSO (gestor) + RENDERIZAÇÃO DOS PARCEIROS
+// ==========================================================================
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        bloquearAcesso("Acesso restrito. Apenas gestores podem acessar este painel.");
+        return;
+    }
+
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
+        const perfil = snap.exists() ? snap.val() : {};
+
+        if ((perfil.tipo || '').toLowerCase() !== 'gestor') {
+            bloquearAcesso("Acesso restrito. Apenas gestores podem acessar este painel.");
+            return;
+        }
+    } catch (erro) {
+        console.error("[Integração] Erro ao verificar o perfil do usuário:", erro);
+        bloquearAcesso("Não foi possível verificar seu perfil de acesso. Tente novamente.");
+        return;
+    }
+
+    // Perfil confirmado como gestor: libera a renderização dos parceiros.
+    renderPartners(mockPartnersData);
+});
+
+document.addEventListener("DOMContentLoaded", mostrarCarregando);
