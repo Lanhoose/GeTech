@@ -1,0 +1,464 @@
+/* =========================
+    CONFIGURAÇÕES
+========================= */
+
+body{
+    background: var(--bg-page-gradient);
+    background-attachment: fixed;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Página fluida e visível por padrão */
+.config-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    display: flex; /* Agora renderiza direto no fluxo normal sem travas */
+    gap: 40px;
+    align-items: flex-start;
+    flex: 1;
+    box-sizing: border-box;
+}
+
+/* Menu de Abas Lateral */
+.config-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 280px;
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 20px;
+    border-radius: 16px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    width: 100%;
+}
+
+.tab-btn i {
+    font-style: normal;
+    font-size: 1.1rem;
+}
+
+.tab-btn:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+}
+
+.tab-btn.active {
+    background: var(--accent-cyan);
+    color: #050811; /* Contraste escuro para o texto sobre o cyan */
+}
+
+/* Painel de Conteúdo (Direita) */
+.config-content {
+    flex: 1;
+    width: 100%;
+}
+
+/* Controle de visibilidade das Abas */
+.config-pane {
+    display: none;
+    animation: fadeInTab 0.4s ease forwards;
+}
+
+.config-pane.active {
+    display: block;
+}
+
+.config-content h2 {
+    font-size: 1.8rem;
+    margin-top: 0;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.section-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+}
+
+/* Cartões de Configurações */
+.config-card {
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: var(--shadow-card);
+    margin-bottom: 20px;
+}
+
+.config-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 10px;
+}
+
+/* Grupos de Inputs */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group input {
+    background: var(--bg-input);
+    border: 1px solid var(--glass-border);
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 242, 254, 0.15);
+}
+
+.input-group input[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Container de Senha com o botão Revelar incorporado */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-container input {
+    padding-right: 46px; /* Espaço para o ícone não cobrir o texto digitado */
+}
+
+.btn-toggle-password {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, transform 0.1s ease;
+    user-select: none;
+}
+
+.btn-toggle-password:hover {
+    color: var(--text-primary);
+}
+
+.btn-toggle-password:active {
+    transform: scale(0.9);
+}
+
+/* Botões de Ação */
+.btn-salvar-config {
+    background: var(--accent-cyan);
+    color: var(--text-primary);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+}
+
+.btn-salvar-config:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.btn-salvar-config:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Aba de Ajuda Especializada */
+.ajuda-card p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.ajuda-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.link-ajuda-btn {
+    flex: 1;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    padding: 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.link-ajuda-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--text-secondary);
+}
+
+.link-ajuda-btn.secundario {
+    border-color: rgba(248, 113, 113, 0.3);
+    color: #f87171;
+}
+
+.link-ajuda-btn.secundario:hover {
+    background: rgba(248, 113, 113, 0.1);
+    border-color: #f87171;
+}
+
+/* Feedbacks Inline (Substitutos de alerts) */
+.feedback-msg {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-height: 18px;
+    transition: all 0.2s ease;
+}
+.feedback-msg.sucesso { color: var(--accent-green, #4ade80); }
+.feedback-msg.erro { color: #f87171; }
+
+/* Animação suave de transição */
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+    NOTEBOOKS E TELAS MÉDIAS
+========================================== */
+@media (max-width: 1366px) {
+
+    .config-container {
+        max-width: 100%;
+        padding: 30px 20px;
+    }
+
+    .config-tabs {
+        width: 250px;
+    }
+}
+
+/* ==========================================
+    TABLETS E DESKTOPS PEQUENOS
+========================================== */
+@media (max-width: 992px) {
+
+    .config-container {
+        flex-direction: column;
+        gap: 25px;
+        padding: 20px 15px;
+    }
+
+    .config-tabs {
+        width: 100%;
+
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        white-space: nowrap;
+        gap: 8px;
+        padding: 8px;
+
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-cyan) transparent;
+
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+
+    .config-tabs::-webkit-scrollbar {
+        height: 5px;
+    }
+
+    .config-tabs::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .config-tabs::-webkit-scrollbar-thumb {
+        background: var(--accent-cyan);
+        border-radius: 20px;
+    }
+
+    .tab-btn {
+        flex: 0 0 auto;
+        width: auto;
+        min-width: 140px;
+        justify-content: center;
+        text-align: center;
+        padding: 12px 18px;
+    }
+
+    .config-content {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+    SMARTPHONES
+========================================== */
+@media (max-width: 576px) {
+
+    .config-container {
+        padding: 15px 10px;
+        gap: 20px;
+    }
+
+    .config-content h2 {
+        font-size: 1.4rem;
+    }
+
+    .section-desc {
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+    }
+
+    .config-card {
+        padding: 18px 15px;
+        gap: 15px;
+        border-radius: 12px;
+    }
+
+    .config-card h3 {
+        font-size: 1rem;
+    }
+
+    .input-group label {
+        font-size: 0.8rem;
+    }
+
+    .input-group input {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+
+    .btn-salvar-config {
+        width: 100%;
+        align-self: stretch;
+        text-align: center;
+        padding: 14px;
+    }
+
+    .ajuda-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .link-ajuda-btn {
+        width: 100%;
+    }
+
+    .tab-btn {
+        min-width: 120px;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+
+    .tab-btn i {
+        font-size: 1rem;
+    }
+}
+
+/* ==========================================
+    CELULARES PEQUENOS
+========================================== */
+@media (max-width: 360px) {
+
+    .config-container {
+        padding: 10px 8px;
+    }
+
+    .config-content h2 {
+        font-size: 1.2rem;
+    }
+
+    .config-card {
+        padding: 15px 12px;
+    }
+
+    .config-card h3 {
+        font-size: 0.95rem;
+    }
+
+    .tab-btn {
+        min-width: 110px;
+        font-size: 0.75rem;
+        padding: 8px 10px;
+    }
+
+    .tab-btn i {
+        font-size: 0.9rem;
+    }
+
+    .input-group input {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+
+    .btn-salvar-config {
+        font-size: 0.9rem;
+        padding: 12px;
+    }
+}

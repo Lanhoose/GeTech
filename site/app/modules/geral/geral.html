@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeTech - Documentação Técnica do ERP</title>
+    <link rel="stylesheet" href="../../assets/css/geral.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script>(function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'); })();</script>
+</head>
+<body>
+
+    <div class="topbar">
+        <div>
+            <h1>GeTech <span>Technical Central</span></h1>
+            <div class="topbar-meta">Documentação Técnica v2.0 — revisada em setembro de 2026</div>
+        </div>
+        <div class="topbar-right">
+            <span class="badge-version">v2.0</span>
+            <span class="badge-status">Em desenvolvimento</span>
+            <a href="../../app.html" class="btn-topbar">Voltar ao Início</a>
+
+            <div class="theme-toggle-wrap">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/acessibilidade.js"></script>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="btn-aba-visao" onclick="trocarAba('visao')"><i class="fas fa-home"></i> Visão Geral</button>
+        <button class="tab-btn" id="btn-aba-arquitetura" onclick="trocarAba('arquitetura')"><i class="fas fa-project-diagram"></i> Arquitetura</button>
+        <button class="tab-btn" id="btn-aba-dados" onclick="trocarAba('dados')"><i class="fas fa-database"></i> Dados &amp; Segurança</button>
+        <button class="tab-btn" id="btn-aba-estrutura" onclick="trocarAba('estrutura')"><i class="fas fa-sitemap"></i> Estrutura de Pastas</button>
+        <button class="tab-btn" id="btn-aba-modulos" onclick="trocarAba('modulos')"><i class="fas fa-cubes"></i> Módulos &amp; Páginas</button>
+        <button class="tab-btn" id="btn-aba-desenvolvimento" onclick="trocarAba('desenvolvimento')"><i class="fas fa-code"></i> Desenvolvimento</button>
+    </div>
+
+    <main class="main-content">
+
+        <div id="tela-visao" class="panel-card">
+            <div class="doc-section">
+                <h2><i class="fas fa-rocket"></i> Introdução ao Sistema</h2>
+                <p>Sistema de gestão industrial desenvolvido como projeto educacional, simulando um ERP real com múltiplos módulos. O repositório é dividido em três zonas: <strong>Site C</strong> (portal do cliente e porta de entrada do projeto), <strong>public</strong> (site institucional do produto) e <strong>app</strong> (painel ERP interno, restrito ao perfil <code>gestor</code>).</p>
+                <p>A autenticação e a persistência deixaram de ser simuladas em <code>localStorage</code>: hoje o projeto usa <strong>Firebase Authentication</strong> e <strong>Firebase Realtime Database</strong> como fonte única da verdade, com as regras de acesso versionadas em <code>database.rules.json</code>.</p>
+                <div class="intro-grid">
+                    <div class="intro-card">
+                        <div class="label">Linguagem</div>
+                        <div class="value">HTML, CSS e JavaScript ES6 (módulos nativos)</div>
+                    </div>
+                    <div class="intro-card">
+                        <div class="label">Backend / Dados</div>
+                        <div class="value">Firebase Auth + Realtime Database</div>
+                    </div>
+                    <div class="intro-card">
+                        <div class="label">Uso do localStorage</div>
+                        <div class="value">Apenas preferência de tema e estados de interface</div>
+                    </div>
+                    <div class="intro-card">
+                        <div class="label">Servidor necessário</div>
+                        <div class="value">Live Server (VS Code) ou qualquer HTTP</div>
+                    </div>
+                    <div class="intro-card">
+                        <div class="label">Acesso ao painel</div>
+                        <div class="value"><code>usuarios/{uid}/tipo === "gestor"</code></div>
+                    </div>
+                    <div class="intro-card">
+                        <div class="label">Ponto de entrada</div>
+                        <div class="value"><code>index.html</code> da raiz → Site C</div>
+                    </div>
+                </div>
+                <div class="alert-box">
+                    <span class="icon">⚠️</span>
+                    <span>Os scripts montam os caminhos a partir de <code>window.location.origin + "/GeTech"</code>. O projeto precisa ser servido com a pasta <strong>GeTech</strong> na raiz da URL (ex.: <code>http://127.0.0.1:5500/GeTech/index.html</code>), senão os redirecionamentos de login quebram.</span>
+                </div>
+                <div class="alert-box">
+                    <span class="icon">⚠️</span>
+                    <span>Abrir os arquivos direto pelo navegador (<code>file://</code>) não funciona: o <code>fetch()</code> dos componentes e os <code>&lt;script type="module"&gt;</code> do Firebase exigem protocolo HTTP.</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-layer-group"></i> Tecnologias Utilizadas</h2>
+                <table class="tech-table">
+                    <thead>
+                        <tr><th>Tecnologia</th><th>Uso no Projeto</th><th>Onde Aparece</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>HTML5</code></td><td>Estrutura de todas as páginas e componentes</td><td>Todos os arquivos <code>.html</code></td></tr>
+                        <tr><td><code>CSS3</code></td><td>Estilização, Flexbox, Grid e temas via <code>data-theme</code></td><td><code>assets/css/</code></td></tr>
+                        <tr><td><code>JavaScript ES6</code></td><td>Módulos nativos (<code>import</code>/<code>export</code>) e lógica dos módulos</td><td><code>assets/js/</code></td></tr>
+                        <tr><td><code>Firebase Auth 10.13.2</code></td><td>Cadastro, login, sessão e logout reais</td><td><code>login.js</code>, <code>cadastro.js</code>, <code>app.js</code></td></tr>
+                        <tr><td><code>Realtime Database</code></td><td>Persistência de estoque, máquinas, ordens, RH e auditoria</td><td>Todos os módulos do <code>app/</code></td></tr>
+                        <tr><td><code>Fetch API</code></td><td>Carregamento de header/footer e do <code>estrutura.json</code></td><td><code>component.js</code>, <code>geral.html</code></td></tr>
+                        <tr><td><code>Pyodide 0.24.1</code></td><td>Executa o sistema de manutenção em Python dentro do navegador</td><td><code>modules/sistema/</code></td></tr>
+                        <tr><td><code>jsPDF + SheetJS</code></td><td>Exportação de relatórios em PDF e planilhas</td><td><code>manutencao.html</code>, <code>pedidos.html</code></td></tr>
+                        <tr><td><code>VLibras</code></td><td>Acessibilidade em Libras, injetada em todas as telas</td><td><code>acessibilidade.js</code></td></tr>
+                        <tr><td><code>ViaCEP</code></td><td>Preenchimento automático de endereço no cadastro de colaborador</td><td><code>rh.js</code></td></tr>
+                        <tr><td><code>localStorage</code></td><td>Somente preferência de tema (claro/escuro)</td><td><code>app.js</code>, <code>logs.js</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tela-arquitetura" class="panel-card" style="display:none;">
+            <div class="doc-section">
+                <h2><i class="fas fa-map"></i> Mapa do Sistema</h2>
+                <p>Fluxo completo de navegação — do visitante anônimo até os módulos do ERP. O projeto é dividido em três zonas principais:</p>
+
+                <div class="map-grid">
+                    <div class="map-zone">
+                        <div class="map-zone-title public-c"><i class="fas fa-globe"></i> public/ — Site Institucional</div>
+                        <div class="map-page"><span class="map-page-name">index.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">login.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">sobre.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">funcionalidades.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">planos.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">depoimentos.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">integracao.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">FAQ.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">blog.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">contato.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">ajuda.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">configuracoes.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">politica-privacidade.html</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">teste_aumentada.html</span><span class="map-page-desc">Realidade aumentada</span></div>
+                        <div class="map-page"><span class="map-page-name">_template.html</span><span class="map-page-desc">Base para novas páginas</span></div>
+                    </div>
+                    <div class="map-zone">
+                        <div class="map-zone-title app-c"><i class="fas fa-lock"></i> app/ — Dashboard ERP</div>
+                        <div class="map-page"><span class="map-page-name">app.html</span><span class="map-page-desc">Dashboard</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/geral/</span><span class="status-badge done">✓ esta página</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/estoque/</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/manutencao/</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/rh/</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/pedidos/</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/logs/</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/sistema/</span><span class="status-badge done">✓ pronto</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/producao/</span><span class="status-badge notcreated">✗ não criado</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/qualidade/</span><span class="status-badge notcreated">✗ não criado</span></div>
+                        <div class="map-page"><span class="map-page-name">modules/suprimentos/</span><span class="status-badge notcreated">✗ não criado</span></div>
+                    </div>
+                    <div class="map-zone">
+                        <div class="map-zone-title sitec-c"><i class="fas fa-store"></i> Site C/ — Portal Cliente</div>
+                        <div class="map-page"><span class="map-page-name">index.html</span><span class="map-page-desc">Home do portal</span></div>
+                        <div class="map-page"><span class="map-page-name">login.html</span><span class="map-page-desc">Login Firebase</span></div>
+                        <div class="map-page"><span class="map-page-name">cadastro.html</span><span class="map-page-desc">Cadastro de usuário</span></div>
+                        <div class="map-page"><span class="map-page-name">contato.html</span><span class="map-page-desc">Contato</span></div>
+                        <div class="map-page"><span class="map-page-name">chat.html</span><span class="map-page-desc">Chatbot de chamados</span></div>
+                        <div class="map-page"><span class="map-page-name">mensagem.html</span><span class="map-page-desc">Caixa de mensagens</span></div>
+                        <div class="map-page"><span class="map-page-name">material.html</span><span class="map-page-desc">Catálogo de materiais</span></div>
+                        <div class="map-page"><span class="map-page-name">orcamento.html</span><span class="map-page-desc">Orçamento</span></div>
+                        <div class="map-page"><span class="map-page-name">patrocinadores.html</span><span class="map-page-desc">Área do patrocinador</span></div>
+                        <div class="map-page"><span class="map-page-name">sistema.html</span><span class="map-page-desc">Sistema de manutenção</span></div>
+                        <div class="map-page"><span class="map-page-name">redirecionar.html</span><span class="map-page-desc">Redirecionamento</span></div>
+                    </div>
+                </div>
+
+                <div class="info-box" style="margin-top:20px;">
+                    <strong>Fluxo de entrada:</strong> o <code>index.html</code> da raiz redireciona para <code>site/Site C/pages/index.html</code>. O cliente se cadastra e faz login no Site C; se o perfil salvo em <code>usuarios/{uid}/tipo</code> for <code>gestor</code>, ele consegue abrir <code>site/app/app.html</code>. Qualquer outro perfil é bloqueado e devolvido ao portal.
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-puzzle-piece"></i> Sistema de Componentes</h2>
+                <p>Header e footer são carregados via <code>fetch()</code> nas páginas do site institucional (<code>public/</code>), evitando duplicação de código. O <code>app/</code> e o <code>Site C/</code> montam seus próprios cabeçalhos.</p>
+                <div class="code-block">
+<span class="cm">// component.js</span>
+<span class="kw">function</span> <span class="fn">carregarComponente</span>(id, arquivo) {
+  <span class="fn">fetch</span>(arquivo)
+    .then(res =&gt; res.<span class="fn">text</span>())
+    .then(data =&gt; { document.<span class="fn">getElementById</span>(id).innerHTML = data; });
+}
+
+document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentLoaded"</span>, () =&gt; {
+  <span class="fn">carregarComponente</span>(<span class="str">"header"</span>, <span class="str">"../components/header.html"</span>);
+  <span class="fn">carregarComponente</span>(<span class="str">"footer"</span>, <span class="str">"../components/footer.html"</span>);
+});
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-shield-alt"></i> Autenticação (Firebase)</h2>
+                <p>Toda a configuração fica em um único arquivo — <code>Site C/assets/js/firebase-config.js</code> — que exporta <code>auth</code> e <code>db</code>. Os módulos do <code>app/</code> importam esse mesmo arquivo por caminho relativo.</p>
+                <table class="auth-table">
+                    <thead>
+                        <tr><th>Etapa</th><th>Arquivo</th><th>O que acontece</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1. Cadastro</td><td><code>Site C/assets/js/cadastro.js</code></td><td>Cria a conta no Firebase Auth e grava <code>{nome, email, tipo}</code> em <code>usuarios/{uid}</code></td></tr>
+                        <tr><td>2. Login</td><td><code>Site C/assets/js/login.js</code></td><td><code>signInWithEmailAndPassword()</code> — a sessão passa a ser gerenciada pelo Firebase</td></tr>
+                        <tr><td>3. Proteção do painel</td><td><code>app/assets/js/app.js</code></td><td><code>onAuthStateChanged()</code> lê o perfil e só libera se <code>tipo === "gestor"</code></td></tr>
+                        <tr><td>4. Proteção por módulo</td><td><code>estoque.js</code>, <code>rh.js</code>, <code>manutencao.js</code>, <code>orderns.js</code>, <code>logs.js</code></td><td>Cada módulo repete a verificação — abrir a URL direto não contorna o bloqueio</td></tr>
+                        <tr><td>5. Logout</td><td><code>app.js</code></td><td>Registra a auditoria, executa <code>signOut()</code> e volta ao portal</td></tr>
+                    </tbody>
+                </table>
+                <div class="code-block" style="margin-top:16px;">
+<span class="cm">// padrão de proteção usado em todos os módulos</span>
+<span class="fn">onAuthStateChanged</span>(auth, <span class="kw">async</span> (user) =&gt; {
+  <span class="kw">if</span> (!user) { location.href = <span class="str">'../../Site C/pages/login.html'</span>; <span class="kw">return</span>; }
+
+  <span class="kw">const</span> snap = <span class="kw">await</span> <span class="fn">get</span>(<span class="fn">ref</span>(db, <span class="str">`usuarios/${user.uid}`</span>));
+
+  <span class="kw">if</span> (!snap.<span class="fn">exists</span>() || snap.<span class="fn">val</span>().tipo !== <span class="str">'gestor'</span>) {
+    <span class="fn">alert</span>(<span class="str">'Acesso restrito.'</span>);
+    location.href = <span class="str">'../../Site C/pages/login.html'</span>;
+    <span class="kw">return</span>;
+  }
+
+  <span class="fn">carregar</span>(); <span class="cm">// libera o módulo</span>
+});</div>
+                <div class="alert-box" style="margin-top:16px;">
+                    <span class="icon">⚠️</span>
+                    <span>As chaves do Firebase ficam expostas no front-end — isso é esperado. A segurança real depende das regras de <code>database.rules.json</code>, que precisam estar publicadas no console do Firebase.</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-clipboard-check"></i> Trilha de Auditoria</h2>
+                <p>Ações relevantes (login, logout, cadastros, exclusões) chamam <code>registrarAuditoria()</code>, exportado por <code>assets/js/auditoria.js</code>, que grava o evento no nó <code>auditoria</code> com usuário, data/hora, ação, detalhe e criticidade. O módulo <strong>Logs</strong> lê esse nó em tempo real e mantém no máximo 500 registros.</p>
+                <div class="code-block"><span class="kw">import</span> { registrarAuditoria } <span class="kw">from</span> <span class="str">'./auditoria.js'</span>;
+
+<span class="kw">await</span> <span class="fn">registrarAuditoria</span>(<span class="str">'Estoque: novo item'</span>, <span class="str">`Item ${nome} cadastrado.`</span>, <span class="str">'info'</span>);</div>
+            </div>
+        </div>
+
+        <div id="tela-dados" class="panel-card" style="display:none;">
+            <div class="doc-section">
+                <h2><i class="fas fa-database"></i> Nós do Realtime Database</h2>
+                <p>Estrutura de dados usada pelo projeto. Com exceção dos nós de leitura autenticada, todos exigem perfil <code>gestor</code>.</p>
+                <table class="tech-table">
+                    <thead><tr><th>Nó</th><th>Conteúdo</th><th>Escrito por</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>usuarios/{uid}</code></td><td>Nome, e-mail, tipo (gestor / cliente) e foto</td><td><code>cadastro.js</code>, <code>configuracoes.js</code></td></tr>
+                        <tr><td><code>estoque</code></td><td>Itens, quantidades e datas de criação/atualização</td><td><code>estoque.js</code></td></tr>
+                        <tr><td><code>maquinas</code></td><td>Ativos industriais e status de manutenção</td><td><code>manutencao.js</code></td></tr>
+                        <tr><td><code>ordensServico</code></td><td>OS corretivas e preventivas</td><td><code>manutencao.js</code></td></tr>
+                        <tr><td><code>ordens</code></td><td>Ordens de produção com cliente, prazo e prioridade</td><td><code>orderns.js</code></td></tr>
+                        <tr><td><code>pedidos</code> / <code>pedidosLogs</code></td><td>Pedidos e histórico de alterações</td><td><code>pedidos.html</code></td></tr>
+                        <tr><td><code>funcionarios</code> / <code>pontos</code></td><td>Colaboradores e registros de entrada/saída</td><td><code>rh.js</code></td></tr>
+                        <tr><td><code>auditoria</code></td><td>Trilha de eventos do sistema (indexada por <code>dataHora</code>)</td><td><code>auditoria.js</code>, <code>logs.js</code></td></tr>
+                        <tr><td><code>postsBlog</code></td><td>Publicações do blog institucional</td><td><code>blog.js</code></td></tr>
+                        <tr><td><code>chamadosChatbot</code></td><td>Chamados abertos pelo chat do Site C</td><td><code>chat.js</code>, <code>mensagem.js</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-user-shield"></i> Regras de Segurança</h2>
+                <p>O arquivo <code>database.rules.json</code> (raiz do repositório) começa negando tudo e libera nó a nó. O padrão é sempre o mesmo:</p>
+                <div class="code-block">{
+  <span class="str">"rules"</span>: {
+    <span class="str">".read"</span>: <span class="kw">false</span>,
+    <span class="str">".write"</span>: <span class="kw">false</span>,
+    <span class="str">"estoque"</span>: {
+      <span class="str">".read"</span>: <span class="str">"auth != null &amp;&amp; root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"</span>,
+      <span class="str">".write"</span>: <span class="str">"auth != null &amp;&amp; root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"</span>
+    }
+  }
+}</div>
+                <table class="tech-table">
+                    <thead><tr><th>Exceção</th><th>Regra aplicada</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>usuarios/{uid}</code></td><td>O próprio usuário lê e cria seu registro; só gestor altera o campo <code>tipo</code></td></tr>
+                        <tr><td><code>postsBlog</code></td><td>Leitura para qualquer usuário autenticado; escrita só para gestor</td></tr>
+                        <tr><td><code>chamadosChatbot</code></td><td>Permite abrir um chamado novo e válido; leitura e edição só para gestor</td></tr>
+                        <tr><td><code>auditoria</code></td><td>Registros não podem ser sobrescritos por quem não é gestor; exige <code>id</code>, <code>dataHora</code>, <code>usuario</code> e <code>acao</code></td></tr>
+                    </tbody>
+                </table>
+                <div class="alert-box" style="margin-top:16px;">
+                    <span class="icon">💡</span>
+                    <span>Alterou as regras? Publique no console (Realtime Database → Regras). O arquivo do repositório é apenas a versão de referência — ele não é aplicado sozinho.</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="tela-estrutura" class="panel-card" style="display:none;">
+            <div class="doc-section">
+                <h2><i class="fas fa-folder-tree"></i> Arquitetura e Mapeamento de Diretórios</h2>
+                <p>O arquivo <code>estrutura.json</code> descreve a árvore real do repositório e alimenta o componente visual abaixo em tempo de execução. Clique nas pastas para expandir ou recolher.</p>
+
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:#2ecc71"></div><span>Zona Pública (public)</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#3498db"></div><span>Zona App (app)</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div><span>Site C (portal cliente)</span></div>
+                </div>
+
+                <div class="folder-wrapper" style="margin-top:24px;" id="arvore-pastas">
+                    <p style="color: var(--text-muted); font-style: italic;"><i class="fas fa-spinner fa-spin"></i> Carregando mapeamento de diretórios...</p>
+                </div>
+
+                <div class="info-box" style="margin-top:20px;">
+                    <strong>Como atualizar:</strong> ao criar ou remover arquivos, edite <code>modules/geral/estrutura.json</code> mantendo o formato <code>{ "name", "type": "folder" | "file", "children": [] }</code>. A árvore é redesenhada no próximo carregamento da página.
+                </div>
+            </div>
+        </div>
+
+        <div id="tela-modulos" class="panel-card" style="display:none;">
+            <div class="doc-section">
+                <h2><i class="fas fa-globe"></i> Páginas do Site Público</h2>
+                <table class="tech-table">
+                    <thead><tr><th>Página</th><th>Arquivo</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td>Painel Central</td><td><code>index.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Login</td><td><code>login.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Sobre</td><td><code>sobre.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Funcionalidades</td><td><code>funcionalidades.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Planos</td><td><code>planos.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Depoimentos</td><td><code>depoimentos.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Integração</td><td><code>integracao.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>FAQ</td><td><code>FAQ.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Blog</td><td><code>blog.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Contato</td><td><code>contato.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Ajuda</td><td><code>ajuda.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Configurações</td><td><code>configuracoes.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Política de Privacidade</td><td><code>politica-privacidade.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Realidade Aumentada</td><td><code>teste_aumentada.html</code></td><td><span class="status-badge pending">experimental</span></td></tr>
+                        <tr><td>Redirecionamentos</td><td><code>redimensionamento_app.html</code>, <code>redimencionamento_site.html</code></td><td><span class="status-badge pending">nomes a padronizar</span></td></tr>
+                        <tr><td>Template</td><td><code>_template.html</code></td><td><span class="status-badge done">✓ base para novas páginas</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-cubes"></i> Módulos ERP</h2>
+                <table class="tech-table">
+                    <thead><tr><th>Módulo</th><th>Caminho</th><th>Conceito</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td>Visão Geral</td><td><code>modules/geral/geral.html</code></td><td>Documentação técnica + árvore de diretórios</td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Estoque</td><td><code>modules/estoque/estoque.html</code></td><td>Cadastro e movimentação no nó <code>estoque</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Manutenção</td><td><code>modules/manutencao/manutencao.html</code></td><td>Máquinas e OS corretivas/preventivas, exporta PDF e XLSX</td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>RH / Ponto</td><td><code>modules/rh/rh.html</code></td><td>Colaboradores com ViaCEP + registro de ponto</td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Pedidos / OS</td><td><code>modules/pedidos/pedidos.html</code></td><td>Pedidos, rastreio e cálculo de frete</td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Logs</td><td><code>modules/logs/logs.html</code></td><td>Trilha de auditoria em tempo real (limite de 500 registros)</td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Sistema em Python</td><td><code>modules/sistema/sistema.html</code></td><td>Pyodide executando no navegador a lógica de <code>python/teste.py</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
+                        <tr><td>Produção</td><td><code>modules/producao/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
+                        <tr><td>Qualidade</td><td><code>modules/qualidade/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
+                        <tr><td>Suprimentos</td><td><code>modules/suprimentos/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
+                    </tbody>
+                </table>
+                <div class="alert-box" style="margin-top:16px;">
+                    <span class="icon">⚠️</span>
+                    <span>O dashboard (<code>app.html</code>) já exibe cards de <strong>Produção</strong>, <strong>Qualidade</strong> e <strong>Suprimentos</strong>. Como as pastas não existem, clicar neles leva a um 404 — criar os módulos ou ocultar os cards.</span>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-store" style="color:#9b59b6;"></i> Páginas do Site C</h2>
+                <p>Portal do cliente, no mesmo nível hierárquico de <code>app/</code> e <code>public/</code>. Não usa o sistema de componentes do site institucional, mas é ele quem hospeda o <code>firebase-config.js</code> compartilhado por todo o projeto.</p>
+                <table class="tech-table">
+                    <thead><tr><th>Página</th><th>Arquivo</th><th>Descrição</th></tr></thead>
+                    <tbody>
+                        <tr><td>Home</td><td><code>index.html</code></td><td>Entrada principal do portal cliente</td></tr>
+                        <tr><td>Login</td><td><code>login.html</code></td><td>Autenticação via Firebase</td></tr>
+                        <tr><td>Cadastro</td><td><code>cadastro.html</code></td><td>Cria a conta e o registro em <code>usuarios/{uid}</code></td></tr>
+                        <tr><td>Contato</td><td><code>contato.html</code></td><td>Formulário de contato</td></tr>
+                        <tr><td>Chat</td><td><code>chat.html</code></td><td>Chatbot que abre chamados em <code>chamadosChatbot</code></td></tr>
+                        <tr><td>Mensagens</td><td><code>mensagem.html</code></td><td>Caixa de mensagens do cliente</td></tr>
+                        <tr><td>Materiais</td><td><code>material.html</code></td><td>Catálogo de materiais</td></tr>
+                        <tr><td>Orçamento</td><td><code>orcamento.html</code></td><td>Solicitação de orçamento</td></tr>
+                        <tr><td>Patrocinadores</td><td><code>patrocinadores.html</code></td><td>Área do patrocinador</td></tr>
+                        <tr><td>Sistema</td><td><code>sistema.html</code></td><td>Acesso ao sistema de manutenção</td></tr>
+                        <tr><td>Redirecionar</td><td><code>redirecionar.html</code></td><td>Ponte de navegação entre as zonas</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tela-desenvolvimento" class="panel-card" style="display:none;">
+            <div class="doc-section">
+                <h2><i class="fas fa-play-circle"></i> Como Rodar o Projeto</h2>
+                <div class="code-block"><span class="cm"># 1. Abra no VS Code a pasta que CONTÉM o diretório GeTech</span>
+<span class="cm"># 2. Inicie o Live Server</span>
+<span class="cm"># 3. Acesse:</span>
+http://127.0.0.1:5500/GeTech/index.html</div>
+                <div class="info-box">Sem a pasta <code>GeTech</code> na raiz da URL, o <code>BASE_URL</code> montado em <code>app.js</code> e <code>logs.js</code> aponta para caminhos inexistentes e o login entra em loop de redirecionamento.</div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-plus-circle"></i> Como Criar uma Nova Página Pública</h2>
+
+                <p><strong>1. Copie o template</strong></p>
+                <div class="code-block">cp public/pages/_template.html public/pages/minha-pagina.html</div>
+
+                <p><strong>2. Estrutura mínima obrigatória</strong></p>
+                <div class="code-block">&lt;<span class="kw">div</span> id=<span class="str">"header"</span>&gt;&lt;/div&gt; <span class="cm">&lt;!-- carregado pelo component.js --&gt;</span>
+&lt;<span class="kw">main</span> class=<span class="str">"container"</span>&gt;
+  <span class="cm">&lt;!-- conteúdo da página --&gt;</span>
+&lt;/main&gt;
+&lt;<span class="kw">div</span> id=<span class="str">"footer"</span>&gt;&lt;/div&gt; <span class="cm">&lt;!-- carregado pelo component.js --&gt;</span>
+&lt;<span class="kw">script</span> src=<span class="str">"../assets/js/component.js"</span>&gt;&lt;/script&gt;</div>
+
+                <p><strong>3. Adicione no header</strong></p>
+                <div class="info-box">Edite <code>public/components/header.html</code> e adicione o link na tag <code>&lt;nav&gt;</code>.</div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-cogs"></i> Como Criar um Novo Módulo ERP</h2>
+
+                <p><strong>1. Crie a pasta e o arquivo (a pasta e o HTML precisam ter o mesmo nome)</strong></p>
+                <div class="code-block">app/modules/<span class="str">nome-modulo</span>/<span class="str">nome-modulo</span>.html</div>
+
+                <p><strong>2. Importe os estilos e os scripts padrão</strong></p>
+                <div class="code-block">&lt;<span class="kw">link</span> rel=<span class="str">"stylesheet"</span> href=<span class="str">"../../assets/css/global.css"</span>&gt;
+&lt;<span class="kw">link</span> rel=<span class="str">"stylesheet"</span> href=<span class="str">"../../assets/css/nome-modulo.css"</span>&gt;
+&lt;<span class="kw">script</span> src=<span class="str">"../../assets/js/acessibilidade.js"</span>&gt;&lt;/script&gt;
+&lt;<span class="kw">script</span> type=<span class="str">"module"</span> src=<span class="str">"../../assets/js/logs.js"</span>&gt;&lt;/script&gt;</div>
+
+                <p><strong>3. Proteja o módulo e registre auditoria</strong></p>
+                <div class="code-block"><span class="kw">import</span> { auth, db } <span class="kw">from</span> <span class="str">"../../../Site C/assets/js/firebase-config.js"</span>;
+<span class="kw">import</span> { registrarAuditoria } <span class="kw">from</span> <span class="str">"./auditoria.js"</span>;
+<span class="cm">// + onAuthStateChanged conferindo tipo === 'gestor' (ver aba Arquitetura)</span></div>
+
+                <p><strong>4. Adicione o card no dashboard (app.html)</strong></p>
+                <div class="code-block">&lt;<span class="kw">div</span> class=<span class="str">"card"</span> onclick=<span class="str">"abrirModulo('nome-modulo')"</span>&gt;
+  &lt;<span class="kw">h3</span>&gt;Nome do Módulo&lt;/<span class="kw">h3</span>&gt;
+  &lt;<span class="kw">p</span>&gt;Descrição breve.&lt;/<span class="kw">p</span>&gt;
+&lt;/<span class="kw">div</span>&gt;
+<span class="cm">// app.js monta o caminho automaticamente:</span>
+<span class="cm">// modules/nome-modulo/nome-modulo.html</span></div>
+
+                <p><strong>5. Libere o nó no database.rules.json</strong></p>
+                <div class="info-box">Sem uma regra explícita, o nó novo herda o <code>".read": false / ".write": false</code> da raiz e o módulo falha silenciosamente na leitura.</div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-store" style="color:#9b59b6;"></i> Como Expandir o Site C</h2>
+                <p>O Site C é independente — não utiliza o <code>component.js</code> do site institucional. Cada nova página é criada em <code>Site C/pages/</code>, com CSS e JS próprios em <code>Site C/assets/</code>.</p>
+                <div class="info-box">
+                    <strong>Nota:</strong> como não há sistema de componentes, cabeçalho e rodapé precisam ser replicados manualmente em cada página — ou extraídos para um componente próprio do Site C.
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="doc-section">
+                <h2><i class="fas fa-clipboard-list"></i> Pendências Restantes</h2>
+                <table class="tech-table">
+                    <thead><tr><th>Item / Funcionalidade</th><th>Tipo de Escopo</th><th>Prioridade</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td>Cards de Produção, Qualidade e Suprimentos levam a 404 no dashboard</td>
+                            <td>Correção</td>
+                            <td><span class="priority-badge alta">Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td>Publicar e revisar o <code>database.rules.json</code> no console do Firebase</td>
+                            <td>Segurança</td>
+                            <td><span class="priority-badge alta">Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td>Padronizar header/footer do Site C em um componente</td>
+                            <td>Site C</td>
+                            <td><span class="priority-badge media">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td>Implementar os módulos Produção, Qualidade e Suprimentos</td>
+                            <td>Módulos ERP</td>
+                            <td><span class="priority-badge media">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td>Integrar o sistema em Python (Pyodide) aos dados reais do Realtime Database</td>
+                            <td>Integração</td>
+                            <td><span class="priority-badge media">Média</span></td>
+                        </tr>
+                        <tr>
+                            <td>Renomear <code>redimensionamento_app.html</code>, <code>redimencionamento_site.html</code> e <code>orderns.js</code></td>
+                            <td>Padronização</td>
+                            <td><span class="priority-badge baixa">Baixa</span></td>
+                        </tr>
+                        <tr>
+                            <td>Automatizar a geração do <code>estrutura.json</code></td>
+                            <td>Documentação</td>
+                            <td><span class="priority-badge baixa">Baixa</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // ==========================================================
+        // NAVEGAÇÃO ENTRE ABAS
+        // ==========================================================
+        const ABAS = ['visao', 'arquitetura', 'dados', 'estrutura', 'modulos', 'desenvolvimento'];
+
+        function trocarAba(aba) {
+            ABAS.forEach((nome) => {
+                const tela = document.getElementById('tela-' + nome);
+                const botao = document.getElementById('btn-aba-' + nome);
+                if (tela) tela.style.display = (nome === aba) ? 'block' : 'none';
+                if (botao) botao.classList.toggle('active', nome === aba);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.trocarAba = trocarAba;
+
+        // ==========================================================
+        // ÁRVORE DE DIRETÓRIOS — alimentada pelo estrutura.json
+        // ==========================================================
+        const ZONAS = {
+            'public': { classe: 'zone-public', rotulo: 'Site Institucional' },
+            'app': { classe: 'zone-app', rotulo: 'Painel ERP' },
+            'Site C': { classe: 'zone-sitec', rotulo: 'Portal Cliente' }
+        };
+
+        const ICONES_ARQUIVO = {
+            html: 'fa-brands fa-html5',
+            css: 'fa-brands fa-css3-alt',
+            js: 'fa-brands fa-js',
+            json: 'fa-solid fa-code',
+            py: 'fa-brands fa-python',
+            md: 'fa-solid fa-file-lines',
+            png: 'fa-solid fa-image',
+            jpg: 'fa-solid fa-image',
+            jpeg: 'fa-solid fa-image',
+            svg: 'fa-solid fa-image'
+        };
+
+        function escapar(texto) {
+            return String(texto ?? '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;');
+        }
+
+        function iconeDoArquivo(nome) {
+            const extensao = nome.split('.').pop().toLowerCase();
+            return ICONES_ARQUIVO[extensao] || 'fa-solid fa-file';
+        }
+
+        function montarNo(no, nivel) {
+            const nome = escapar(no.name);
+
+            if (no.type === 'file') {
+                return '<div class="file-item"><i class="' + iconeDoArquivo(no.name) + '"></i>' + nome + '</div>';
+            }
+
+            const zona = ZONAS[no.name];
+            const etiqueta = zona
+                ? '<span class="zone-label ' + zona.classe + '">' + zona.rotulo + '</span>'
+                : (no.type === 'root' ? '<span class="zone-label zone-root">raiz</span>' : '');
+
+            // Só as duas primeiras camadas nascem abertas, para a árvore caber na tela.
+            const recolhida = nivel >= 2;
+            const filhos = (no.children || []).map((filho) => montarNo(filho, nivel + 1)).join('');
+
+            return '' +
+                '<div class="folder-title' + (recolhida ? ' collapsed' : '') + '" onclick="alternarPasta(this)">' +
+                    '<i class="fas ' + (recolhida ? 'fa-folder' : 'fa-folder-open') + '"></i>' +
+                    '<span class="folder-label">' + nome + etiqueta + '</span>' +
+                    '<span class="chevron"><i class="fas fa-chevron-down"></i></span>' +
+                '</div>' +
+                '<div class="folder-content' + (recolhida ? ' hidden' : '') + '">' + filhos + '</div>';
+        }
+
+        function alternarPasta(elemento) {
+            const conteudo = elemento.nextElementSibling;
+            if (!conteudo) return;
+
+            const recolher = !elemento.classList.contains('collapsed');
+            elemento.classList.toggle('collapsed', recolher);
+            conteudo.classList.toggle('hidden', recolher);
+
+            const icone = elemento.querySelector('i.fa-folder, i.fa-folder-open');
+            if (icone) {
+                icone.classList.toggle('fa-folder', recolher);
+                icone.classList.toggle('fa-folder-open', !recolher);
+            }
+        }
+        window.alternarPasta = alternarPasta;
+
+        async function carregarArvore() {
+            const destino = document.getElementById('arvore-pastas');
+            if (!destino) return;
+
+            try {
+                const resposta = await fetch('estrutura.json', { cache: 'no-store' });
+                if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
+
+                const arvore = await resposta.json();
+                destino.innerHTML = montarNo(arvore, 0);
+            } catch (erro) {
+                console.error('[Estrutura] Falha ao carregar estrutura.json:', erro);
+                destino.innerHTML =
+                    '<div class="alert-box">' +
+                        '<span class="icon">⚠️</span>' +
+                        '<span>Não foi possível carregar o <code>estrutura.json</code>. Verifique se a página está sendo servida por HTTP (Live Server) e se o arquivo está na mesma pasta do <code>geral.html</code>.</span>' +
+                    '</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarArvore);
+
+        // ==========================================================
+        // TOGGLE DE TEMA (claro / escuro)
+        // O logs.js apenas audita o clique — quem troca o tema é este bloco,
+        // no mesmo padrão dos demais módulos.
+        // ==========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const botao = document.getElementById('themeToggle');
+            const icone = document.getElementById('themeIcon');
+
+            const aplicarTema = (tema) => {
+                document.documentElement.setAttribute('data-theme', tema);
+                localStorage.setItem('theme', tema);
+                if (icone) icone.textContent = (tema === 'dark') ? '🌙' : '☀️';
+                if (botao) {
+                    botao.setAttribute('aria-label', (tema === 'dark') ? 'Ativar tema claro' : 'Ativar tema escuro');
+                }
+            };
+
+            aplicarTema(localStorage.getItem('theme') || 'dark');
+
+            if (botao) {
+                botao.addEventListener('click', () => {
+                    const atual = document.documentElement.getAttribute('data-theme') || 'dark';
+                    aplicarTema(atual === 'dark' ? 'light' : 'dark');
+                });
+            }
+        });
+    </script>
+
+    <script type="module" src="../../assets/js/protecao-gestor.js"></script>
+    <script type="module" src="../../assets/js/logs.js"></script>
+</body>
+</html>

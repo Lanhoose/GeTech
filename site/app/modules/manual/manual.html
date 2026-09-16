@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GeTech - Manual &amp; Diagrama de Navegação</title>
+
+<link rel="stylesheet" href="../../assets/css/global.css">
+<link rel="stylesheet" href="../../assets/css/manual.css">
+
+<script>(function(){ document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'); })();</script>
+</head>
+<body>
+
+    <header class="header-modulo">
+        <div>
+            <small>Módulo de Documentação</small>
+            <h2>📘 Manual &amp; Diagrama de Navegação</h2>
+        </div>
+        <div class="header-actions">
+            <div class="theme-toggle-wrap">
+                <span class="theme-icon" id="themeIcon">🌙</span>
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema"></button>
+            </div>
+            <button class="btn-voltar" onclick="window.location.href='../../app.html'">← Voltar ao Menu</button>
+        </div>
+    </header>
+
+    <script src="../../assets/js/acessibilidade.js"></script>
+
+    <div class="manual-wrap">
+        <p style="font-size:13px;color:var(--text-muted);margin:18px 0 0;">Mapa visual das três áreas do projeto (Site Público, Site C e App) e o que cada botão/link faz em cada página.</p>
+
+        <div class="manual-tabs">
+            <button class="manual-tab-btn active" data-tab="publico">🌐 Site Público</button>
+            <button class="manual-tab-btn" data-tab="sitec">👤 Site C</button>
+            <button class="manual-tab-btn" data-tab="app">⚙️ App (ERP interno)</button>
+            <button class="manual-tab-btn" data-tab="geral">🔗 Fluxo entre as 3 áreas</button>
+        </div>
+
+        <!-- ================= SITE PÚBLICO ================= -->
+        <div class="manual-section active" id="publico">
+            <h2 class="manual-section-title">Site Público — pasta site/public</h2>
+            <div class="manual-intro">Site institucional/comercial, aberto a qualquer visitante. O menu do cabeçalho (<b>header.html</b>) é comum a todas as páginas.</div>
+            <div class="diagram-card">
+                <div class="diagram-toolbar">
+                    <span class="diagram-toolbar-label">Diagrama</span>
+                    <button class="manual-zoom-btn" data-diagram="mm-publico"> Ampliar / Tela cheia</button>
+                </div>
+                <div id="mm-publico"></div>
+            </div>
+            <h3 class="manual-pages-title">Botões e links por página</h3>
+            <div id="pages-publico"></div>
+        </div>
+
+        <!-- ================= SITE C ================= -->
+        <div class="manual-section" id="sitec">
+            <h2 class="manual-section-title">Site C — pasta site/Site C</h2>
+            <div class="manual-intro">Portal operacional do cliente/colaborador. Requer login próprio (mesma base Firebase). O menu lateral/topo é comum a todas as páginas internas.</div>
+            <div class="diagram-card">
+                <div class="diagram-toolbar">
+                    <span class="diagram-toolbar-label">Diagrama</span>
+                    <button class="manual-zoom-btn" data-diagram="mm-sitec">🔍 Ampliar / Tela cheia</button>
+                </div>
+                <div id="mm-sitec"></div>
+            </div>
+            <h3 class="manual-pages-title">Botões e links por página</h3>
+            <div id="pages-sitec"></div>
+        </div>
+
+        <!-- ================= APP ================= -->
+        <div class="manual-section" id="app">
+            <h2 class="manual-section-title">App — ERP interno — pasta site/app</h2>
+            <div class="manual-intro">Painel administrativo restrito a usuários com perfil <b>gestor</b>. Acessado a partir do Login do Site Público. Autenticação e autorização validadas em cada página via Firebase Authentication + Realtime Database.</div>
+            <div class="diagram-card">
+                <div class="diagram-toolbar">
+                    <span class="diagram-toolbar-label">Diagrama</span>
+                    <button class="manual-zoom-btn" data-diagram="mm-app">🔍 Ampliar / Tela cheia</button>
+                </div>
+                <div id="mm-app"></div>
+            </div>
+            <h3 class="manual-pages-title">Botões por módulo</h3>
+            <div id="pages-app"></div>
+        </div>
+
+        <!-- ================= FLUXO GERAL ================= -->
+        <div class="manual-section" id="geral">
+            <h2 class="manual-section-title">Como as três áreas se conectam</h2>
+            <div class="manual-intro">Visão geral do fluxo de acesso: de onde o usuário entra e para onde cada botão de autenticação/saída o envia.</div>
+            <div class="diagram-card">
+                <div class="diagram-toolbar">
+                    <span class="diagram-toolbar-label">Diagrama</span>
+                    <button class="manual-zoom-btn" data-diagram="mm-geral">🔍 Ampliar / Tela cheia</button>
+                </div>
+                <div id="mm-geral"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= LIGHTBOX DE ZOOM / TELA CHEIA ================= -->
+    <div class="manual-lightbox" id="manualLightbox" aria-hidden="true">
+        <div class="manual-lightbox-toolbar">
+            <button id="lbZoomOut" title="Diminuir zoom">➖</button>
+            <button id="lbZoomReset" title="Resetar zoom">100%</button>
+            <button id="lbZoomIn" title="Aumentar zoom">➕</button>
+            <button id="lbFullscreen" title="Tela cheia">⛶ Tela cheia</button>
+            <button id="lbClose" title="Fechar">✕ Fechar</button>
+        </div>
+        <div class="manual-lightbox-stage" id="manualLightboxStage">
+            <div class="manual-lightbox-pan" id="manualLightboxPan"></div>
+        </div>
+        <p class="manual-lightbox-hint">Arraste para mover · Scroll ou ➕/➖ para zoom · Duplo clique para resetar</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 GeTech - Manual &amp; Diagrama de Navegação</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+    <script>
+    mermaid.initialize({ startOnLoad:false, theme:'base', securityLevel:'loose', fontFamily:'-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif',
+      themeVariables:{ primaryColor:'#EAF1F8', primaryBorderColor:'#2E5C8A', primaryTextColor:'#1F3864', lineColor:'#5B6470',
+      secondaryColor:'#E1F5EE', tertiaryColor:'#FAECE7', fontSize:'13px' } });
+
+    const diagrams = {
+    "mm-publico": `flowchart TD
+      MENU["Menu principal (header)<br/>presente em todas as páginas"]
+      IDX["index.html<br/>Home"]
+      SOBRE["sobre.html"]
+      FUNC["funcionalidades.html"]
+      PLAN["planos.html"]
+      DEP["depoimentos.html"]
+      INTEG["integracao.html"]
+      FAQ["FAQ.html"]
+      BLOG["blog.html"]
+      CONT["contato.html"]
+      PRIV["politica-privacidade.html"]
+      AR["teste_aumentada.html"]
+      CONF["configuracoes.html<br/>(só logado)"]
+      LOGIN["login.html"]
+      AJUDA["ajuda.html"]
+      MENU --> IDX & SOBRE & FUNC & PLAN & DEP & INTEG & FAQ & BLOG & CONT & PRIV & AR
+      MENU -.-> CONF
+      MENU --> LOGIN
+      IDX -->|"Entrar no Painel"| LOGIN
+      IDX -->|"Conhecer o ERP"| SOBRE
+      CONF -->|"Abrir Manual do Usuário"| AJUDA
+      AJUDA --- FAQ
+      classDef hub fill:#1F3864,color:#fff,stroke:#1F3864
+      classDef page fill:#EAF1F8,color:#1F3864,stroke:#2E5C8A
+      classDef auth fill:#FAECE7,color:#993C1D,stroke:#993C1D
+      class MENU hub
+      class IDX,SOBRE,FUNC,PLAN,DEP,INTEG,FAQ,BLOG,CONT,PRIV,AR,CONF,AJUDA page
+      class LOGIN auth`,
+
+    "mm-sitec": `flowchart TD
+      MENU["Menu Site C<br/>presente em todas as páginas"]
+      IDX["index.html"]
+      CHAT["chat.html"]
+      CONT["contato.html"]
+      MAT["material.html"]
+      PATR["patrocinadores.html"]
+      ORC["orcamento.html"]
+      MSG["mensagem.html"]
+      SIS["sistema.html"]
+      CAD["cadastro.html"]
+      LOGIN["login.html"]
+      REDIR["redirecionar.html"]
+      MENU --> IDX & CHAT & CONT & MAT & PATR & ORC & MSG & SIS & CAD
+      CAD -->|"Fazer Login"| LOGIN
+      LOGIN -->|"Cadastre-se aqui"| CAD
+      IDX -->|"Solicitar Orçamento"| CONT
+      IDX -->|"Falar com ChatBot"| CHAT
+      IDX -->|"Acessar Materiais"| MAT
+      SIS -->|"Visitar Nossa ERP"| REDIR
+      classDef hub fill:#1F3864,color:#fff,stroke:#1F3864
+      classDef page fill:#E1F5EE,color:#0F6E56,stroke:#0F6E56
+      classDef auth fill:#FAECE7,color:#993C1D,stroke:#993C1D
+      class MENU hub
+      class IDX,CHAT,CONT,MAT,PATR,ORC,MSG,SIS,CAD page
+      class LOGIN,REDIR auth`,
+
+    "mm-app": `flowchart TD
+      DASH["app.html<br/>Painel ERP (dashboard)"]
+      GERAL["Visão Geral<br/>modules/geral"]
+      ESTQ["Estoque<br/>modules/estoque"]
+      MANUT["Manutenção<br/>modules/manutencao"]
+      RH["RH & Ponto<br/>modules/rh"]
+      PED["Pedidos / O.S.<br/>modules/pedidos"]
+      LOGS["Logs<br/>modules/logs"]
+      SIS["Sistema Python<br/>modules/sistema"]
+      MAN["Manual & Diagrama<br/>modules/manual"]
+      DASH -->|"card Visão Geral"| GERAL
+      DASH -->|"card Inventário"| ESTQ
+      DASH -->|"card Manutenção"| MANUT
+      DASH -->|"card RH"| RH
+      DASH -->|"card Ordens de Serviço"| PED
+      DASH -->|"card Logs"| LOGS
+      DASH -->|"card Sistema Python"| SIS
+      DASH -->|"card Manual"| MAN
+      GERAL -->|"Voltar ao Início"| DASH
+      ESTQ -->|"Voltar ao Menu"| DASH
+      MANUT -->|"Voltar ao Menu"| DASH
+      RH -->|"Voltar ao Menu"| DASH
+      PED -->|"Voltar ao Menu"| DASH
+      LOGS -->|"Voltar ao ERP"| DASH
+      SIS -->|"Voltar ao ERP"| DASH
+      MAN -->|"Voltar ao Menu"| DASH
+      classDef hub fill:#1F3864,color:#fff,stroke:#1F3864
+      classDef mod fill:#F1EFE8,color:#5B6470,stroke:#5B6470
+      class DASH hub
+      class GERAL,ESTQ,MANUT,RH,PED,LOGS,SIS,MAN mod`,
+
+    "mm-geral": `flowchart LR
+      VIS["Visitante"] --> PUB["Site Público<br/>index.html"]
+      PUB -->|"Entrar no Painel<br/>(sem login)"| LOGP["Login<br/>(Site Público)"]
+      LOGP -->|"perfil = gestor"| APP["App / ERP interno"]
+      LOGP -->|"perfil ≠ gestor"| PUB
+      PUB -.->|"redimencionamento_site.html"| SCI["Site C<br/>index.html"]
+      SCI -.->|"redirecionar.html"| PUB
+      SCI --> LOGC["Login<br/>(Site C)"] --> SCI
+      APP -->|"Sair / Voltar ao início"| PUB
+      classDef vis fill:#F1EFE8,color:#5B6470,stroke:#5B6470
+      classDef pub fill:#EAF1F8,color:#1F3864,stroke:#2E5C8A
+      classDef sitec fill:#E1F5EE,color:#0F6E56,stroke:#0F6E56
+      classDef app fill:#FAECE7,color:#993C1D,stroke:#993C1D
+      class VIS vis
+      class PUB,LOGP pub
+      class SCI,LOGC sitec
+      class APP app`
+    };
+
+    (async () => {
+      for (const [id, code] of Object.entries(diagrams)) {
+        const container = document.getElementById(id);
+        try {
+          const { svg } = await mermaid.render(id + '-svg', code);
+          container.innerHTML = svg;
+        } catch (err) {
+          container.innerHTML = '<p style="color:#993C1D;font-size:13px;padding:12px;">Não foi possível desenhar este diagrama: ' + err.message + '</p>';
+          console.error('Mermaid render error for', id, err);
+        }
+      }
+    })();
+
+    document.querySelectorAll('.manual-tab-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('.manual-tab-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.manual-section').forEach(s=>s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ==========================================================
+    // LIGHTBOX — Ampliar diagrama / Zoom / Tela cheia
+    // ==========================================================
+    (function () {
+      const overlay = document.getElementById('manualLightbox');
+      const stage   = document.getElementById('manualLightboxStage');
+      const pan     = document.getElementById('manualLightboxPan');
+      const btnZoomIn     = document.getElementById('lbZoomIn');
+      const btnZoomOut    = document.getElementById('lbZoomOut');
+      const btnZoomReset  = document.getElementById('lbZoomReset');
+      const btnFullscreen = document.getElementById('lbFullscreen');
+      const btnClose      = document.getElementById('lbClose');
+
+      const MIN_SCALE = 0.3;
+      const MAX_SCALE = 5;
+      let scale = 1, originX = 0, originY = 0;
+      let isDragging = false, startX = 0, startY = 0, startOriginX = 0, startOriginY = 0;
+
+      function applyTransform() {
+        pan.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+        btnZoomReset.textContent = Math.round(scale * 100) + '%';
+      }
+
+      function setScale(next) {
+        scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, +next.toFixed(2)));
+        applyTransform();
+      }
+
+      function resetView() {
+        scale = 1; originX = 0; originY = 0;
+        applyTransform();
+      }
+
+      function openLightbox(diagramId) {
+        const source = document.getElementById(diagramId);
+        const svg = source ? source.querySelector('svg') : null;
+        pan.innerHTML = '';
+        if (svg) {
+          pan.appendChild(svg.cloneNode(true));
+        } else {
+          pan.innerHTML = '<p style="color:#fff;">Diagrama ainda não carregado. Feche e tente novamente.</p>';
+        }
+        resetView();
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.manual-zoom-btn').forEach(btn => {
+        btn.addEventListener('click', () => openLightbox(btn.dataset.diagram));
+      });
+
+      btnClose.addEventListener('click', closeLightbox);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeLightbox(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeLightbox();
+      });
+
+      btnZoomIn.addEventListener('click', () => setScale(scale + 0.2));
+      btnZoomOut.addEventListener('click', () => setScale(scale - 0.2));
+      btnZoomReset.addEventListener('click', resetView);
+      stage.addEventListener('dblclick', resetView);
+
+      stage.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        setScale(scale + (e.deltaY < 0 ? 0.15 : -0.15));
+      }, { passive: false });
+
+      stage.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        stage.classList.add('dragging');
+        startX = e.clientX; startY = e.clientY;
+        startOriginX = originX; startOriginY = originY;
+        stage.setPointerCapture(e.pointerId);
+      });
+      stage.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        originX = startOriginX + (e.clientX - startX);
+        originY = startOriginY + (e.clientY - startY);
+        applyTransform();
+      });
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt => {
+        stage.addEventListener(evt, () => { isDragging = false; stage.classList.remove('dragging'); });
+      });
+
+      btnFullscreen.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          (overlay.requestFullscreen ? overlay.requestFullscreen() : Promise.resolve()).catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+      document.addEventListener('fullscreenchange', () => {
+        btnFullscreen.textContent = document.fullscreenElement ? '⛶ Sair da tela cheia' : '⛶ Tela cheia';
+      });
+    })();
+
+    function badgeFor(tipo){
+      const t = tipo.toLowerCase();
+      if(t.includes('externo')||t.includes('download')||t.includes('mailto')) return 'b-ext';
+      if(t.includes('aba')||t.includes('card')) return 'b-aba';
+      if(t.includes('link')) return 'b-link';
+      return 'b-btn';
+    }
+
+    function renderPages(containerId, pages){
+      const el = document.getElementById(containerId);
+      el.innerHTML = pages.map(pg => `
+        <details class="manual-page">
+          <summary>${pg.title}<span class="manual-file">${pg.file}</span></summary>
+          <div class="manual-purpose">${pg.purpose}</div>
+          <table>
+            <tr><th>Elemento</th><th>Tipo</th><th>O que faz</th></tr>
+            ${pg.rows.map(r=>`<tr><td>${r[0]}</td><td><span class="manual-badge ${badgeFor(r[1])}">${r[1]}</span></td><td>${r[2]}</td></tr>`).join('')}
+          </table>
+        </details>
+      `).join('');
+    }
+
+    const pagesPublic = [
+    {file:"index.html",title:"Painel Central (Home)",purpose:"Vitrine institucional do ERP GeTech, primeiro ponto de contato do visitante.",rows:[
+    ["Entrar no Painel","Botão","Verifica login no Firebase. Sem login → Login. Gestor logado → App (ERP). Sem perfil de gestor → alerta de acesso negado."],
+    ["Conhecer o ERP","Link","Leva até a página Sobre."],
+    ["Menu principal","Links","Cabeçalho comum a todas as páginas do Site Público."],
+    ["Entrar / Cadastrar","Links","Levam para a página de Login."]]},
+    {file:"sobre.html",title:"Sobre o Sistema",purpose:"Explica propósito e diretrizes do ERP.",rows:[
+    ["Ver Diretrizes","Botão","Abre modal com as diretrizes do projeto."],
+    ["Entendi","Botão","Fecha o modal de diretrizes."]]},
+    {file:"funcionalidades.html",title:"Funcionalidades",purpose:"Cards com efeito flip detalhando funcionalidades do ERP.",rows:[
+    ["Ver Detalhes ↻ (6 cards)","Botão","Vira o card para mostrar a descrição detalhada."]]},
+    {file:"planos.html",title:"Planos",purpose:"Comparação dos planos comerciais.",rows:[
+    ["Começar Agora","Botão","selectPlan('Essencial') + abre modal de confirmação."],
+    ["Assinar Pro","Botão","selectPlan('Pro Performance') + abre modal."],
+    ["Falar com Consultor","Botão","selectPlan('Enterprise') + abre modal."],
+    ["Confirmar Assinatura","Botão","Fecha o modal confirmando o plano escolhido."]]},
+    {file:"depoimentos.html",title:"Depoimentos",purpose:"Depoimentos de clientes, com envio de novo depoimento.",rows:[
+    ["Adicionar Depoimento","Botão","Abre formulário de novo depoimento."],
+    ["Salvar Depoimento","Botão","Envia e adiciona o depoimento à lista."],
+    ["Cancelar","Botão","Fecha o formulário sem salvar."]]},
+    {file:"integracao.html",title:"Integrações",purpose:"Página informativa sobre integrações disponíveis.",rows:[
+    ["— (somente conteúdo)","—","Sem botões próprios além do menu padrão."]]},
+    {file:"FAQ.html",title:"Perguntas Frequentes",purpose:"Lista de perguntas e respostas.",rows:[
+    ["— (somente conteúdo)","—","Sem botões próprios além do menu padrão."]]},
+    {file:"blog.html",title:"Blog",purpose:"Feed de publicações com criação de novo post.",rows:[
+    ["✨ Criar Publicação","Botão","Abre modal para redigir nova publicação."],
+    ["Publicar no Feed","Botão","Envia e adiciona a publicação ao topo do feed."]]},
+    {file:"contato.html",title:"Contato",purpose:"Formulário de contato/orçamento do Site Público.",rows:[
+    ["Solicitar Orçamento","Botão (submit)","Envia o formulário de contato."]]},
+    {file:"politica-privacidade.html",title:"Política de Privacidade",purpose:"Termos de privacidade e aceite do usuário.",rows:[
+    ["Visualizar Agora","Botão","Abre modal com o texto completo."],
+    ["💾 Gerar PDF","Botão","Gera/baixa PDF da política."],
+    ["✅ Li e concordo","Botão","Registra o aceite e mostra confirmação."],
+    ["Entendido","Botão","Fecha o modal de visualização."],
+    ["Prosseguir","Botão","Fecha o modal de sucesso."]]},
+    {file:"teste_aumentada.html",title:"Realidade Aumentada",purpose:"Demonstração de máquinas em AR.",rows:[
+    ["VER MÁQUINAS","Link (âncora)","Rola até o catálogo de máquinas em AR."],
+    ["✕ (fechar)","Botão","Fecha o modal/visualizador de AR."]]},
+    {file:"configuracoes.html",title:"Configurações",purpose:"Área da conta do usuário logado.",rows:[
+    ["Perfil / Segurança / Ajuda","Aba","Alterna as seções de configuração."],
+    ["Salvar Alterações","Botão","Grava as alterações do perfil."],
+    ["◉ mostrar senha (x3)","Botão","Alterna visibilidade dos campos de senha."],
+    ["Atualizar Senha","Botão","Envia a troca de senha ao Firebase."],
+    ["📋 Abrir Manual do Usuário","Link","Leva até a página de Ajuda."],
+    ["✉️ Contatar Suporte","Link externo","Abre e-mail para suporte@getech.com."]]},
+    {file:"login.html",title:"Login / Cadastro (público)",purpose:"Autenticação de gestores para acesso ao App.",rows:[
+    ["Entrar / Cadastrar","Aba","Alterna entre login e cadastro."],
+    ["◉ mostrar senha (x2)","Botão","Alterna visibilidade da senha."],
+    ["Entrar","Botão","Autentica; se gestor → App, senão → Home."],
+    ["Cadastrar","Botão","Cria nova conta no Firebase."]]},
+    {file:"ajuda.html",title:"Ajuda / Manual do Usuário",purpose:"Central de ajuda com busca e chat de suporte.",rows:[
+    ["Buscar","Botão","Filtra artigos pelo termo digitado."],
+    ["Mostrar todas as categorias","Botão","Remove o filtro aplicado."],
+    ["✕ fechar chat","Botão","Fecha a janela do chat de ajuda."],
+    ["➤ enviar","Botão","Envia a mensagem no chat de ajuda."]]}
+    ];
+
+    const pagesSiteC = [
+    {file:"index.html",title:"Início (Site C)",purpose:"Página inicial do portal do cliente.",rows:[
+    ["Solicitar Orçamento","Link","Leva até Contato."],
+    ["Falar com ChatBot","Link","Leva até o ChatBot."],
+    ["Acessar Materiais","Link","Leva até Materiais."],
+    ["Menu / Sair","Links","Navegação comum do Site C."]]},
+    {file:"login.html",title:"Login / Cadastro (Site C)",purpose:"Autenticação de clientes/colaboradores.",rows:[
+    ["Entrar","Botão (submit)","Autentica e leva à Home do Site C."],
+    ["Esqueceu a senha?","Link","Fluxo de recuperação de senha."],
+    ["Cadastre-se aqui","Link","Leva até Cadastro."]]},
+    {file:"cadastro.html",title:"Cadastro",purpose:"Criação/edição de conta do cliente.",rows:[
+    ["Finalizar e Acessar","Botão (submit)","Cria a conta e efetua o acesso."],
+    ["Fazer Login","Link","Leva até Login."]]},
+    {file:"chat.html",title:"ChatBot",purpose:"Atendimento automatizado.",rows:[
+    ["Conversar com nosso chatbot","Botão","Rola até a caixa de conversa."],
+    ["Enviar","Botão (submit)","Envia a mensagem ao chatbot."]]},
+    {file:"contato.html",title:"Contato",purpose:"Formulário de contato/orçamento do Site C.",rows:[
+    ["Solicitar Orçamento","Botão (submit)","Envia a solicitação preenchida."],
+    ["Chatbot WhatsApp","Link externo","Abre conversa no WhatsApp."]]},
+    {file:"material.html",title:"Materiais",purpose:"Manuais técnicos em PDF e quiz educativo.",rows:[
+    ["Baixar Manual (x4)","Link (download)","Baixa o PDF do manual técnico."],
+    ["❮ / ❯","Botão","Navega entre temas do quiz."],
+    ["Iniciar Quiz deste Tema","Botão","Começa o quiz do tema."],
+    ["← Voltar para os Temas","Botão","Volta à lista de temas."],
+    ["Próxima","Botão","Avança para a próxima pergunta."],
+    ["Tentar Novamente","Botão","Reinicia o quiz."],
+    ["Escolher Outro Tema","Botão","Volta à seleção de temas."]]},
+    {file:"mensagem.html",title:"Mensagens",purpose:"Caixa de mensagens/notificações.",rows:[
+    ["Limpar Caixa","Botão","Apaga todas as mensagens (limparTodasMensagens)."]]},
+    {file:"orcamento.html",title:"Orçamentos",purpose:"Monta orçamento com itens/quantidades.",rows:[
+    ["Adicionar","Botão","Inclui um novo item (adicionarItem)."],
+    ["Limpar Tudo","Botão","Remove todos os itens (limparTudo)."],
+    ["Gerar PDF / Imprimir","Botão","Aciona impressão do navegador."]]},
+    {file:"patrocinadores.html",title:"Patrocinadores",purpose:"Vitrine de patrocinadores/parceiros.",rows:[
+    ["— (somente conteúdo)","—","Sem botões próprios além do menu padrão."]]},
+    {file:"sistema.html",title:"Sistema (acesso operacional)",purpose:"Formulários simplificados: usuários, máquinas, O.S.",rows:[
+    ["Visitar Nossa ERP","Link","Leva a redirecionar.html → Site Público."],
+    ["Entrar no Sistema","Botão (submit)","Autentica para operar esta tela."],
+    ["Buscar / Listar Todos","Botão","Localiza ou lista usuários cadastrados."],
+    ["Cadastrar Equipamento","Botão (submit)","Registra nova máquina."],
+    ["Filtrar / Exibir Tudo","Botão","Filtra ou mostra todas as máquinas."],
+    ["Abrir Ordem de Serviço","Botão (submit)","Cria nova ordem de serviço."],
+    ["Atualizar Histórico","Botão","Recarrega o histórico de O.S."]]},
+    {file:"redirecionar.html",title:"Redirecionamento",purpose:"Aguarda 1s e envia de volta ao Site Público.",rows:[
+    ["— (redirecionamento automático)","—","Sem botões; redireciona via JavaScript."]]}
+    ];
+
+    const pagesApp = [
+    {file:"app.html",title:"Painel ERP (Dashboard)",purpose:"Grade de módulos do ERP após login como Gestor.",rows:[
+    ["Sair","Botão","Encerra sessão do Firebase e volta à Home pública."],
+    ["Voltar para o início","Botão","Vai à Home pública sem encerrar a sessão."],
+    ["Alternar tema","Botão","Alterna claro/escuro."],
+    ["Cards de módulo (Visão Geral, Estoque, Manutenção, RH, Pedidos, Logs, Sistema, Manual)","Card/Botão","abrirModulo(nome) — abre o módulo correspondente."],
+    ["Qualidade / Suprimentos / Produção","Card/Botão","Cartões reservados — telas ainda não implementadas."]]},
+    {file:"modules/geral/geral.html",title:"Módulo: Visão Geral",purpose:"Documentação interna do projeto.",rows:[
+    ["Voltar ao Início","Link","Retorna ao Painel ERP."],
+    ["Visão Geral / Arquitetura / Dados & Segurança / Estrutura / Módulos / Desenvolvimento","Aba","Alternam as seções da documentação."]]},
+    {file:"modules/estoque/estoque.html",title:"Módulo: Estoque",purpose:"Controle de entrada e saída de materiais.",rows:[
+    ["← Voltar ao Menu","Botão","Retorna ao Painel ERP."],
+    ["Recebimento / Controle de Estoque","Aba","Alternam entre cadastro e movimentação."],
+    ["Registrar no Sistema","Botão","Salva o item recebido."],
+    ["+ Entrada / - Saída","Botão","Lança movimentação de estoque."]]},
+    {file:"modules/manutencao/manutencao.html",title:"Módulo: Manutenção",purpose:"Gestão de máquinas e ordens de serviço.",rows:[
+    ["← Voltar ao Menu","Botão","Retorna ao Painel ERP."],
+    ["Gestão de Máquinas / Ordens de Serviço","Aba","Alternam a visão do módulo."],
+    ["Exportar Excel / PDF","Botão","Exporta os dados de manutenção."],
+    ["Importar Excel","Botão","Importa planilha de máquinas."],
+    ["Cadastrar Equipamento","Botão (submit)","Registra nova máquina."],
+    ["Filtrar / Exibir Tudo","Botão","Filtra ou lista todas as máquinas."],
+    ["Abrir Ordem de Serviço","Botão (submit)","Cria nova O.S. de manutenção."],
+    ["Atualizar Histórico","Botão","Recarrega o histórico."]]},
+    {file:"modules/rh/rh.html",title:"Módulo: RH & Ponto Digital",purpose:"Cadastro de colaboradores e ponto.",rows:[
+    ["← Voltar ao Menu","Botão","Retorna ao Painel ERP."],
+    ["Registrar Usuário / Registrar Ponto","Aba","Alternam entre cadastro e ponto."],
+    ["Admitir Colaborador","Botão","Cadastra novo colaborador."],
+    ["Registrar Entrada / Saída","Botão","Marca o horário de ponto."]]},
+    {file:"modules/pedidos/pedidos.html",title:"Módulo: Pedidos / Ordens de Serviço",purpose:"Kanban, recebimento, rastreio, frete, tabela, auditoria.",rows:[
+    ["← Voltar ao Menu","Botão","Retorna ao Painel ERP."],
+    ["Kanban / Recebimento / Rastreio / Frete / Tabela / Auditoria","Aba","Alternam as visões do módulo."],
+    ["+ Nova Ordem","Botão","Abre modal para criar ordem."],
+    ["Salvar Ordem","Botão","Grava a nova ordem (salvarNovaOP)."],
+    ["AVANÇAR →","Botão","Move a ordem para a próxima etapa."],
+    ["Remover Registro","Botão","Exclui a ordem (excluirPorId)."],
+    ["VER / PDF","Botão","Mostra detalhes ou gera PDF da ordem."],
+    ["SAIR PARA ENTREGA / MARCAR ENTREGUE","Botão","Atualiza status da entrega."],
+    ["Baixar/Exportar PDF / Excel","Botão","Exporta a lista de pedidos."],
+    ["Rastrear / Calcular Frete","Botão","Consulta status ou calcula frete."],
+    ["Minhas Entregas / Rastrear (entregador)","Aba","Visão específica do entregador."]]},
+    {file:"modules/logs/logs.html",title:"Módulo: Logs de Operação",purpose:"Auditoria e histórico de eventos.",rows:[
+    ["← Voltar ao ERP","Botão","Retorna ao Painel ERP."],
+    ["Gerar Relatório CSV","Botão","Exporta os logs filtrados."],
+    ["Resetar Logs","Botão","Apaga todo o histórico de logs."],
+    ["✕ Limpar","Botão","Remove os filtros aplicados."]]},
+    {file:"modules/sistema/sistema.html",title:"Módulo: Sistema (Python)",purpose:"Interface web do sistema de manutenção em Python.",rows:[
+    ["Voltar ao ERP / Sair","Botão","Retorna ao Painel ERP / encerra sessão do módulo."],
+    ["Status Ativos / O.S. / Cadastros / Histórico","Aba","Alternam as seções do sistema."],
+    ["Autenticar no Sistema","Botão","Login no sistema Python."],
+    ["Registrar e Ativar O.S.","Botão","Cria e ativa nova ordem de serviço."],
+    ["Cadastrar Equipamento / Colaborador","Botão","Registra máquina ou técnico."],
+    ["Filtrar Linha","Botão","Filtra o histórico global exibido."]]},
+    {file:"modules/manual/manual.html",title:"Módulo: Manual & Diagrama de Navegação",purpose:"Documentação visual (este módulo): mapeia todas as páginas e botões do Site Público, Site C e App.",rows:[
+    ["← Voltar ao Menu","Botão","Retorna ao Painel ERP."],
+    ["Site Público / Site C / App / Fluxo entre as 3 áreas","Aba","Alternam a área documentada."],
+    ["+ / – (detalhes de cada página)","Botão","Expande/recolhe a lista de botões daquela página."]]}
+    ];
+
+    renderPages('pages-publico', pagesPublic);
+    renderPages('pages-sitec', pagesSiteC);
+    renderPages('pages-app', pagesApp);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn  = document.getElementById('themeToggle');
+            const icon = document.getElementById('themeIcon');
+            const aplicar = (t) => {
+                document.documentElement.setAttribute('data-theme', t);
+                localStorage.setItem('theme', t);
+                if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+            };
+            aplicar(localStorage.getItem('theme') || 'dark');
+            if (btn) btn.addEventListener('click', () =>
+                aplicar(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')
+            );
+        });
+    </script>
+
+    <script type="module" src="../../assets/js/protecao-gestor.js"></script>
+    <script type="module" src="../../assets/js/logs.js"></script>
+
+</body>
+</html>

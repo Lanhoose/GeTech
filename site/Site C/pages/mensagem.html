@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeTech | Caixa de Mensagens</title>
+    <link rel="shortcut icon" href="../assets/img/Getech.png" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/css/mensagem.css">
+    <link rel="stylesheet" href="../assets/css/acessibilidade.css">
+    <link rel="stylesheet" href="../assets/css/header-mobile.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../assets/img/Getech.png" alt="Logo GeTech" class="logo-img">
+        <span class="logo-texto" id="logoTexto"><strong>GE</strong>TECH</span>
+    </div>
+
+    <button class="menu-mobile-sitec" id="menuMobileSiteC" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="chat.html">ChaBot</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="material.html">Materiais</a></li>
+            <li class="restrito patrocinador escondido"><a href="patrocinadores.html">Patrocinadores</a></li>
+            <li class="restrito gestor escondido"><a href="orcamento.html">Orçamentos</a></li>
+            <li class="restrito gestor escondido"><a href="mensagem.html" class="ativo">Mensagens</a></li>
+            <li class="restrito gestor escondido"><a href="sistema.html">Sistema</a></li>
+            <li id="menuUsuario">
+                <a href="cadastro.html" id="linkPerfil">
+                    <img id="avatarUsuario" src="../assets/img/perfil.jpg" alt="Foto de Perfil" style="display: none;">
+                </a>
+            </li>
+            <li id="menuSair" style="display: none;"><a href="#" id="btnSair" style="color: #ef4444; font-weight: bold;">Sair</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="main-container">
+    <div class="page-header">
+        <h1>Caixa de Mensagens Recebidas</h1>
+        <button class="btn-limpar" id="btnLimparTudo" onclick="limparTodasMensagens()">Limpar Caixa</button>
+    </div>
+
+    <div id="containerMensagens" class="mensagens-lista"></div>
+</div>
+
+<footer>
+    <p>&copy; 2026 GeTech Soluções Industriais. Todos os direitos reservados.</p>
+</footer>
+
+<script type="module" src="../assets/js/mensagem.js"></script>
+<script type="module" src="../assets/js/controle.js"></script>
+<script src="../assets/js/acessibilidade.js"></script>
+<script src="../assets/js/header-mobile.js"></script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+/* ==========================================================
+   HOME (INDEX) - ARQUITETURA DE ERP EXPANDIDA
+========================================================== */
+body {
+    background: var(--bg-page-gradient);
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(30px, 5vw, 60px) 20px;
+    gap: clamp(50px, 8vw, 80px); /* Espaçamento limpo entre as grandes seções */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* ==========================================================
+   1. HERO CARD / PAINEL DE BOAS-VINDAS
+========================================================== */
+.hero-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    padding: clamp(30px, 5vw, 55px);
+    border-radius: 20px;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 850px;
+    margin: 0 auto;
+    width: 100%;
+    
+    /* Configuração padrão da transição de surgimento suave */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Força o estado inicial invisível quando a classe estiver aplicada */
+.hero-card.hidden-track {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* Indicador do Servidor */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-green);
+    margin-bottom: 24px;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--accent-green);
+    box-shadow: var(--glow-green);
+}
+
+.hero-card h1 {
+    font-size: clamp(26px, 4vw, 42px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    margin: 0 0 16px 0;
+    background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .hero-card h1 {
+    background: none;
+    -webkit-background-clip: unset;
+    -webkit-text-fill-color: unset;
+    color: var(--text-heading);
+}
+
+.hero-card p {
+    color: var(--text-secondary);
+    max-width: 680px;
+    font-size: clamp(14px, 2vw, 17px);
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+}
+
+/* Botões Interativos */
+.hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-primary {
+    cursor: pointer;
+    border: none;
+    background: var(--accent-cyan);
+    color: var(--text-primary);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--glow-cyan);
+}
+
+.btn-primary:hover {
+    background: var(--accent-cyan-hv);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 242, 254, 0.4);
+}
+
+.btn-secondary {
+    cursor: pointer;
+    text-decoration: none;
+    border: 1px solid var(--border-card);
+    background: transparent;
+    color: var(--text-primary);
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+[data-theme="light"] .btn-primary {
+    background: var(--bg-header); /* Usa o azul corporativo */
+    color: #ffffff;
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="light"] .btn-primary:hover {
+    background: #2d5192;
+    box-shadow: none;
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: rgba(30, 58, 110, 0.05);
+    border-color: var(--bg-header);
+    color: var(--bg-header);
+}
+
+/* ==========================================================
+   2. SEÇÕES E TÍTULOS DE ESTRUTURA
+========================================================== */
+.section-title {
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 32px;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+    position: relative;
+
+    /* Configuração padrão da transição de surgimento suave */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Força o estado inicial invisível para os títulos */
+.section-title.hidden-track {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+[data-theme="light"] .section-title {
+    color: var(--text-heading);
+}
+
+/* ==========================================================
+   3. ACESSO RÁPIDO AOS MÓDULOS (NOVO)
+========================================================== */
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    width: 100%;
+    
+    /* Configuração padrão da transição de surgimento suave */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Força o estado inicial invisível quando a classe estiver aplicada */
+.modules-grid.hidden-track {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.module-shortcut {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-align: left;
+}
+
+.module-icon {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+}
+
+.module-shortcut h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.module-shortcut p {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.module-shortcut:hover {
+    transform: translateY(-4px);
+    background: var(--bg-card-hover);
+    border-color: var(--accent-cyan);
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="light"] .module-shortcut:hover {
+    border-color: var(--accent-blue-lt);
+}
+
+/* ==========================================================
+   4. PAINEL DE ESTATÍSTICAS DA INDÚSTRIA
+========================================================== */
+.stats-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    width: 100%;
+    
+    /* Configuração padrão da transição de surgimento suave */
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Força o estado inicial invisível quando a classe estiver aplicada */
+.stats-grid.hidden-track {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    min-width: 260px;
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.stat-number {
+    font-size: clamp(34px, 5vw, 44px);
+    font-weight: 800;
+    color: var(--accent-cyan);
+    line-height: 1.1;
+    margin-bottom: 8px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+    background: var(--bg-card-hover);
+    border-color: var(--accent-cyan); 
+    box-shadow: var(--shadow-card), var(--glow-cyan);
+}
+
+.stat-card:hover .stat-number {
+    text-shadow: var(--glow-cyan);
+}
+
+.stat-card:hover .stat-label {
+    color: var(--text-primary);
+}
+
+/* Adaptação Limpa para Tema Claro */
+[data-theme="light"] .stat-card:hover {
+    border-color: var(--accent-blue-lt);
+    box-shadow: var(--shadow-card);
+}
+
+[data-theme="light"] .stat-card:hover .stat-number {
+    color: var(--accent-blue);
+    text-shadow: none;
+}
+
+/* ==========================================================
+   5. DISPOSITIVOS RESPONSIVOS
+========================================================== */
+@media (max-width: 768px) {
+    .container {
+        gap: 40px;
+        padding-top: 24px;
+    }
+
+    .hero-card {
+        padding: 24px 20px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .stat-card {
+        min-width: 100%;
+        padding: 24px;
+    }
+}

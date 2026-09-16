@@ -1,0 +1,229 @@
+/* ==========================================================================
+   manual.css — Módulo "Manual & Diagrama de Navegação"
+   Segue o mesmo padrão de variáveis/tema dos demais módulos do app
+   (ver geral.css / manutencao.css), aplicado sobre o conteúdo original
+   do manual (antigo teste/index.html).
+========================================================================== */
+
+:root,
+[data-theme="light"] {
+    --mod-header-bg:   #1F3864;
+    --mod-accent:      #2E5C8A;
+    --mod-accent-2:    #0F6E56;
+    --bg-body:         #F7F8FA;
+    --bg-card:         #FFFFFF;
+    --text-primary:    #26303B;
+    --text-muted:      #5B6470;
+    --table-border:    #DDE3EA;
+    --shadow-sm:       0 2px 8px rgba(0,0,0,0.05);
+    --shadow-md:       0 8px 24px rgba(0,0,0,0.08);
+
+    --badge-link-bg:   #EAF1F8; --badge-link-txt: #2E5C8A;
+    --badge-btn-bg:    #E1F5EE; --badge-btn-txt:  #0F6E56;
+    --badge-ext-bg:    #FAECE7; --badge-ext-txt:  #993C1D;
+    --badge-aba-bg:    #F1EFE8; --badge-aba-txt:  #5B6470;
+    --badge-auth-txt:  #993C1D;
+}
+
+[data-theme="dark"] {
+    --mod-header-bg:   #1e293b;
+    --mod-accent:      #3b82f6;
+    --mod-accent-2:    #10b981;
+    --bg-body:         #0f172a;
+    --bg-card:         #1e293b;
+    --text-primary:    #e2e8f0;
+    --text-muted:      #94a3b8;
+    --table-border:    #334155;
+    --shadow-sm:       0 2px 8px rgba(0,0,0,0.25);
+    --shadow-md:       0 8px 24px rgba(0,0,0,0.45);
+
+    --badge-link-bg:   rgba(59,130,246,0.15);  --badge-link-txt: #60a5fa;
+    --badge-btn-bg:    rgba(16,185,129,0.15);  --badge-btn-txt:  #34d399;
+    --badge-ext-bg:    rgba(249,115,22,0.15);  --badge-ext-txt:  #fb923c;
+    --badge-aba-bg:    rgba(148,163,184,0.15); --badge-aba-txt:  #cbd5e1;
+    --badge-auth-txt:  #fb923c;
+}
+
+body { padding: 0; margin: 0; background: var(--bg-body); }
+
+/* ============ HEADER (mesmo padrão dos outros módulos) ============ */
+.header-modulo {
+    background-color: var(--mod-header-bg);
+    color: #fff;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    border-bottom: 5px solid var(--mod-accent);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    transition: background 0.3s;
+}
+.header-modulo small { opacity: 0.75; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
+.header-modulo h2 { margin: 4px 0 0; font-size: 1.6rem; color: #fff; }
+
+.header-actions { display: flex; align-items: center; gap: 12px; }
+
+.btn-voltar {
+    background: var(--mod-accent);
+    border: none; color: #fff; padding: 12px 22px;
+    border-radius: 6px; cursor: pointer; font-weight: bold;
+    transition: filter 0.2s, transform 0.2s;
+    width: auto;
+}
+.btn-voltar:hover { filter: brightness(1.15); transform: scale(1.03); }
+
+.theme-toggle-wrap { display: flex; align-items: center; gap: 6px; }
+.theme-icon { font-size: 1rem; color: rgba(255,255,255,0.85); }
+.theme-toggle {
+    position: relative; width: 44px; height: 24px;
+    background: #334155; border-radius: 12px; border: none;
+    cursor: pointer; transition: background 0.3s; flex-shrink: 0;
+    width: 44px;
+}
+.theme-toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; background: #fff;
+    border-radius: 50%; transition: transform 0.3s;
+}
+[data-theme="light"] .theme-toggle { background: var(--mod-accent); }
+[data-theme="light"] .theme-toggle::after { transform: translateX(20px); }
+
+/* ============ CONTEÚDO DO MANUAL (antigo teste/index.html) ============ */
+.manual-wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 60px; color: var(--text-primary); }
+
+.manual-tabs {
+    display: flex; gap: 6px; margin: 22px 0 18px; flex-wrap: wrap;
+    position: sticky; top: 96px; background: var(--bg-body);
+    padding: 14px 0; z-index: 10; border-bottom: 1px solid var(--table-border);
+}
+.manual-tab-btn {
+    border: 1px solid var(--table-border); background: var(--bg-card); color: var(--text-muted);
+    padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .15s; width: auto;
+}
+.manual-tab-btn:hover { border-color: var(--mod-accent); filter: none; }
+.manual-tab-btn.active { background: var(--mod-header-bg); color: #fff; border-color: var(--mod-header-bg); }
+
+.manual-section { display: none; }
+.manual-section.active { display: block; }
+
+.manual-intro {
+    background: var(--bg-card); border: 1px solid var(--table-border); border-left: 4px solid var(--mod-header-bg);
+    border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; font-size: 14px; color: var(--text-muted);
+}
+.manual-intro b { color: var(--mod-accent); }
+
+.diagram-card {
+    background: var(--bg-card); border: 1px solid var(--table-border); border-radius: 10px;
+    padding: 10px 6px 18px; margin-bottom: 26px; overflow-x: auto; box-shadow: var(--shadow-sm);
+}
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--text-muted); padding: 0 16px 4px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+h2.manual-section-title { font-size: 18px; color: var(--mod-accent); margin: 0 0 4px; }
+h3.manual-pages-title { font-size: 15px; color: var(--mod-accent); margin: 26px 0 12px; border-bottom: 1px solid var(--table-border); padding-bottom: 6px; }
+
+details.manual-page {
+    background: var(--bg-card); border: 1px solid var(--table-border); border-radius: 8px;
+    margin-bottom: 10px; overflow: hidden;
+}
+details.manual-page[open] { border-color: var(--mod-accent); }
+.manual-page summary {
+    cursor: pointer; padding: 12px 16px; font-weight: 600; font-size: 14px; color: var(--text-primary);
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+}
+.manual-page summary::-webkit-details-marker { display: none; }
+.manual-page summary::after { content: "+"; font-size: 18px; color: var(--text-muted); font-weight: 400; }
+.manual-page[open] summary::after { content: "–"; }
+.manual-file { font-weight: 400; color: var(--text-muted); font-size: 12px; margin-left: 8px; }
+.manual-purpose { padding: 0 16px 12px; font-size: 13px; color: var(--text-muted); font-style: italic; }
+
+.manual-wrap table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0; }
+.manual-wrap th {
+    background: var(--bg-body); text-align: left; padding: 8px 12px; color: var(--mod-accent);
+    font-size: 12px; text-transform: uppercase; letter-spacing: .03em;
+}
+.manual-wrap td { padding: 8px 12px; border-top: 1px solid var(--table-border); vertical-align: top; color: var(--text-primary); }
+.manual-wrap td:first-child { font-weight: 600; width: 26%; }
+.manual-wrap td:nth-child(2) { width: 16%; color: var(--text-muted); }
+.manual-wrap tr:hover td { background: transparent; }
+
+.manual-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; letter-spacing: .02em; }
+.b-link { background: var(--badge-link-bg); color: var(--badge-link-txt); }
+.b-btn  { background: var(--badge-btn-bg);  color: var(--badge-btn-txt); }
+.b-ext  { background: var(--badge-ext-bg);  color: var(--badge-ext-txt); }
+.b-aba  { background: var(--badge-aba-bg);  color: var(--badge-aba-txt); }
+.manual-cross { font-size: 12px; color: var(--badge-auth-txt); }
+
+/* ============ TOOLBAR DO DIAGRAMA (botão Ampliar) ============ */
+.diagram-toolbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px 0;
+}
+.diagram-toolbar-label {
+    font-size: 11px; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: .05em; font-weight: 700;
+}
+.manual-zoom-btn {
+    width: auto; background: var(--bg-body); color: var(--mod-accent);
+    border: 1px solid var(--table-border); padding: 7px 14px; border-radius: 6px;
+    cursor: pointer; font-size: 12px; font-weight: 700; transition: 0.2s;
+}
+.manual-zoom-btn:hover { background: var(--mod-accent); color: #fff; border-color: var(--mod-accent); }
+
+/* ============ LIGHTBOX — zoom / tela cheia do diagrama ============ */
+.manual-lightbox {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.94);
+    display: none; flex-direction: column; z-index: 5000;
+}
+.manual-lightbox.open { display: flex; }
+.manual-lightbox:fullscreen { background: #0f172a; }
+
+.manual-lightbox-toolbar {
+    display: flex; gap: 10px; justify-content: flex-end; align-items: center;
+    padding: 14px 20px; background: rgba(0, 0, 0, 0.35); flex-wrap: wrap;
+}
+.manual-lightbox-toolbar button {
+    width: auto; background: rgba(255, 255, 255, 0.12); color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3); padding: 9px 16px;
+    border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 700;
+    transition: background 0.2s;
+}
+.manual-lightbox-toolbar button:hover { background: rgba(255, 255, 255, 0.25); }
+#lbZoomReset { min-width: 64px; }
+
+.manual-lightbox-stage {
+    flex: 1; overflow: hidden; position: relative; cursor: grab;
+    display: flex; align-items: center; justify-content: center;
+    touch-action: none;
+}
+.manual-lightbox-stage.dragging { cursor: grabbing; }
+
+.manual-lightbox-pan {
+    transform-origin: center center;
+    display: flex; align-items: center; justify-content: center;
+    will-change: transform;
+}
+.manual-lightbox-pan svg {
+    max-width: none; height: min(75vh, 700px);
+    background: #fff; border-radius: 10px; padding: 24px;
+    box-shadow: var(--shadow-md); pointer-events: none;
+}
+
+.manual-lightbox-hint {
+    text-align: center; color: rgba(255, 255, 255, 0.55);
+    font-size: 12px; padding: 8px 0 14px; margin: 0;
+}
+
+@media (max-width: 640px) {
+    .manual-wrap td:first-child { width: auto; }
+    .header-modulo { padding: 14px 5%; }
+    .manual-tabs { top: 128px; }
+    .diagram-toolbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .manual-lightbox-toolbar { justify-content: center; }
+}

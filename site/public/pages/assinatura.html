@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout de Assinatura - GeTech ERP</title>
+
+    <link rel="stylesheet" href="../assets/css/layout.css">
+    <link rel="stylesheet" href="../assets/css/planos.css">
+    <link rel="stylesheet" href="../assets/css/assinatura.css">
+</head>
+<body>
+
+    <div id="header"></div>
+
+    <main class="checkout-container">
+        <a href="planos.html" class="back-link">← Voltar para Planos</a>
+
+        <div class="checkout-grid">
+            
+            <!-- COLUNA ESQUERDA: Resumo do Plano selecionado -->
+            <aside class="checkout-card summary-card">
+                <h2>Resumo da Assinatura</h2>
+                <span class="plan-summary-badge">Plano Escolhido</span>
+                
+                <h1 id="checkoutPlanTitle">Carregando...</h1>
+                <div class="plan-price-large" id="checkoutPlanPrice">R$ 0<span>/mês</span></div>
+
+                <div class="summary-divider"></div>
+
+                <h3>Benefícios Incluídos:</h3>
+                <ul id="checkoutBenefitsList" class="benefits-list">
+                    <!-- Preenchido via JS -->
+                </ul>
+
+                <div class="summary-divider"></div>
+
+                <div class="total-row">
+                    <span>Total Recorrente:</span>
+                    <strong id="checkoutTotalPrice">R$ 0,00</strong>
+                </div>
+            </aside>
+
+            <!-- COLUNA DIREITA: Formulário com Dados do Cliente e Pagamento -->
+            <section class="checkout-card form-card">
+                <form id="subscriptionForm">
+                    
+                    <!-- SEÇÃO 1: DADOS PESSOAIS / EMPRESARIAIS -->
+                    <div class="form-section">
+                        <h2 class="section-title"><span class="step-number">1</span> Dados Cadastrais</h2>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="fullName">Nome Completo / Razão Social *</label>
+                                <input type="text" id="fullName" placeholder="Ex: João da Silva / GeTech Ltda" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="docNumber">CPF / CNPJ *</label>
+                                <input type="text" id="docNumber" placeholder="000.000.000-00" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">E-mail Comercial *</label>
+                                <input type="email" id="email" placeholder="seuemail@empresa.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Telefone / WhatsApp *</label>
+                                <input type="tel" id="phone" placeholder="(11) 99999-9999" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO 2: ENDEREÇO DE FATURAMENTO -->
+                    <div class="form-section">
+                        <h2 class="section-title"><span class="step-number">2</span> Endereço de Faturamento</h2>
+                        
+                        <div class="form-row cols-3">
+                            <div class="form-group">
+                                <label for="zipCode">CEP *</label>
+                                <input type="text" id="zipCode" placeholder="00000-000" maxlength="9" required>
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="street">Logradouro / Rua *</label>
+                                <input type="text" id="street" placeholder="Av. Industrial, Alameda..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-row cols-3">
+                            <div class="form-group">
+                                <label for="number">Número *</label>
+                                <input type="text" id="number" placeholder="123" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="complement">Complemento</label>
+                                <input type="text" id="complement" placeholder="Sala 402, Bloco B">
+                            </div>
+                            <div class="form-group">
+                                <label for="neighborhood">Bairro *</label>
+                                <input type="text" id="neighborhood" placeholder="Centro" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">Cidade *</label>
+                                <input type="text" id="city" placeholder="São Paulo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="state">Estado (UF) *</label>
+                                <select id="state" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="SP">São Paulo (SP)</option>
+                                    <option value="RJ">Rio de Janeiro (RJ)</option>
+                                    <option value="MG">Minas Gerais (MG)</option>
+                                    <option value="PR">Paraná (PR)</option>
+                                    <option value="RS">Rio Grande do Sul (RS)</option>
+                                    <option value="SC">Santa Catarina (SC)</option>
+                                    <option value="BA">Bahia (BA)</option>
+                                    <option value="OUTROS">Outro Estado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEÇÃO 3: OPÇÕES DE PAGAMENTO -->
+                    <div class="form-section">
+                        <h2 class="section-title"><span class="step-number">3</span> Opções de Pagamento</h2>
+
+                        <div class="payment-tabs">
+                            <button type="button" class="tab-btn active" data-method="card">
+                                💳 Cartão de Crédito
+                            </button>
+                            <button type="button" class="tab-btn" data-method="pix">
+                                ⚡ PIX (Aprovação Instantânea)
+                            </button>
+                            <button type="button" class="tab-btn" data-method="boleto">
+                                📄 Boleto Bancário
+                            </button>
+                        </div>
+
+                        <!-- PAGAMENTO: CARTÃO DE CRÉDITO -->
+                        <div id="paymentCardContent" class="payment-content active">
+                            <div class="form-group">
+                                <label for="cardNumber">Número do Cartão *</label>
+                                <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19">
+                            </div>
+                            <div class="form-group">
+                                <label for="cardName">Nome Impresso no Cartão *</label>
+                                <input type="text" id="cardName" placeholder="NOME COMO NO CARTÃO">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cardExpiry">Validade *</label>
+                                    <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cardCvc">CVC / Código de Segurança *</label>
+                                    <input type="text" id="cardCvc" placeholder="123" maxlength="4">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="installments">Opções de Recorrência / Parcelamento *</label>
+                                <select id="installments">
+                                    <option value="1">Cobrança Mensal Recorrente</option>
+                                    <option value="12">Plano Anual (Parcelado em 12x)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- PAGAMENTO: PIX -->
+                        <div id="paymentPixContent" class="payment-content">
+                            <div class="pix-box">
+                                <div class="pix-qr-dummy">QR CODE PIX</div>
+                                <p>O código PIX e o QR Code serão gerados assim que você clicar no botão abaixo. A liberação do sistema é instantânea.</p>
+                            </div>
+                        </div>
+
+                        <!-- PAGAMENTO: BOLETO -->
+                        <div id="paymentBoletoContent" class="payment-content">
+                            <div class="boleto-box">
+                                <p>ℹ️ O boleto bancário tem prazo de compensação de até <strong>2 dias úteis</strong>. O link para download do boleto será gerado ao concluir.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitSubscriptionBtn" class="btn-finish">
+                        Confirmar e Ativar Assinatura
+                    </button>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script type="module" src="../assets/js/assinatura.js"></script>
+    <script type="module" src="../assets/js/component.js"></script>
+    <script type="module" src="../assets/js/protecao-gestor.js"></script>
+    <script type="module" src="../assets/js/verificacaologin.js"></script>
+    <script src="../assets/js/acessibilidade.js"></script>
+    <script type="module" src="../../app/assets/js/logs.js"></script>
+
+</body>
+</html>

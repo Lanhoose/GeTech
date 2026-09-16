@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GeTech - Sistema de Manutenção</title>
+  <link rel="shortcut icon" href="../assets/img/Getech.png" type="image/x-icon">
+  <link rel="stylesheet" href="../assets/css/sistema.css" />
+  <link rel="stylesheet" href="../assets/css/acessibilidade.css">
+    <link rel="stylesheet" href="../assets/css/header-mobile.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../assets/img/Getech.png" alt="Logo GeTech" class="logo-img">
+        <span class="logo-texto" id="logoTexto"><strong>GE</strong>TECH</span>
+    </div>
+
+    <button class="menu-mobile-sitec" id="menuMobileSiteC" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="chat.html">ChaBot</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="material.html">Materiais</a></li>
+            <li class="restrito patrocinador escondido"><a href="patrocinadores.html">Patrocinadores</a></li>
+            <li class="restrito gestor escondido"><a href="orcamento.html">Orçamentos</a></li>
+            <li class="restrito gestor escondido"><a href="mensagem.html">Mensagens</a></li>
+            <li class="restrito gestor escondido"><a href="sistema.html" class="ativo">Sistema</a></li>
+            <li id="menuUsuario">
+                <a href="cadastro.html" id="linkPerfil">
+                    <img id="avatarUsuario" src="../assets/img/perfil.jpg" alt="Foto de Perfil" style="display: none;">
+                </a>
+            </li>
+            <li id="menuSair" style="display: none;"><a href="#" id="btnSair" style="color: #ef4444; font-weight: bold;">Sair</a></li>
+        </ul>
+    </nav>
+</header>
+
+  <section class="hero">
+    <h1>Manutenção Industrial Especializada</h1>
+    <p>Soluções completas em manutenção preventiva e corretiva para maximizar a produtividade da sua indústria.</p>
+    <a href="redirecionar.html"><button>Visitar Nossa ERP</button></a>
+  </section>
+
+  <main>
+    <section id="login">
+      <h2>Acesso ao Sistema</h2>
+      <form id="loginForm">
+        <label for="usuario">Usuário:</label>
+        <input type="text" id="usuario" placeholder="Digite seu usuário" required />
+        
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" placeholder="••••••••" required />
+        
+        <label for="tipo">Perfil:</label>
+        <select id="tipo" required>
+          <option value="">Selecione</option>
+          <option value="tecnico">Técnico Operacional</option>
+          <option value="gestor">Gestor de Manutenção</option>
+        </select>
+        
+        <button type="submit">Entrar no Sistema</button>
+      </form>
+
+      <h3 style="margin-top: 40px;">Consultar Equipe</h3>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="buscaNomeUsuario" placeholder="Buscar por nome..." style="flex: 1;">
+        <button id="btnBuscarUsuario">Buscar</button>
+      </div>
+      <button id="btnConsultarUsuarios" class="btn-outline">Listar Todos</button>
+      <div id="listaUsuario"></div>
+    </section>
+
+    <section id="sistema">
+      <h2>Gestão de Máquinas</h2>
+      <form id="cadastroMaquinas">
+        <label>Nome da Máquina:</label>
+        <input type="text" id="nomeMaquina" required />
+        <label>Modelo:</label>
+        <input type="text" id="modelo" required />
+        <label>Número de Série:</label>
+        <input type="text" id="numeroSerie" required />
+        <button type="submit">Cadastrar Equipamento</button>
+      </form>
+      <p id="dadosmaquina" style="text-align: center; margin-top: 10px; color: var(--azul-industrial);"></p>
+
+      <h3>Consultar Inventário</h3>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <input type="text" id="buscaNomeMaquinas" placeholder="Nome da máquina..." style="flex: 1;">
+        <button id="btnBuscarMaquinas">Filtrar</button>
+      </div>
+      <button id="btnConsultarMaquinas" class="btn-outline">Exibir Tudo</button>
+      <div id="listaMaquina"></div>
+
+      <h2 style="margin-top: 50px;">Ordens de Serviço</h2>
+      <form id="ordemServico">
+        <label>Máquina Identificada:</label>
+        <input type="text" id="maquinaOS" required />
+        <label>Descrição do Problema/Serviço:</label>
+        <textarea id="descricaoOS" rows="3" required></textarea>
+        <label>Status Atual:</label>
+        <select id="statusOS" required>
+          <option value="pendente">Pendente</option>
+          <option value="em andamento">Em andamento</option>
+          <option value="concluido">Concluído</option>
+        </select>
+        <button type="submit">Abrir Ordem de Serviço</button>
+      </form>
+      <p id="ordem_servico" style="text-align: center; margin-top: 10px; color: var(--azul-industrial);"></p>
+
+      <h3>Histórico de Intervenções</h3>
+      <button id="btnConsultarOS" class="btn-outline">Atualizar Histórico</button>
+      <div id="listaOS"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 GeTech Manutenção Industrial. Todos os direitos reservados.</p>
+    <p style="font-size: 0.8rem; margin-top: 10px; opacity: 0.7;">Sistema de Gestão de Ativos v2.0</p>
+  </footer>
+
+  <script type="module" src="../assets/js/sistema.js"></script>
+<script type="module" src="../assets/js/controle.js"></script>  <script src="../assets/js/acessibilidade.js"></script>
+<script src="../assets/js/header-mobile.js"></script>
+</body>
+</html>

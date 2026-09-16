@@ -1,0 +1,249 @@
+/* ==========================================================================
+   1. CONFIGURAÇÃO GLOBAL E VARIÁVEIS DE TEMA (INTEGRAÇÃO)
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+    --int-bg-card: rgba(255, 255, 255, 0.04);
+    --int-bg-card-hover: rgba(255, 255, 255, 0.08);
+    --int-text-title: #ffffff;
+    --int-text-muted: #94a3b8;
+    --int-border: rgba(255, 255, 255, 0.1);
+    --int-card-shadow: rgba(0, 0, 0, 0.4);
+    --int-main-title: #ffffff;
+    --int-main-subtitle: #94a3b8;
+    --int-bg-featured: rgba(6, 182, 212, 0.06);
+}
+
+[data-theme="light"] {
+    --int-bg-card: #ffffff;
+    --int-bg-card-hover: #f8fafc;
+    --int-text-title: #1e293b;
+    --int-text-muted: #64748b;
+    --int-border: #e2e8f0;
+    --int-card-shadow: rgba(30, 58, 110, 0.06);
+    --int-main-title: #1e3a6e;
+    --int-main-subtitle: #475569;
+    --int-bg-featured: #f0fdfa; /* Azul/verde clarinho de destaque para o modo claro */
+}
+
+body {
+    background: var(--bg-page-gradient);
+    color: var(--text-primary);
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================================================
+   2. CONTAINER PRINCIPAL
+   ========================================================================== */
+.pricing-container {
+    flex: 1;
+    padding: 60px 20px;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.pricing-container h1 {
+    font-size: 36px;
+    margin-bottom: 12px;
+    color: var(--int-main-title);
+    transition: color 0.3s ease;
+}
+
+.pricing-container p {
+    font-size: 1.1rem;
+    color: var(--int-main-subtitle);
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.highlight {
+    color: var(--accent-cyan, #06b6d4);
+}
+
+/* ==========================================================================
+   3. GRID DE CARTÕES
+   ========================================================================== */
+.plans-grid {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-top: 50px;
+    width: 100%;
+}
+
+/* ==========================================================================
+   4. ESTILO DO CARD (LAYOUT HORIZONTAL REESTRUTURADO)
+   ========================================================================== */
+.plan-card {
+    background: var(--int-bg-card);
+    border: 1px solid var(--int-border);
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    max-width: 950px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 0 10px 25px var(--int-card-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+.plan-card:hover {
+    transform: translateY(-4px);
+    background: var(--int-bg-card-hover);
+    border-color: var(--accent-cyan, #06b6d4);
+    box-shadow: 0 15px 30px var(--int-card-shadow);
+}
+
+/* Bloco de informações interno */
+.plan-info {
+    flex: 1;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.plan-info h3 {
+    font-size: 26px;
+    margin: 0;
+    color: var(--int-text-title);
+}
+
+.partner-tag {
+    color: var(--accent-cyan, #06b6d4);
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.partner-desc {
+    font-size: 15px;
+    color: var(--int-text-muted);
+    margin: 4px 0 12px 0;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   5. LISTA DE BENEFÍCIOS (AJEITADA DE ACORDO COM O JS)
+   ========================================================================== */
+.partner-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row; /* Mantém os benefícios em linha no desktop */
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.partner-benefits li {
+    font-size: 14px;
+    color: var(--int-text-title);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.partner-benefits li::before {
+    content: "✓";
+    color: var(--accent-cyan, #06b6d4);
+    font-weight: 900;
+}
+
+/* ==========================================================================
+   6. CARD EM DESTAQUE (MERCADO PAGO / LOGISTOCK)
+   ========================================================================== */
+.plan-card.featured {
+    position: relative;
+    border: 2px solid var(--accent-cyan, #06b6d4);
+    background: var(--int-bg-featured);
+}
+
+.badge {
+    position: absolute;
+    top: -13px;
+    left: 30px;
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   7. BOTÃO DE CONECTAR
+   ========================================================================== */
+.connect-btn {
+    background: var(--accent-cyan, #06b6d4);
+    color: var(--text-primary);
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.connect-btn:hover {
+    background: var(--accent-cyan-hv, #0891b2);
+    transform: scale(1.03);
+}
+
+/* Ajuste fino para os botões comuns ficarem corporativos no modo claro */
+[data-theme="light"] .connect-btn {
+    background: #1e3a6e;
+    color: #ffffff;
+}
+[data-theme="light"] .connect-btn:hover {
+    background: #2d5192;
+}
+
+/* Mantém o botão do card de destaque chamativo e ciano */
+[data-theme="light"] .plan-card.featured .connect-btn {
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+}
+[data-theme="light"] .plan-card.featured .connect-btn:hover {
+    background: var(--accent-cyan-hv, #0891b2);
+}
+
+/* ==========================================================================
+   8. RESPONSIVIDADE ADAPTATIVA
+   ========================================================================== */
+@media (max-width: 992px) {
+    .pricing-container { padding: 40px 15px; }
+    .plan-card { padding: 25px; gap: 15px; }
+    .partner-benefits { flex-direction: column; gap: 6px; }
+}
+
+@media (max-width: 768px) {
+    .plan-card {
+        flex-direction: column;
+        text-align: center;
+        align-items: stretch;
+    }
+    .plan-info { text-align: center; }
+    .partner-benefits { align-items: center; }
+    .badge { left: 50%; transform: translateX(-50%); }
+    .connect-btn { width: 100%; margin-top: 10px; }
+}

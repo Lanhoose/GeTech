@@ -1,0 +1,145 @@
+/* =========================================================
+   HEADER RESPONSIVO — SITE C
+   Mesmo comportamento do menu mobile do PUBLIC
+   ========================================================= */
+.menu-mobile-sitec {
+    display: none;
+    width: 44px;
+    height: 44px;
+    padding: 9px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.menu-mobile-sitec span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    border-radius: 3px;
+    background: #fff;
+    transition: transform .25s ease, opacity .2s ease;
+}
+
+.menu-mobile-sitec:hover {
+    background: rgba(255,255,255,.12);
+}
+
+.menu-mobile-sitec.ativo span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+.menu-mobile-sitec.ativo span:nth-child(2) { opacity: 0; }
+.menu-mobile-sitec.ativo span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+@media (max-width: 900px) {
+    header {
+        min-height: 64px;
+        padding: 8px 5%;
+        flex-wrap: wrap;
+    }
+
+    .logo-container {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .logo-img {
+        width: 46px;
+        height: 46px;
+        object-fit: cover;
+    }
+
+    .logo-texto {
+        font-size: 1.25rem;
+        white-space: nowrap;
+    }
+
+    .menu-mobile-sitec {
+        display: flex;
+        margin-left: 10px;
+    }
+
+    header nav {
+        display: none;
+        width: 100%;
+        flex-basis: 100%;
+        order: 3;
+    }
+
+    header nav.menu-aberto {
+        display: block;
+    }
+
+    header nav ul {
+        width: 100%;
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 0 !important;
+        padding: 10px 0 4px !important;
+        margin: 0 !important;
+        flex-wrap: nowrap !important;
+    }
+
+    header nav li {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    header nav li a {
+        display: block;
+        width: 100%;
+        padding: 11px 12px;
+        border-radius: 7px;
+        font-size: .98rem;
+    }
+
+    header nav li a:hover,
+    header nav li a.ativo {
+        background: rgba(255,255,255,.10);
+    }
+
+    #menuUsuario, #menuSair {
+        width: 100%;
+    }
+
+    #menuUsuario a {
+        display: flex;
+        align-items: center;
+    }
+
+    #avatarUsuario {
+        margin: 0;
+    }
+
+    /* evita que as regras antigas de cada página reabram o menu */
+    header nav ul li.restrito.escondido {
+        display: none !important;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding-left: 4%;
+        padding-right: 4%;
+    }
+
+    .logo-img {
+        width: 42px;
+        height: 42px;
+    }
+
+    .logo-texto {
+        font-size: 1.1rem;
+    }
+
+    .menu-mobile-sitec {
+        width: 42px;
+        height: 42px;
+        margin-left: 5px;
+    }
+}

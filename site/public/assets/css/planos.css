@@ -1,0 +1,441 @@
+/* ==========================================================================
+   1. CONFIGURAÇÃO GLOBAL E VARIÁVEIS DE TEMA
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+    --plan-bg-card: rgba(255, 255, 255, 0.04);
+    --plan-bg-card-hover: rgba(255, 255, 255, 0.08);
+    --plan-text-title: #ffffff;
+    --plan-text-muted: #94a3b8;
+    --plan-border: rgba(255, 255, 255, 0.1);
+    --plan-card-shadow: rgba(0, 0, 0, 0.4);
+    --plan-main-title: #ffffff;
+    --plan-main-subtitle: #94a3b8;
+}
+
+/* Quando o sistema/botão ativar o Tema Claro */
+[data-theme="light"] {
+    --plan-bg-card: #ffffff;
+    --plan-bg-card-hover: #f8fafc;
+    --plan-text-title: #1e293b;
+    --plan-text-muted: #64748b;
+    --plan-border: #e2e8f0;
+    --plan-card-shadow: rgba(30, 58, 110, 0.08);
+    --plan-main-title: #1e3a6e; /* Azul elegante combinando com o Header */
+    --plan-main-subtitle: #475569;
+}
+
+body {
+    background: var(--bg-page-gradient);
+    color: var(--text-primary); 
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Corrigido: Removido o bloco de fundo pesado que quebrava o visual */
+.pl {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: transparent; 
+    padding: 20px 0 0 0;
+    text-align: center;
+}
+
+/* ==========================================================================
+   2. CONTAINER PRINCIPAL
+   ========================================================================== */
+.pricing-container {
+    flex: 1; 
+    padding: 40px 20px 60px 20px;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pricing-container h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: var(--plan-main-title);
+    letter-spacing: -0.5px;
+    transition: color 0.3s ease;
+}
+
+.pricing-container p {
+    font-size: 1.1rem;
+    color: var(--plan-main-subtitle);
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.highlight {
+    color: var(--accent-cyan, #06b6d4); 
+}
+
+/* ==========================================================================
+   3. GRID DE CARTÕES
+   ========================================================================== */
+.plans-grid {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; 
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 45px;
+}
+
+/* ==========================================================================
+   4. ESTILO DO CARD (ADAPTATIVO COM VARIÁVEIS)
+   ========================================================================== */
+.plan-card {
+    background: var(--plan-bg-card); 
+    padding: 32px 28px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 340px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--plan-border); 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+    box-shadow: var(--plan-card-shadow);
+}
+
+/* Efeito Hover (Interatividade) */
+.plan-card:hover {
+    transform: translateY(-8px);
+    background: var(--plan-bg-card-hover); 
+    border-color: var(--accent-cyan, #06b6d4);
+    box-shadow: 0 20px 35px var(--plan-card-shadow), 0 0 15px rgba(6, 182, 212, 0.15);
+}
+
+/* ==========================================================================
+   5. CARD EM DESTAQUE (PRO PERFORMANCE)
+   ========================================================================== */
+.plan-card.featured {
+    border: 2px solid var(--accent-cyan, #06b6d4);
+    background: var(--plan-bg-card); 
+    position: relative;
+}
+
+[data-theme="dark"] .plan-card.featured {
+    box-shadow: 0 0 30px rgba(0, 242, 254, 0.15), var(--plan-card-shadow);
+}
+
+[data-theme="light"] .plan-card.featured {
+    box-shadow: 0 15px 30px rgba(30, 58, 110, 0.12);
+}
+
+.badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   6. TEXTOS E PREÇOS
+   ========================================================================== */
+.plan-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    color: var(--plan-text-title); 
+}
+
+.price {
+    font-size: 34px;
+    font-weight: 800;
+    margin-bottom: 25px;
+    color: var(--accent-cyan, #06b6d4);
+    letter-spacing: -0.5px;
+}
+
+.price span {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--plan-text-muted); 
+}
+
+/* ==========================================================================
+   7. LISTA DE BENEFÍCIOS
+   ========================================================================== */
+.plan-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+    text-align: left;
+    flex-grow: 1; 
+}
+
+.plan-card ul li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--plan-border); 
+    font-size: 14px;
+    color: var(--text-secondary); 
+}
+
+.plan-card ul li strong {
+    color: var(--plan-text-title);
+}
+
+.plan-card ul li:last-child {
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   8. BOTÃO (ESTILO DA HOME)
+   ========================================================================== */
+.plan-card button {
+    background: var(--accent-cyan, #06b6d4);
+    color: var(--text-primary);
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.plan-card button:hover {
+    background: var(--accent-cyan-hv, #0891b2);
+    transform: scale(1.01);
+}
+
+[data-theme="light"] .plan-card button {
+    background: #1e3a6e; /* Botão azul escuro no modo claro para contraste corporativo */
+    color: #ffffff;
+}
+[data-theme="light"] .plan-card button:hover {
+    background: #2d5192;
+}
+
+/* Mantém o botão do "Mais Popular" em ciano mesmo no modo claro para destaque máximo */
+[data-theme="light"] .plan-card.featured button {
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+}
+[data-theme="light"] .plan-card.featured button:hover {
+    background: var(--accent-cyan-hv, #0891b2);
+}
+
+/* ==========================================================================
+   9. RESPONSIVIDADE (OTIMIZADA)
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+    .pricing-container {
+        padding: 30px 20px;
+    }
+    .plans-grid {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .pricing-container h1 {
+        font-size: 28px;
+    }
+    
+    .plans-grid {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 30px;
+    }
+    
+    .plan-card {
+        max-width: 450px; 
+        padding: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pricing-container {
+        padding: 20px 15px;
+    }
+
+    .pricing-container h1 {
+        font-size: 24px;
+    }
+
+    .plan-card {
+        max-width: 100%;
+        padding: 20px;
+    }
+
+    .plan-card:hover {
+        transform: none;
+    }
+}
+
+/* ==========================================================================
+   10. MODAL / OVERLAY DE PLANOS (CORRIGIDO E RESPONSIVO)
+   ========================================================================== */
+.plan-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 8, 17, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.plan-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-card {
+    background: var(--plan-bg-card);
+    border: 1px solid var(--plan-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 40px 30px;
+    border-radius: 20px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    position: relative;
+    transform: scale(0.85);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-sizing: border-box;
+}
+
+.plan-overlay.active .modal-card {
+    transform: scale(1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--plan-text-muted);
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: var(--accent-cyan, #06b6d4);
+}
+
+.modal-icon {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+}
+
+.modal-card h2 {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-cyan, #06b6d4);
+    margin-bottom: 5px;
+}
+
+#modalPlanName {
+    color: var(--plan-text-title);
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+}
+
+.modal-subtitle {
+    color: var(--plan-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.modal-benefits {
+    text-align: left;
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 30px auto;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-benefits li {
+    color: var(--plan-text-title);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-benefits li::before {
+    content: "✓";
+    color: var(--accent-cyan, #06b6d4);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.modal-confirm-btn {
+    background: var(--accent-cyan, #06b6d4);
+    color: #000000;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+.modal-confirm-btn:hover {
+    background: var(--accent-cyan-hv, #0891b2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+}
+
+/* Ajustes Light Mode específicos para a modal */
+[data-theme="light"] .modal-card {
+    background: #ffffff;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+}
+
+/* Corrigido: Botão agora mantém texto preto sobre fundo ciano para leitura perfeita */
+[data-theme="light"] .modal-confirm-btn {
+    color: #000000;
+}
+
+@media (max-width: 480px) {
+    .modal-card {
+        padding: 30px 20px;
+    }
+    #modalPlanName {
+        font-size: 1.8rem;
+    }
+}

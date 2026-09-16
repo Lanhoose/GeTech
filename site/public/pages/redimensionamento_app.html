@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>GeTech - Redirecionando</title>
+</head>
+<body>
+  <div style="text-align: center; margin-top: 50px; font-family: sans-serif; color: #333;">
+    <p>Verificando seu acesso...</p>
+    <small style="color: #888;">Você será redirecionado em instantes.</small>
+  </div>
+
+  <script type="module">
+    // Esta página só deve levar ao painel (app.html) quem realmente tem
+    // perfil de gestor. Antes ela redirecionava para lá sem checar nada — o
+    // próprio app.html barrava quem não era gestor, mas só depois de já ter
+    // carregado a página inteira. Agora a decisão é tomada aqui, e quem não
+    // é gestor nem chega a ver o app.html: vai direto para o Site C.
+    import { auth, db } from "../../Site C/assets/js/firebase-config.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+    import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+    const BASE_URL = window.location.origin + "/GeTech/";
+    const DESTINO_APP = BASE_URL + "site/app/app.html";
+    const DESTINO_SITE_C = BASE_URL + "site/Site C/pages/index.html";
+
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            alert("Acesso restrito. Apenas gestores podem acessar o painel.");
+            window.location.href = DESTINO_SITE_C;
+            return;
+        }
+
+        try {
+            const snap = await get(ref(db, `usuarios/${user.uid}`));
+            const perfil = snap.exists() ? snap.val() : {};
+
+            if ((perfil.tipo || "").toLowerCase() === "gestor") {
+                window.location.href = DESTINO_APP;
+            } else {
+                alert("Acesso restrito. Apenas gestores podem acessar o painel.");
+                window.location.href = DESTINO_SITE_C;
+            }
+        } catch (erro) {
+            console.error("[Redirecionamento] Erro ao verificar o perfil do usuário:", erro);
+            alert("Não foi possível verificar seu perfil de acesso. Tente novamente.");
+            window.location.href = DESTINO_SITE_C;
+        }
+    });
+  </script>
+</body>
+</html>

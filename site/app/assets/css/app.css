@@ -1,0 +1,352 @@
+/* ==========================================================================
+   1. VARIÁVEIS DE TEMA (SINCRONIZADAS COM LAYOUT.CSS)
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+    /* Backgrounds e Superfícies */
+    --bg-body:           #090d16;
+    --bg-page-gradient:  linear-gradient(135deg, #0f172a, #050811);
+    --bg-header:         rgba(30, 41, 59, 0.7); /* Glassmorphism escuro */
+    --bg-card:           rgba(255, 255, 255, 0.04);
+    --bg-card-hover:     rgba(255, 255, 255, 0.08);
+    
+    /* Cores de Texto */
+    --text-primary:      #f8fafc;
+    --text-secondary:    #94a3b8;
+    --text-muted:        #64748b;
+    
+    /* Bordas e Linhas */
+    --border-card:       rgba(255, 255, 255, 0.1);
+    --border-subtle:     rgba(255, 255, 255, 0.05);
+    --border-pill:       rgba(0, 123, 255, 0.2);
+
+    /* Acentos e Identidade */
+    --accent-blue:       #007bff; /* Novo azul do modo escuro */
+    --accent-blue-hv:    #0056b3;
+    --accent-green:      #10b981;
+    --accent-green-hv:   #059669;
+    
+    /* Efeitos de Sombra e Brilhos Tech */
+    --shadow:            0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --shadow-hover:      0 10px 20px rgba(0, 0, 0, 0.5);
+    --glow-blue:         0 0 15px rgba(0, 123, 255, 0.25);
+    
+    /* Elementos Interativos e Botões */
+    --btn-action-bg:     rgba(51, 65, 85, 0.5);
+    --btn-action-text:   #f8fafc;
+    --btn-action-hover:  #007bff; /* Transiciona para o azul da marca */
+    --btn-sair-bg:       rgba(239, 68, 68, 0.15);
+    --btn-sair-border:   rgba(239, 68, 68, 0.3);
+    --btn-sair-text:     #ff4757;
+    --btn-sair-hover:    #ef4444;
+    
+    /* Elemento de Toggle */
+    --toggle-track:      #1e293b;
+}
+
+[data-theme="light"] {
+    /* Backgrounds e Superfícies */
+    --bg-body:           #f0f6ff;
+    --bg-page-gradient:  linear-gradient(135deg, #c8d8f0, #a0bcdf);
+    --bg-header:         #1e3a6e; /* Fundo sólido corporativo */
+    --bg-card:           #ffffff;
+    --bg-card-hover:     #f8faff;
+    
+    /* Cores de Texto */
+    --text-primary:      #1e293b;
+    --text-secondary:    #475569;
+    --text-muted:        #64748b;
+    
+    /* Bordas e Linhas */
+    --border-card:       #e2e8f0;
+    --border-subtle:     rgba(0, 0, 0, 0.07);
+    --border-pill:       rgba(255, 255, 255, 0.28);
+
+    /* Acentos e Identidade */
+    --accent-blue:       #378add;
+    --accent-blue-hv:    #73a6e6;
+    --accent-green:      #22c55e;
+    --accent-green-hv:   #16a34a;
+    
+    /* Efeitos de Sombra */
+    --shadow:            0 4px 20px rgba(30, 58, 110, 0.08);
+    --shadow-hover:      0 4px 15px rgba(30, 58, 110, 0.06);
+    --glow-blue:         none;
+    
+    /* Elementos Interativos e Botões */
+    --btn-action-bg:     #2d5192;
+    --btn-action-text:   #ffffff;
+    --btn-action-hover:  #1e3a6e;
+    --btn-sair-bg:       rgba(255, 61, 0, 0.1);
+    --btn-sair-border:   rgba(255, 71, 87, 0.3);
+    --btn-sair-text:     #ff4757;
+    --btn-sair-hover:    #ff4757;
+    
+    /* Elemento de Toggle */
+    --toggle-track:      #0891b2;
+}
+
+/* ==========================================================================
+   2. CONFIGURAÇÕES BASE E ESTRUTURA
+   ========================================================================== */
+body {
+    background-color: var(--bg-body);
+    background-image: var(--bg-page-gradient);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 24px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   3. CABEÇALHO (HEADER COMPACTO COM GLASSMORPHISM)
+   ========================================================================== */
+.header {
+    background: var(--bg-header);
+    border: 1px solid var(--border-card);
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Suporte ao Glassmorphism apenas no modo escuro conforme o layout.css original */
+[data-theme="dark"] .header {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.header .header-left h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+/* Tratamento de contraste para o texto interno do Header no modo Claro */
+[data-theme="light"] .header .header-left h1 {
+    color: #ffffff;
+}
+[data-theme="light"] .header .header-left p {
+    color: #cbd5e1;
+}
+
+.header .header-left p {
+    margin: 4px 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ==========================================================================
+   4. BOTÕES DE AÇÃO E GERENCIAMENTO
+   ========================================================================== */
+.btn-voltar, .btn-sair {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-voltar {
+    background: var(--btn-action-bg);
+    color: var(--btn-action-text);
+    border: 1px solid var(--border-subtle);
+}
+
+.btn-voltar:hover {
+    background: transparent;
+    border-color: var(--accent-blue);
+    box-shadow: var(--glow-blue);
+    color: var(--accent-blue);
+    transform: translateY(-1px);
+}
+
+/* Alinhamento do hover do botão voltar para o modo claro */
+[data-theme="light"] .btn-voltar:hover {
+    background: var(--btn-action-hover);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.btn-sair {
+    background: var(--btn-sair-bg);
+    border: 1px solid var(--btn-sair-border);
+    color: var(--btn-sair-text);
+}
+
+.btn-sair:hover {
+    background: var(--btn-sair-hover);
+    border-color: var(--btn-sair-hover);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+}
+
+[data-theme="light"] .btn-sair:hover {
+    box-shadow: none;
+}
+
+/* ==========================================================================
+   5. INTERRUPTOR DE TEMA (TOGGLE SWITCH MINIATURA)
+   ========================================================================== */
+.theme-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--toggle-track);
+    padding: 4px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border-subtle);
+    height: 24px;
+    transition: all 0.3s ease;
+}
+
+.theme-icon {
+    font-size: 0.85rem;
+    user-select: none;
+    opacity: 0.7;
+}
+
+/* Ajuste de contraste dos ícones do toggle dentro do header claro */
+[data-theme="light"] .theme-icon {
+    color: #ffffff;
+}
+
+.theme-toggle {
+    position: relative;
+    background: var(--text-primary);
+    border: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+}
+
+[data-theme="light"] .theme-toggle {
+    transform: translateX(2px);
+    background: #ffffff;
+}
+
+/* ==========================================================================
+   6. GRID DE MÓDULOS (ESTILO DE CARDS)
+   ========================================================================== */
+.grid-modulos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    padding: 28px 24px;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                box-shadow 0.25s ease, 
+                background-color 0.3s ease, 
+                border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Bordas laterais customizadas de acordo com o padrão do projeto */
+[data-theme="light"] .card {
+    border-left: 5px solid #1e3a6e;
+}
+
+[data-theme="dark"] .card {
+    border-left: 5px solid #007bff; /* Herda o azul customizado do modo escuro */
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    background-color: var(--bg-card-hover);
+    border-color: var(--accent-blue);
+}
+
+[data-theme="dark"] .card:hover {
+    box-shadow: var(--glow-blue), var(--shadow-hover);
+}
+
+.card h3 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.card p {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   7. REGRAS DE RESPONSIVIDADE (MEDIA QUERIES)
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+        gap: 16px;
+    }
+
+    .header .header-left {
+        width: 100%;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    
+    .btn-voltar, .btn-sair {
+        flex: 1;
+        text-align: center;
+        padding: 12px;
+    }
+    
+    .theme-toggle-wrap {
+        order: -1;
+    }
+
+    .grid-modulos {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}

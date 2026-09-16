@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeTech | Sistema de Orçamento</title>
+    <link rel="shortcut icon" href="../assets/img/Getech.png" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/css/orcamento.css">
+    <link rel="stylesheet" href="../assets/css/acessibilidade.css">
+    <link rel="stylesheet" href="../assets/css/header-mobile.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../assets/img/Getech.png" alt="Logo GeTech" class="logo-img">
+        <span class="logo-texto" id="logoTexto"><strong>GE</strong>TECH</span>
+    </div>
+
+    <button class="menu-mobile-sitec" id="menuMobileSiteC" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Início</a></li>
+            <li><a href="chat.html">ChaBot</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="material.html">Materiais</a></li>
+            <li class="restrito patrocinador escondido"><a href="patrocinadores.html">Patrocinadores</a></li>
+            <li class="restrito gestor escondido"><a href="orcamento.html" class="ativo">Orçamentos</a></li>
+            <li class="restrito gestor escondido"><a href="mensagem.html">Mensagens</a></li>
+            <li class="restrito gestor escondido"><a href="sistema.html">Sistema</a></li>
+            <li id="menuUsuario">
+                <a href="cadastro.html" id="linkPerfil">
+                    <img id="avatarUsuario" src="../assets/img/perfil.jpg" alt="Foto de Perfil" style="display: none;">
+                </a>
+            </li>
+            <li id="menuSair" style="display: none;"><a href="#" id="btnSair" style="color: #ef4444; font-weight: bold;">Sair</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="main-content">
+    <div class="card">
+        <h2>Gerador de Orçamento</h2>
+
+        <div class="inputs">
+            <input type="text" id="desc" placeholder="Descrição do Item">
+            <input type="number" id="valor" placeholder="Preço (R$)">
+            <input type="number" id="qtd" placeholder="Qtd" value="1">
+            <button class="btn-add" onclick="adicionarItem()">Adicionar</button>
+        </div>
+
+        <table id="tabela">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Qtd</th>
+                    <th>Unitário</th>
+                    <th>Total</th>
+                    <th style="width: 50px;">Ação</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="total-container">
+            Total: <span>R$ <span id="valorTotal">0,00</span></span>
+        </div>
+        
+        <div class="controles-finais">
+            <button class="btn-limpar" onclick="limparTudo()">Limpar Tudo</button>
+            <button class="btn-add" style="background-color: #059669;" onclick="window.print()">Gerar PDF / Imprimir</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 GeTech Soluções Industriais. Todos os direitos reservados.</p>
+</footer>
+
+<script src="../assets/js/orcamento.js"></script>
+<script type="module" src="../assets/js/controle.js"></script><script src="../assets/js/acessibilidade.js"></script>
+<script src="../assets/js/header-mobile.js"></script>
+</body>
+</html>
