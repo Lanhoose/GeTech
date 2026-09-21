@@ -923,6 +923,310 @@ function aplicarMascara(
 
 
 // ============================================================================
+// BUSCA DE CEP (VIACEP)
+// ============================================================================
+
+const URL_VIACEP =
+    'https://viacep.com.br/ws';
+
+const TEMPO_LIMITE_CEP_MS =
+    8000;
+
+let ultimoCepConsultado =
+    '';
+
+let controladorCep =
+    null;
+
+
+function mostrarStatusCep(
+    mensagem,
+    tipo = ''
+) {
+
+    const status =
+        $('cepStatus');
+
+
+    if (!status) {
+
+        return;
+
+    }
+
+
+    status.textContent =
+        mensagem;
+
+
+    status.className =
+        tipo
+            ? `cep-status ${tipo}`
+            : 'cep-status';
+
+}
+
+
+function preencherCampoEndereco(
+    idCampo,
+    texto
+) {
+
+    const campo =
+        $(idCampo);
+
+
+    if (!campo) {
+
+        return;
+
+    }
+
+
+    campo.value =
+        texto || '';
+
+}
+
+
+async function buscarCep(cep) {
+
+    if (controladorCep) {
+
+        controladorCep.abort();
+
+    }
+
+
+    const controlador =
+        new AbortController();
+
+
+    controladorCep =
+        controlador;
+
+
+    const temporizador =
+        setTimeout(
+            () => controlador.abort(),
+            TEMPO_LIMITE_CEP_MS
+        );
+
+
+    mostrarStatusCep(
+        'Buscando endereço...',
+        'loading'
+    );
+
+
+    try {
+
+        const resposta =
+            await fetch(
+                `${URL_VIACEP}/${cep}/json/`,
+                {
+                    signal:
+                        controlador.signal
+                }
+            );
+
+
+        if (!resposta.ok) {
+
+            throw new Error(
+                `ViaCEP respondeu ${resposta.status}`
+            );
+
+        }
+
+
+        const dados =
+            await resposta.json();
+
+
+        // O usuário mudou o CEP enquanto a busca acontecia.
+        if (
+            controlador !== controladorCep
+        ) {
+
+            return;
+
+        }
+
+
+        if (dados.erro) {
+
+            mostrarStatusCep(
+                'CEP não encontrado. Preencha o endereço manualmente.',
+                'error'
+            );
+
+            return;
+
+        }
+
+
+        preencherCampoEndereco(
+            'street',
+            dados.logradouro
+        );
+
+        preencherCampoEndereco(
+            'neighborhood',
+            dados.bairro
+        );
+
+        preencherCampoEndereco(
+            'city',
+            dados.localidade
+        );
+
+        preencherCampoEndereco(
+            'state',
+            dados.uf
+        );
+
+
+        mostrarStatusCep(
+            'Endereço encontrado. Confira e informe o número.',
+            'success'
+        );
+
+
+        // CEP geral de cidade não traz rua: leva o foco para ela.
+        $(
+            valor('street')
+                ? 'number'
+                : 'street'
+        )?.focus();
+
+
+    } catch (erro) {
+
+        // Busca substituída por outra (ou CEP apagado): não mostra nada.
+        if (
+            controlador !== controladorCep
+        ) {
+
+            return;
+
+        }
+
+
+        // Permite tentar de novo com o mesmo CEP.
+        ultimoCepConsultado =
+            '';
+
+
+        mostrarStatusCep(
+            erro.name === 'AbortError'
+                ? 'A consulta demorou demais. Preencha o endereço manualmente.'
+                : 'Não foi possível consultar o CEP. Preencha o endereço manualmente.',
+            'error'
+        );
+
+
+        console.error(
+            'Erro ao consultar o ViaCEP:',
+            erro
+        );
+
+
+    } finally {
+
+        clearTimeout(
+            temporizador
+        );
+
+
+        if (
+            controlador === controladorCep
+        ) {
+
+            controladorCep =
+                null;
+
+        }
+
+    }
+
+}
+
+
+function configurarBuscaCep() {
+
+    const campoCep =
+        $('zipCode');
+
+
+    if (!campoCep) {
+
+        return;
+
+    }
+
+
+    campoCep.addEventListener(
+        'input',
+        () => {
+
+            const cep =
+                soDigitos(
+                    campoCep.value
+                ).slice(0, 8);
+
+
+            // CEP incompleto: cancela busca em andamento e limpa o aviso.
+            if (cep.length < 8) {
+
+                if (controladorCep) {
+
+                    controladorCep.abort();
+
+                    controladorCep =
+                        null;
+
+                }
+
+
+                ultimoCepConsultado =
+                    '';
+
+
+                mostrarStatusCep(
+                    ''
+                );
+
+
+                return;
+
+            }
+
+
+            if (
+                cep === ultimoCepConsultado
+            ) {
+
+                return;
+
+            }
+
+
+            ultimoCepConsultado =
+                cep;
+
+
+            buscarCep(
+                cep
+            );
+
+        }
+    );
+
+}
+
+
+// ============================================================================
 // FORMA DE PAGAMENTO
 // ============================================================================
 
@@ -1586,6 +1890,9 @@ function iniciar(checkout) {
         'zipCode',
         mascaraCep
     );
+
+
+    configurarBuscaCep();
 
 
     aplicarMascara(
