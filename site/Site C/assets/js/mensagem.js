@@ -1,19 +1,10 @@
-// ============================================================================
+// ===========================================================================
 // CAIXA DE MENSAGENS - FIREBASE
-//
-// Inclui:
-// 1. Chamados do chatbot
-// 2. Solicitações de preço dos planos sob consulta
-// 3. Definição do preço pelo gestor
-// 4. Exclusão das solicitações
-// ============================================================================
+// Chatbot + Solicitações de preço de planos
+// ATUALIZAÇÃO EM TEMPO REAL
+// ===========================================================================
 
-
-import {
-    auth,
-    db
-} from "./firebase-config.js";
-
+import { auth, db } from "./firebase-config.js";
 
 import {
     ref,
@@ -21,106 +12,75 @@ import {
     remove,
     set,
     update
-}
-from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
 import {
     onAuthStateChanged
-}
-from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 import {
     registrarAuditoria
-}
-from "../../../app/assets/js/auditoria.js";
+} from "../../../app/assets/js/auditoria.js";
 
 
-// ============================================================================
+// ===========================================================================
 // ELEMENTOS
-// ============================================================================
+// ===========================================================================
 
 const containerMensagens =
-    document.getElementById(
-        "containerMensagens"
-    );
-
+    document.getElementById("containerMensagens");
 
 const btnLimparTudo =
-    document.getElementById(
-        "btnLimparTudo"
-    );
+    document.getElementById("btnLimparTudo");
 
 
-// ============================================================================
+// ===========================================================================
 // REFERÊNCIAS FIREBASE
-// ============================================================================
+// ===========================================================================
 
 const chamadosRef =
-    ref(
-        db,
-        "chamadosChatbot"
-    );
-
+    ref(db, "chamadosChatbot");
 
 const solicitacoesRef =
-    ref(
-        db,
-        "solicitacoesPlanos"
-    );
+    ref(db, "solicitacoesPlanos");
 
 
-// ============================================================================
+// ===========================================================================
 // CACHE
-// ============================================================================
+// ===========================================================================
 
 let chamadosCache = [];
 
 let solicitacoesCache = [];
 
 
-// ============================================================================
-// SEGURANÇA HTML
-// ============================================================================
+// Controla os listeners para não criar vários
+// caso o estado de autenticação seja atualizado.
+
+let pararListenerChamados = null;
+
+let pararListenerSolicitacoes = null;
+
+
+// ===========================================================================
+// ESCAPAR HTML
+// ===========================================================================
 
 function escaparHTML(valor) {
 
-    return String(
-        valor ?? ""
-    )
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
+    return String(valor ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
 }
 
 
-// ============================================================================
-// DATA
-// ============================================================================
+// ===========================================================================
+// FORMATAR DATA
+// ===========================================================================
 
 function formatarData(data) {
 
@@ -131,36 +91,28 @@ function formatarData(data) {
     }
 
 
-    const d =
-        new Date(data);
+    const d = new Date(data);
 
 
-    if (
-        Number.isNaN(
-            d.getTime()
-        )
-    ) {
+    if (Number.isNaN(d.getTime())) {
 
-        return data;
+        return String(data);
 
     }
 
 
-    return d.toLocaleString(
-        "pt-BR"
-    );
+    return d.toLocaleString("pt-BR");
 
 }
 
 
-// ============================================================================
-// PREÇO
-// ============================================================================
+// ===========================================================================
+// FORMATAR PREÇO
+// ===========================================================================
 
 function formatarPreco(valor) {
 
-    const numero =
-        Number(valor);
+    const numero = Number(valor);
 
 
     if (
@@ -184,71 +136,80 @@ function formatarPreco(valor) {
 }
 
 
-// ============================================================================
-// CARREGAR MENSAGENS
-// ============================================================================
+// ===========================================================================
+// VERIFICAR SE EXISTE PREÇO
+// ===========================================================================
+
+function possuiPreco(solicitacao) {
+
+    const preco =
+        Number(solicitacao?.preco);
+
+
+    return (
+        Number.isFinite(preco) &&
+        preco > 0
+    );
+
+}
+
+
+// ===========================================================================
+// RENDERIZAR MENSAGENS
+// ===========================================================================
 
 function carregarMensagens() {
 
-    if (
-        !containerMensagens ||
-        !btnLimparTudo
-    ) {
+    if (!containerMensagens) {
 
         return;
 
     }
 
 
-    // ------------------------------------------------------------------------
-    // ORDENA CHAMADOS
-    // ------------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // COPIAS ORDENADAS
+    // -----------------------------------------------------------------------
 
     const chamados =
-        [...chamadosCache]
-            .sort(
-                (a, b) =>
-                    new Date(
-                        b.data || 0
-                    ) -
-                    new Date(
-                        a.data || 0
-                    )
-            );
+        [...chamadosCache].sort(
+            (a, b) =>
+                new Date(b.data || 0) -
+                new Date(a.data || 0)
+        );
 
-
-    // ------------------------------------------------------------------------
-    // ORDENA SOLICITAÇÕES
-    // ------------------------------------------------------------------------
 
     const solicitacoes =
-        [...solicitacoesCache]
-            .sort(
-                (a, b) =>
-                    Number(
-                        b.atualizadaEm ||
-                        b.criadaEm ||
-                        0
-                    ) -
-                    Number(
-                        a.atualizadaEm ||
-                        a.criadaEm ||
-                        0
-                    )
-            );
+        [...solicitacoesCache].sort(
+            (a, b) =>
+                Number(
+                    b.atualizadaEm ||
+                    b.criadaEm ||
+                    0
+                ) -
+                Number(
+                    a.atualizadaEm ||
+                    a.criadaEm ||
+                    0
+                )
+        );
 
 
-    // ------------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     // NENHUMA MENSAGEM
-    // ------------------------------------------------------------------------
+    // -----------------------------------------------------------------------
 
     if (
         !chamados.length &&
         !solicitacoes.length
     ) {
 
-        btnLimparTudo.style.display =
-            "none";
+        if (btnLimparTudo) {
+
+            btnLimparTudo.style.display =
+                "none";
+
+        }
 
 
         containerMensagens.innerHTML = `
@@ -261,40 +222,43 @@ function carregarMensagens() {
 
                 <p>
                     Nenhuma mensagem,
-                    solicitação de preço
-                    ou ordem de serviço
-                    foi recebida.
+                    solicitação de preço ou
+                    ordem de serviço foi recebida.
                 </p>
 
             </div>
 
         `;
 
-
         return;
 
     }
 
 
-    btnLimparTudo.style.display =
-        "block";
+    if (btnLimparTudo) {
+
+        btnLimparTudo.style.display =
+            "block";
+
+    }
 
 
-    containerMensagens.innerHTML =
-        "";
+    // -----------------------------------------------------------------------
+    // LIMPA A TELA
+    // -----------------------------------------------------------------------
+
+    containerMensagens.innerHTML = "";
 
 
-    // ========================================================================
-    // SOLICITAÇÕES DE PREÇO
-    // ========================================================================
+    // =======================================================================
+    // SOLICITAÇÕES DE PLANOS
+    // =======================================================================
 
     solicitacoes.forEach(
         (solicitacao) => {
 
             const card =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
 
             card.classList.add(
@@ -302,51 +266,45 @@ function carregarMensagens() {
             );
 
 
-            const numeroPreco =
-                Number(
-                    solicitacao.preco
+            const temPreco =
+                possuiPreco(
+                    solicitacao
                 );
 
 
-            const temPreco =
-                Number.isFinite(
-                    numeroPreco
-                ) &&
-                numeroPreco > 0;
-
-
-            const status =
+            const precoAtual =
                 temPreco
-                    ? "Preço definido"
-                    : "Aguardando preço";
+                    ? formatarPreco(
+                        solicitacao.preco
+                    )
+                    : "Preço sob consulta";
 
 
-            // ----------------------------------------------------------------
-            // HTML DO CARD
-            // ----------------------------------------------------------------
+            const valorInput =
+                temPreco
+                    ? escaparHTML(
+                        solicitacao.preco
+                    )
+                    : "";
+
 
             card.innerHTML = `
 
                 <div class="card-header-msg">
 
                     <span>
-
                         <strong>
                             Solicitação de Plano
                         </strong>
-
                     </span>
 
-
                     <span>
-
                         ${escaparHTML(
                             formatarData(
                                 solicitacao.atualizadaEm ||
                                 solicitacao.criadaEm
                             )
                         )}
-
                     </span>
 
                 </div>
@@ -355,7 +313,6 @@ function carregarMensagens() {
                 <div class="card-body-msg">
 
                     <p>
-
                         <span class="label">
                             Cliente:
                         </span>
@@ -364,21 +321,17 @@ function carregarMensagens() {
                             solicitacao.nome ||
                             "Cliente"
                         )}
-
                     </p>
 
 
                     <p>
-
                         <span class="label">
                             E-mail:
                         </span>
 
-                        <a
-                            href="mailto:${escaparHTML(
-                                solicitacao.email || ""
-                            )}"
-                        >
+                        <a href="mailto:${escaparHTML(
+                            solicitacao.email || ""
+                        )}">
 
                             ${escaparHTML(
                                 solicitacao.email ||
@@ -386,12 +339,10 @@ function carregarMensagens() {
                             )}
 
                         </a>
-
                     </p>
 
 
                     <p>
-
                         <span class="label">
                             Plano:
                         </span>
@@ -400,7 +351,6 @@ function carregarMensagens() {
                             solicitacao.plano ||
                             "Enterprise"
                         )}
-
                     </p>
 
 
@@ -410,9 +360,11 @@ function carregarMensagens() {
                             Status:
                         </span>
 
-                        <strong>
-                            ${status}
-                        </strong>
+                        ${
+                            temPreco
+                                ? "Preço definido"
+                                : "Aguardando preço"
+                        }
 
                     </p>
 
@@ -424,25 +376,21 @@ function carregarMensagens() {
                         </span>
 
                         <strong>
-
                             ${escaparHTML(
-                                formatarPreco(
-                                    solicitacao.preco
-                                )
+                                precoAtual
                             )}
-
                         </strong>
 
                     </p>
 
 
                     <div
+                        class="area-preco-plano"
                         style="
                             margin-top:16px;
                             padding:14px;
                             border-radius:10px;
-                            background:#f8fafc;
-                            border:1px solid #e2e8f0;
+                            background:var(--problema-fundo);
                         "
                     >
 
@@ -453,9 +401,7 @@ function carregarMensagens() {
                                 margin-bottom:7px;
                             "
                         >
-
                             Definir preço mensal
-
                         </label>
 
 
@@ -469,34 +415,12 @@ function carregarMensagens() {
                         >
 
                             <input
-
                                 type="number"
-
                                 min="0.01"
-
                                 step="0.01"
-
                                 class="input-preco-plano"
-
-                                value="${
-                                    temPreco
-                                        ? escaparHTML(
-                                            Number(
-                                                solicitacao.preco
-                                            ).toFixed(2)
-                                        )
-                                        : ""
-                                }"
-
+                                value="${valorInput}"
                                 placeholder="Ex.: 2500.00"
-
-                                style="
-                                    padding:10px;
-                                    border:1px solid #cbd5e1;
-                                    border-radius:8px;
-                                    max-width:220px;
-                                "
-
                             >
 
 
@@ -504,13 +428,11 @@ function carregarMensagens() {
                                 type="button"
                                 class="btn-salvar-preco"
                             >
-
                                 ${
                                     temPreco
                                         ? "Atualizar preço"
                                         : "Enviar preço ao cliente"
                                 }
-
                             </button>
 
                         </div>
@@ -531,9 +453,7 @@ function carregarMensagens() {
                         class="btn-deletar-unica"
                         type="button"
                     >
-
                         Excluir Solicitação
-
                     </button>
 
                 </div>
@@ -541,17 +461,17 @@ function carregarMensagens() {
             `;
 
 
-            // ----------------------------------------------------------------
-            // BOTÃO DE PREÇO
-            // ----------------------------------------------------------------
+            // -----------------------------------------------------------------
+            // BOTÃO PREÇO
+            // -----------------------------------------------------------------
 
-            const btnSalvar =
+            const btnPreco =
                 card.querySelector(
                     ".btn-salvar-preco"
                 );
 
 
-            btnSalvar?.addEventListener(
+            btnPreco?.addEventListener(
                 "click",
                 () => {
 
@@ -564,9 +484,9 @@ function carregarMensagens() {
             );
 
 
-            // ----------------------------------------------------------------
+            // -----------------------------------------------------------------
             // BOTÃO EXCLUIR
-            // ----------------------------------------------------------------
+            // -----------------------------------------------------------------
 
             const btnExcluir =
                 card.querySelector(
@@ -594,17 +514,15 @@ function carregarMensagens() {
     );
 
 
-    // ========================================================================
+    // =======================================================================
     // CHAMADOS DO CHATBOT
-    // ========================================================================
+    // =======================================================================
 
     chamados.forEach(
         (chamado, index) => {
 
             const card =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
 
             card.classList.add(
@@ -718,9 +636,7 @@ function carregarMensagens() {
                         class="btn-deletar-unica"
                         type="button"
                     >
-
                         Excluir Registro
-
                     </button>
 
                 </div>
@@ -728,20 +644,22 @@ function carregarMensagens() {
             `;
 
 
-            card
-                .querySelector(
-                    "button"
-                )
-                ?.addEventListener(
-                    "click",
-                    () => {
-
-                        deletarMensagem(
-                            chamado.id
-                        );
-
-                    }
+            const btnExcluir =
+                card.querySelector(
+                    ".btn-deletar-unica"
                 );
+
+
+            btnExcluir?.addEventListener(
+                "click",
+                () => {
+
+                    deletarMensagem(
+                        chamado.id
+                    );
+
+                }
+            );
 
 
             containerMensagens.appendChild(
@@ -754,9 +672,9 @@ function carregarMensagens() {
 }
 
 
-// ============================================================================
-// DEFINIR PREÇO
-// ============================================================================
+// ===========================================================================
+// DEFINIR / ATUALIZAR PREÇO
+// ===========================================================================
 
 async function definirPreco(
     uid,
@@ -785,26 +703,6 @@ async function definirPreco(
             "Informe um preço mensal maior que zero."
         );
 
-
-        return;
-
-    }
-
-
-    // ------------------------------------------------------------------------
-    // Confirmação
-    // ------------------------------------------------------------------------
-
-    const confirmar =
-        confirm(
-
-            `Deseja enviar o preço de ${formatarPreco(preco)} por mês para este cliente?`
-
-        );
-
-
-    if (!confirmar) {
-
         return;
 
     }
@@ -812,17 +710,35 @@ async function definirPreco(
 
     try {
 
-        // --------------------------------------------------------------------
-        // Salva no Firebase
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // DESABILITA TEMPORARIAMENTE
+        // -------------------------------------------------------------------
+
+        const botao =
+            card?.querySelector(
+                ".btn-salvar-preco"
+            );
+
+
+        if (botao) {
+
+            botao.disabled = true;
+
+            botao.textContent =
+                "Enviando...";
+
+        }
+
+
+        // -------------------------------------------------------------------
+        // ATUALIZA FIREBASE
+        // -------------------------------------------------------------------
 
         await update(
-
             ref(
                 db,
                 `solicitacoesPlanos/${uid}`
             ),
-
             {
 
                 preco:
@@ -837,29 +753,52 @@ async function definirPreco(
                     Date.now()
 
             }
-
         );
 
 
-        // --------------------------------------------------------------------
-        // Auditoria
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // AUDITORIA
+        // -------------------------------------------------------------------
 
-        await registrarAuditoria(
+        try {
 
-            'Mensagens: preço de plano definido',
+            await registrarAuditoria(
 
-            `Preço de ${formatarPreco(preco)} definido para a solicitação ${uid}.`,
+                "Mensagens: preço de plano definido",
 
-            'info'
+                `Preço de ${formatarPreco(preco)} definido para a solicitação ${uid}.`,
 
-        );
+                "info"
 
+            );
+
+        } catch (erroAuditoria) {
+
+            console.warn(
+                "Preço atualizado, mas a auditoria falhou:",
+                erroAuditoria
+            );
+
+        }
+
+
+        // -------------------------------------------------------------------
+        // AVISO
+        // -------------------------------------------------------------------
 
         alert(
             `Preço de ${formatarPreco(preco)} enviado ao cliente.`
         );
 
+
+        // -------------------------------------------------------------------
+        // IMPORTANTE:
+        //
+        // NÃO chamamos carregarMensagens() aqui.
+        //
+        // O Firebase vai disparar o onValue automaticamente
+        // e a tela será atualizada.
+        // -------------------------------------------------------------------
 
     } catch (erro) {
 
@@ -873,18 +812,23 @@ async function definirPreco(
             "Não foi possível enviar o preço ao cliente."
         );
 
+
+        if (botao) {
+
+            botao.disabled = false;
+
+        }
+
     }
 
 }
 
 
-// ============================================================================
-// DELETAR SOLICITAÇÃO
-// ============================================================================
+// ===========================================================================
+// EXCLUIR SOLICITAÇÃO
+// ===========================================================================
 
-async function deletarSolicitacao(
-    uid
-) {
+async function deletarSolicitacao(uid) {
 
     if (!uid) {
 
@@ -907,24 +851,33 @@ async function deletarSolicitacao(
     try {
 
         await remove(
-
             ref(
                 db,
                 `solicitacoesPlanos/${uid}`
             )
-
         );
 
 
-        await registrarAuditoria(
+        try {
 
-            'Mensagens: solicitação de preço excluída',
+            await registrarAuditoria(
 
-            `Solicitação ${uid} excluída.`,
+                "Mensagens: solicitação de preço excluída",
 
-            'warning'
+                `Solicitação ${uid} excluída.`,
 
-        );
+                "warning"
+
+            );
+
+        } catch (erroAuditoria) {
+
+            console.warn(
+                "Solicitação excluída, mas auditoria falhou:",
+                erroAuditoria
+            );
+
+        }
 
 
     } catch (erro) {
@@ -944,13 +897,11 @@ async function deletarSolicitacao(
 }
 
 
-// ============================================================================
-// DELETAR CHAMADO
-// ============================================================================
+// ===========================================================================
+// EXCLUIR MENSAGEM DO CHATBOT
+// ===========================================================================
 
-async function deletarMensagem(
-    id
-) {
+async function deletarMensagem(id) {
 
     if (!id) {
 
@@ -973,24 +924,33 @@ async function deletarMensagem(
     try {
 
         await remove(
-
             ref(
                 db,
                 `chamadosChatbot/${id}`
             )
-
         );
 
 
-        await registrarAuditoria(
+        try {
 
-            'Mensagens: chamado excluído',
+            await registrarAuditoria(
 
-            `Chamado ${id} excluído da caixa de mensagens.`,
+                "Mensagens: chamado excluído",
 
-            'warning'
+                `Chamado ${id} excluído da caixa de mensagens.`,
 
-        );
+                "warning"
+
+            );
+
+        } catch (erroAuditoria) {
+
+            console.warn(
+                "Chamado excluído, mas auditoria falhou:",
+                erroAuditoria
+            );
+
+        }
 
 
     } catch (erro) {
@@ -1010,9 +970,9 @@ async function deletarMensagem(
 }
 
 
-// ============================================================================
+// ===========================================================================
 // LIMPAR TODAS AS MENSAGENS
-// ============================================================================
+// ===========================================================================
 
 async function limparTodasMensagens() {
 
@@ -1044,15 +1004,26 @@ async function limparTodasMensagens() {
         ]);
 
 
-        await registrarAuditoria(
+        try {
 
-            'Mensagens: caixa limpa',
+            await registrarAuditoria(
 
-            'Todos os chamados e solicitações da caixa de mensagens foram excluídos.',
+                "Mensagens: caixa limpa",
 
-            'warning'
+                "Todos os chamados e solicitações da caixa de mensagens foram excluídos.",
 
-        );
+                "warning"
+
+            );
+
+        } catch (erroAuditoria) {
+
+            console.warn(
+                "Caixa limpa, mas auditoria falhou:",
+                erroAuditoria
+            );
+
+        }
 
 
     } catch (erro) {
@@ -1072,15 +1043,50 @@ async function limparTodasMensagens() {
 }
 
 
-// ============================================================================
-// AUTENTICAÇÃO DO GESTOR
-// ============================================================================
+// ===========================================================================
+// ATUALIZAÇÃO EM TEMPO REAL
+// ===========================================================================
 
 onAuthStateChanged(
     auth,
     (user) => {
 
+        // ===================================================================
+        // SE NÃO ESTIVER LOGADO
+        // ===================================================================
+
         if (!user) {
+
+            // Para listeners antigos, se existirem.
+
+            if (
+                pararListenerChamados
+            ) {
+
+                pararListenerChamados();
+
+                pararListenerChamados =
+                    null;
+
+            }
+
+
+            if (
+                pararListenerSolicitacoes
+            ) {
+
+                pararListenerSolicitacoes();
+
+                pararListenerSolicitacoes =
+                    null;
+
+            }
+
+
+            chamadosCache = [];
+
+            solicitacoesCache = [];
+
 
             if (containerMensagens) {
 
@@ -1108,83 +1114,137 @@ onAuthStateChanged(
         }
 
 
-        // ====================================================================
-        // CHAMADOS
-        // ====================================================================
+        // ===================================================================
+        // EVITA DUPLICAÇÃO DE LISTENERS
+        // ===================================================================
 
-        onValue(
+        if (
+            pararListenerChamados
+        ) {
 
-            chamadosRef,
+            pararListenerChamados();
 
-            (snapshot) => {
-
-                const dados =
-                    snapshot.val() || {};
+        }
 
 
-                chamadosCache =
-                    Object.entries(
-                        dados
-                    )
-                    .map(
-                        ([id, chamado]) => ({
-                            id,
-                            ...chamado
-                        })
+        if (
+            pararListenerSolicitacoes
+        ) {
+
+            pararListenerSolicitacoes();
+
+        }
+
+
+        // ===================================================================
+        // CHATBOT EM TEMPO REAL
+        // ===================================================================
+
+        pararListenerChamados =
+            onValue(
+
+                chamadosRef,
+
+                (snapshot) => {
+
+                    const dados =
+                        snapshot.val() ||
+                        {};
+
+
+                    chamadosCache =
+                        Object.entries(
+                            dados
+                        ).map(
+                            ([id, chamado]) => ({
+
+                                id,
+
+                                ...chamado
+
+                            })
+                        );
+
+
+                    // -------------------------------------------------------
+                    // ATUALIZA A TELA AUTOMATICAMENTE
+                    // -------------------------------------------------------
+
+                    carregarMensagens();
+
+                },
+
+                (erro) => {
+
+                    console.error(
+                        "Erro ao receber mensagens do chatbot:",
+                        erro
                     );
 
+                }
 
-                carregarMensagens();
-
-            }
-
-        );
+            );
 
 
-        // ====================================================================
-        // SOLICITAÇÕES
-        // ====================================================================
+        // ===================================================================
+        // SOLICITAÇÕES DE PLANOS EM TEMPO REAL
+        // ===================================================================
 
-        onValue(
+        pararListenerSolicitacoes =
+            onValue(
 
-            solicitacoesRef,
+                solicitacoesRef,
 
-            (snapshot) => {
+                (snapshot) => {
 
-                const dados =
-                    snapshot.val() || {};
+                    const dados =
+                        snapshot.val() ||
+                        {};
 
 
-                solicitacoesCache =
-                    Object.entries(
-                        dados
-                    )
-                    .map(
-                        ([uid, solicitacao]) => ({
-                            uid,
-                            ...solicitacao
-                        })
+                    solicitacoesCache =
+                        Object.entries(
+                            dados
+                        ).map(
+                            ([uid, solicitacao]) => ({
+
+                                uid,
+
+                                ...solicitacao
+
+                            })
+                        );
+
+
+                    // -------------------------------------------------------
+                    // ATUALIZA A TELA AUTOMATICAMENTE
+                    // -------------------------------------------------------
+
+                    carregarMensagens();
+
+                },
+
+                (erro) => {
+
+                    console.error(
+                        "Erro ao receber solicitações de planos:",
+                        erro
                     );
 
+                }
 
-                carregarMensagens();
-
-            }
-
-        );
+            );
 
     }
-
 );
 
 
-// ============================================================================
-// FUNÇÕES GLOBAIS PARA O HTML
-// ============================================================================
+// ===========================================================================
+// FUNÇÕES GLOBAIS
+// ===========================================================================
 
 window.deletarMensagem =
     deletarMensagem;
-
 
 window.limparTodasMensagens =
     limparTodasMensagens;
