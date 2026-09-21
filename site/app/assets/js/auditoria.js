@@ -160,6 +160,9 @@ export async function registrarAuditoria(
 
         const dadosAuditoria = {
 
+            id:
+                auditoriaRef.key,
+
             acao:
                 String(
                     acao || "Evento"
