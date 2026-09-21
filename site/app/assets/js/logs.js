@@ -55,6 +55,7 @@ function normalizarLog(firebaseId, log = {}) {
         id: log.id || firebaseId,
         dataHora,
         usuario: log.usuario || 'Sistema',
+        usuarioEmail: log.usuarioEmail || (String(log.usuario || '').includes('@') ? log.usuario : ''),
         acao: log.acao || 'Evento',
         detalhe: log.detalhe ?? log.descricao ?? '',
         criticidade: String(log.criticidade ?? log.nivel ?? 'info').toLowerCase()
@@ -88,6 +89,7 @@ export const Auditoria = {
                 dataHora: new Date().toISOString(),
                 usuario: nome,
                 usuarioUid: user?.uid || null,
+                usuarioEmail: user?.email || '',
                 acao: acao || 'Evento',
                 detalhe: detalhe || '',
                 criticidade: criticidade || 'info'
@@ -244,7 +246,7 @@ async function iniciarPaginaLogs() {
             const dataFim = document.getElementById('filtroDataFim')?.value || '';
 
             const filtrados = logs.filter(log => {
-                const haystack = [log.id, log.usuario, log.acao, log.detalhe].join(' ').toLowerCase();
+                const haystack = [log.id, log.usuario, log.usuarioEmail, log.acao, log.detalhe].join(' ').toLowerCase();
                 if (texto && !haystack.includes(texto)) return false;
                 if (criticidade && log.criticidade !== criticidade) return false;
 

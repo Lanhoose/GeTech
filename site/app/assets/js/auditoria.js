@@ -177,6 +177,10 @@ export async function registrarAuditoria(
             usuarioUid:
                 user.uid,
 
+            usuarioEmail:
+                user.email ||
+                "",
+
             acao:
                 String(
                     acao || "Evento"

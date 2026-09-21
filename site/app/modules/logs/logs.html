@@ -122,7 +122,7 @@
             const dataFim     = document.getElementById('filtroDataFim').value;
 
             const filtrados = _logsCache.filter(log => {
-                const haystack = [log.id, log.usuario, log.acao, log.detalhe].join(' ').toLowerCase();
+                const haystack = [log.id, log.usuario, log.usuarioEmail, log.acao, log.detalhe].join(' ').toLowerCase();
                 if (texto && !haystack.includes(texto)) return false;
                 if (criticidade && log.criticidade !== criticidade) return false;
 
@@ -172,7 +172,7 @@
         row.innerHTML = `
             <td class="log-id">${log.id}</td>
             <td class="log-date">${dataFormatada}</td>
-            <td class="log-user"><strong>${log.usuario}</strong></td>
+            <td class="log-user"><strong>${log.usuario}</strong>${log.usuarioEmail && log.usuarioEmail !== log.usuario ? `<br><small class="log-email">${String(log.usuarioEmail).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</small>` : ''}</td>
             <td class="log-action">${log.acao}</td>
             <td class="log-detail" title="${log.detalhe}">${log.detalhe}</td>
             <td><span class="badge-status-log badge-${criticidadeClasse}">${criticidadeClasse.toUpperCase()}</span></td>
@@ -229,7 +229,7 @@
                 const criticidade = document.getElementById('filtroCriticidade').value;
                 const dataInicio  = document.getElementById('filtroDataInicio').value;
                 const dataFim     = document.getElementById('filtroDataFim').value;
-                const haystack    = [log.id, log.usuario, log.acao, log.detalhe].join(' ').toLowerCase();
+                const haystack    = [log.id, log.usuario, log.usuarioEmail, log.acao, log.detalhe].join(' ').toLowerCase();
                 const dataLog     = log.dataHora.slice(0, 10);
                 if (texto       && !haystack.includes(texto))    return false;
                 if (criticidade && log.criticidade !== criticidade) return false;
@@ -240,9 +240,9 @@
 
             if (logsVisiveis.length === 0) return alert("Não há registros para exportar.");
 
-            let csv = "ID;Data/Hora;Usuario;Acao;Detalhe;Criticidade\n";
+            let csv = "ID;Data/Hora;Usuario;Email;Acao;Detalhe;Criticidade\n";
             logsVisiveis.forEach(l => {
-                csv += `${l.id};${l.dataHora};${l.usuario};${l.acao};"${l.detalhe}";${l.criticidade}\n`;
+                csv += `${l.id};${l.dataHora};${l.usuario};${l.usuarioEmail || ''};${l.acao};"${l.detalhe}";${l.criticidade}\n`;
             });
 
             const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
