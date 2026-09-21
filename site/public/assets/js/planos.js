@@ -1,5 +1,6 @@
 // ===========================================================================
 // planos.js - GeTech
+// Página de planos
 // ===========================================================================
 
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
@@ -23,9 +24,6 @@ import {
 // ===========================================================================
 // CONFIGURAÇÕES
 // ===========================================================================
-
-const BASE_URL =
-    window.location.origin + '/GeTech';
 
 const CHAVE_CHECKOUT =
     'getech:checkout';
@@ -128,6 +126,10 @@ async function selectPlan(planName) {
         );
 
 
+    // -----------------------------------------------------------------------
+    // NOME DO PLANO
+    // -----------------------------------------------------------------------
+
     if (modalPlanName) {
 
         modalPlanName.innerText =
@@ -135,6 +137,10 @@ async function selectPlan(planName) {
 
     }
 
+
+    // -----------------------------------------------------------------------
+    // BENEFÍCIOS
+    // -----------------------------------------------------------------------
 
     if (modalBenefitsList) {
 
@@ -172,6 +178,10 @@ async function selectPlan(planName) {
     }
 
 
+    // -----------------------------------------------------------------------
+    // ABRIR MODAL
+    // -----------------------------------------------------------------------
+
     if (modal) {
 
         modal.classList.add(
@@ -182,15 +192,13 @@ async function selectPlan(planName) {
 
 
     // -----------------------------------------------------------------------
-    // IMPORTANTE:
-    // Não bloqueamos o Enterprise por causa de autenticação aqui.
-    // A autenticação será verificada somente quando o usuário confirmar.
+    // SE NÃO ESTIVER LOGADO
     // -----------------------------------------------------------------------
 
     if (!usuarioAtual) {
 
         console.warn(
-            'Plano selecionado visualmente. Usuário ainda não autenticado.'
+            'Plano selecionado. Usuário ainda não autenticado.'
         );
 
         return;
@@ -200,6 +208,9 @@ async function selectPlan(planName) {
 
     // -----------------------------------------------------------------------
     // ENTERPRISE
+    //
+    // Enterprise não é salvo como plano adquirido aqui.
+    // Primeiro precisa passar pela solicitação de preço.
     // -----------------------------------------------------------------------
 
     if (
@@ -219,10 +230,12 @@ async function selectPlan(planName) {
     try {
 
         await update(
+
             ref(
                 db,
                 `usuarios/${usuarioAtual.uid}`
             ),
+
             {
 
                 planoAdquirido:
@@ -232,6 +245,7 @@ async function selectPlan(planName) {
                     Date.now()
 
             }
+
         );
 
 
@@ -250,16 +264,12 @@ async function selectPlan(planName) {
         } catch (erroAuditoria) {
 
             console.warn(
-                'Auditoria não registrada:',
+                'Plano salvo, mas a auditoria falhou:',
                 erroAuditoria
             );
 
         }
 
-
-        console.log(
-            `Plano ${planName} salvo no Firebase.`
-        );
 
     } catch (erro) {
 
@@ -274,24 +284,28 @@ async function selectPlan(planName) {
 
 
 // ===========================================================================
-// SOLICITAR ENTERPRISE
+// SOLICITAR PLANO ENTERPRISE
 // ===========================================================================
 
 async function solicitarPlanoSobConsulta() {
 
-    // ============================================================
+    // =======================================================================
     // VERIFICAR LOGIN
-    // ============================================================
+    // =======================================================================
 
     if (!usuarioAtual) {
 
         alert(
-            "Faça login para solicitar o plano Enterprise."
+            'Faça login para solicitar o plano Enterprise.'
         );
 
-        window.location.href = "login.html";
+
+        window.location.href =
+            'login.html';
+
 
         return;
+
     }
 
 
@@ -300,13 +314,14 @@ async function solicitarPlanoSobConsulta() {
         const uid =
             usuarioAtual.uid;
 
+
         const agora =
             Date.now();
 
 
-        // ============================================================
-        // VERIFICAR SE JÁ EXISTE UMA SOLICITAÇÃO
-        // ============================================================
+        // ===================================================================
+        // REFERÊNCIA DA SOLICITAÇÃO
+        // ===================================================================
 
         const solicitacaoRef =
             ref(
@@ -315,31 +330,37 @@ async function solicitarPlanoSobConsulta() {
             );
 
 
+        // ===================================================================
+        // VERIFICAR SE JÁ EXISTE UMA SOLICITAÇÃO
+        // ===================================================================
+
         const solicitacaoSnap =
             await get(
                 solicitacaoRef
             );
 
 
-        // ============================================================
+        // ===================================================================
         // SE JÁ EXISTIR
-        // ============================================================
+        // ===================================================================
 
-        if (solicitacaoSnap.exists()) {
+        if (
+            solicitacaoSnap.exists()
+        ) {
 
             const solicitacao =
                 solicitacaoSnap.val();
 
-
-            // --------------------------------------------------------
-            // JÁ TEM PREÇO DEFINIDO
-            // --------------------------------------------------------
 
             const preco =
                 Number(
                     solicitacao.preco
                 );
 
+
+            // ===============================================================
+            // JÁ TEM PREÇO DEFINIDO
+            // ===============================================================
 
             if (
                 Number.isFinite(preco) &&
@@ -355,9 +376,10 @@ async function solicitarPlanoSobConsulta() {
                         JSON.stringify({
 
                             plano:
-                                "Enterprise",
+                                PLANO_SOB_CONSULTA,
 
-                            uid,
+                            uid:
+                                uid,
 
                             criadoEm:
                                 agora
@@ -369,27 +391,25 @@ async function solicitarPlanoSobConsulta() {
                 } catch (erroStorage) {
 
                     console.warn(
-                        "Não foi possível salvar o checkout:",
+                        'Não foi possível salvar o checkout:',
                         erroStorage
                     );
 
                 }
 
 
-                // O preço já foi definido pelo gestor.
-                // Não tentamos criar outra solicitação.
-
                 window.location.href =
-                    "assinatura.html";
+                    'assinatura.html';
+
 
                 return;
 
             }
 
 
-            // --------------------------------------------------------
+            // ===============================================================
             // AINDA ESTÁ AGUARDANDO O GESTOR
-            // --------------------------------------------------------
+            // ===============================================================
 
             try {
 
@@ -400,9 +420,10 @@ async function solicitarPlanoSobConsulta() {
                     JSON.stringify({
 
                         plano:
-                            "Enterprise",
+                            PLANO_SOB_CONSULTA,
 
-                        uid,
+                        uid:
+                            uid,
 
                         criadoEm:
                             agora
@@ -414,37 +435,39 @@ async function solicitarPlanoSobConsulta() {
             } catch (erroStorage) {
 
                 console.warn(
-                    "Não foi possível salvar o checkout:",
+                    'Não foi possível salvar o checkout:',
                     erroStorage
                 );
 
             }
 
 
-            // Já existe uma solicitação.
-            // Não criamos outra e não sobrescrevemos a atual.
-
             window.location.href =
-                "assinatura.html";
+                'assinatura.html';
+
 
             return;
 
         }
 
 
-        // ============================================================
+        // ===================================================================
         // PRIMEIRA SOLICITAÇÃO
-        // ============================================================
+        // ===================================================================
 
         const nome =
             usuarioAtual.displayName ||
-            "Cliente";
+            'Cliente';
 
 
         const email =
             usuarioAtual.email ||
-            "";
+            '';
 
+
+        // ===================================================================
+        // CRIAR SOLICITAÇÃO
+        // ===================================================================
 
         await set(
 
@@ -462,10 +485,10 @@ async function solicitarPlanoSobConsulta() {
                     email,
 
                 plano:
-                    "Enterprise",
+                    PLANO_SOB_CONSULTA,
 
                 status:
-                    "aguardando_preco",
+                    'aguardando_preco',
 
                 criadaEm:
                     agora,
@@ -478,35 +501,38 @@ async function solicitarPlanoSobConsulta() {
         );
 
 
-        // ============================================================
+        // ===================================================================
         // AUDITORIA
-        // ============================================================
+        // ===================================================================
 
         try {
 
             await registrarAuditoria(
 
-                "Planos: preço sob consulta solicitado",
+                'Planos: preço sob consulta solicitado',
 
-                `Cliente solicitou preço do plano Enterprise.`,
+                `Cliente solicitou preço do plano ${PLANO_SOB_CONSULTA}.`,
 
-                "info"
+                'info'
 
             );
 
         } catch (erroAuditoria) {
 
             console.warn(
-                "Solicitação criada, mas auditoria falhou:",
+                'Solicitação criada, mas auditoria falhou:',
                 erroAuditoria
             );
 
         }
 
 
-        // ============================================================
+        // ===================================================================
         // SALVAR CHECKOUT
-        // ============================================================
+        //
+        // localStorage é utilizado para que a informação permaneça
+        // mesmo depois que o cliente fechar a página.
+        // ===================================================================
 
         try {
 
@@ -517,7 +543,7 @@ async function solicitarPlanoSobConsulta() {
                 JSON.stringify({
 
                     plano:
-                        "Enterprise",
+                        PLANO_SOB_CONSULTA,
 
                     uid:
                         uid,
@@ -532,43 +558,45 @@ async function solicitarPlanoSobConsulta() {
         } catch (erroStorage) {
 
             console.warn(
-                "Não foi possível salvar o checkout:",
+                'Não foi possível salvar o checkout:',
                 erroStorage
             );
 
         }
 
 
-        // ============================================================
+        // ===================================================================
         // IR PARA ASSINATURA
-        // ============================================================
+        // ===================================================================
 
         window.location.href =
-            "assinatura.html";
+            'assinatura.html';
 
 
     } catch (erro) {
 
         console.error(
-            "ERRO COMPLETO AO SOLICITAR ENTERPRISE:",
+            'ERRO COMPLETO AO SOLICITAR ENTERPRISE:',
             erro
         );
 
 
         alert(
-            "Não foi possível enviar a solicitação. Tente novamente."
+            'Não foi possível enviar a solicitação. Tente novamente.'
         );
 
     }
 
 }
 
+
 // ===========================================================================
-// DISPONIBILIZA AS FUNÇÕES PARA O HTML
+// DISPONIBILIZAR FUNÇÕES PARA O HTML
 // ===========================================================================
 
 window.solicitarPlanoSobConsulta =
     solicitarPlanoSobConsulta;
+
 
 window.selectPlan =
     selectPlan;
@@ -591,10 +619,12 @@ async function carregarPlanoAtual(user) {
 
         const snap =
             await get(
+
                 ref(
                     db,
                     `usuarios/${user.uid}`
                 )
+
             );
 
 
@@ -618,7 +648,7 @@ async function carregarPlanoAtual(user) {
     } catch (erro) {
 
         console.error(
-            'Erro ao carregar plano:',
+            'Erro ao carregar plano atual:',
             erro
         );
 
@@ -682,9 +712,9 @@ document.addEventListener(
             );
 
 
-        // -------------------------------------------------------------------
+        // ===================================================================
         // FECHAR MODAL
-        // -------------------------------------------------------------------
+        // ===================================================================
 
         closeModal?.addEventListener(
 
@@ -700,6 +730,10 @@ document.addEventListener(
 
         );
 
+
+        // ===================================================================
+        // FECHAR CLICANDO FORA
+        // ===================================================================
 
         modal?.addEventListener(
 
@@ -723,9 +757,9 @@ document.addEventListener(
         );
 
 
-        // -------------------------------------------------------------------
+        // ===================================================================
         // CONFIRMAR ASSINATURA
-        // -------------------------------------------------------------------
+        // ===================================================================
 
         btnConfirmar?.addEventListener(
 
@@ -736,6 +770,10 @@ document.addEventListener(
                 const plano =
                     planoSelecionadoAtual;
 
+
+                // -----------------------------------------------------------
+                // NENHUM PLANO SELECIONADO
+                // -----------------------------------------------------------
 
                 if (!plano) {
 
@@ -764,6 +802,22 @@ document.addEventListener(
                 // OUTROS PLANOS
                 // ===========================================================
 
+                if (!usuarioAtual) {
+
+                    alert(
+                        'Faça login para continuar com a assinatura.'
+                    );
+
+
+                    window.location.href =
+                        'login.html';
+
+
+                    return;
+
+                }
+
+
                 try {
 
                     localStorage.setItem(
@@ -772,29 +826,32 @@ document.addEventListener(
 
                         JSON.stringify({
 
-                            plano,
+                            plano:
+
+                                plano,
 
                             uid:
-                                usuarioAtual?.uid ||
-                                null,
+
+                                usuarioAtual.uid,
 
                             criadoEm:
+
                                 Date.now()
 
                         })
 
                     );
 
-                } catch (erro) {
+                } catch (erroStorage) {
 
                     console.error(
-                        'Não foi possível iniciar o checkout:',
-                        erro
+                        'Erro ao salvar checkout:',
+                        erroStorage
                     );
 
 
                     alert(
-                        'Não foi possível iniciar a assinatura. Verifique se o navegador permite armazenamento e tente novamente.'
+                        'Não foi possível iniciar a assinatura. Verifique o armazenamento do navegador.'
                     );
 
 
@@ -811,9 +868,9 @@ document.addEventListener(
         );
 
 
-        // -------------------------------------------------------------------
+        // ===================================================================
         // ANIMAÇÃO DOS PLANOS
-        // -------------------------------------------------------------------
+        // ===================================================================
 
         document
             .querySelectorAll(
@@ -826,8 +883,10 @@ document.addEventListener(
                     card.style.opacity =
                         '0';
 
+
                     card.style.transform =
                         'translateY(20px)';
+
 
                     card.style.transition =
                         'all 0.4s ease';
@@ -839,6 +898,7 @@ document.addEventListener(
 
                             card.style.opacity =
                                 '1';
+
 
                             card.style.transform =
                                 'translateY(0)';
