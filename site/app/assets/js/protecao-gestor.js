@@ -10,6 +10,8 @@
 import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+const BASE_URL = window.location.origin + "/GeTech";
+const DESTINO_VOLTAR = `${BASE_URL}/site/Site C/pages/index.html`;
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -23,11 +25,11 @@ onAuthStateChanged(auth, async (user) => {
 
         if (String(perfil.tipo || '').toLowerCase() !== 'gestor') {
             alert('Acesso restrito.');
-            window.location.href = '../../Site C/pages/login.html';
+            window.location.href =`'${DESTINO_VOLTAR}`;
         }
     } catch (erro) {
         console.error('[Proteção Gestor] Erro ao verificar o perfil do usuário:', erro);
         alert('Não foi possível verificar seu perfil de acesso.');
-        window.location.href = '../../Site C/pages/login.html';
+        window.location.href = `'${DESTINO_VOLTAR}`;
     }
 });
