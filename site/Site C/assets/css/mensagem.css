@@ -360,3 +360,162 @@ body.daltonismo-tritanopia {
         align-items: flex-start;
     }
 }
+
+
+.input-preco-plano {
+    width: 220px;
+    max-width: 100%;
+    padding: 10px 12px;
+
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+
+    background-color: var(--card-fundo);
+    color: var(--texto-principal);
+
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.95rem;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s,
+        background-color 0.3s;
+}
+
+.input-preco-plano:focus {
+    border-color: var(--azul-industrial);
+
+    box-shadow:
+        0 0 0 3px rgba(6, 100, 215, 0.15);
+}
+
+
+/* BOTÃO ENVIAR / ATUALIZAR PREÇO */
+
+.btn-salvar-preco {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 18px;
+
+    margin-left: 8px;
+
+    border: none;
+    border-radius: 6px;
+
+    background-color: var(--azul-industrial);
+    color: #ffffff;
+
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s,
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+.btn-salvar-preco:hover {
+    background-color: #0555b5;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-salvar-preco:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+.btn-salvar-preco:focus-visible {
+    outline: 3px solid rgba(61, 146, 255, 0.35);
+    outline-offset: 2px;
+}
+
+
+/* ÁREA ONDE FICAM O INPUT E O BOTÃO */
+
+.area-preco-plano {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 15px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid var(--card-borda-header);
+}
+
+
+/* TEXTO "PREÇO SOB CONSULTA" */
+
+.preco-sob-consulta {
+    display: inline-block;
+
+    margin-top: 10px;
+
+    padding: 7px 12px;
+
+    border-radius: 6px;
+
+    background-color: var(--problema-fundo);
+
+    color: var(--texto-secundario);
+
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+
+/* PREÇO JÁ DEFINIDO */
+
+.preco-definido {
+    display: inline-block;
+
+    margin-top: 10px;
+
+    padding: 7px 12px;
+
+    border-radius: 6px;
+
+    background-color: var(--problema-fundo);
+
+    color: var(--azul-industrial);
+
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+
+/* RESPONSIVIDADE DOS BOTÕES */
+
+@media (max-width: 480px) {
+
+    .area-preco-plano {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-preco-plano {
+        width: 100%;
+    }
+
+    .btn-salvar-preco {
+        width: 100%;
+        margin-left: 0;
+    }
+
+}
