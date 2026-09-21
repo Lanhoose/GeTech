@@ -1,3 +1,7 @@
+// ===========================================================================
+// planos.js - GeTech
+// ===========================================================================
+
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 
 import {
@@ -16,32 +20,32 @@ import {
 } from '../../../app/assets/js/auditoria.js';
 
 
-const BASE_URL = window.location.origin + '/GeTech';
-
-
-// ============================================================================
+// ===========================================================================
 // CONFIGURAÇÕES
-// ============================================================================
+// ===========================================================================
 
-const CHAVE_CHECKOUT = 'getech:checkout';
+const BASE_URL =
+    window.location.origin + '/GeTech';
 
-const PLANO_SOB_CONSULTA = 'Enterprise';
+const CHAVE_CHECKOUT =
+    'getech:checkout';
 
-const VALIDADE_CHECKOUT = 30 * 60 * 1000;
+const PLANO_SOB_CONSULTA =
+    'Enterprise';
 
 
-// ============================================================================
-// VARIÁVEIS
-// ============================================================================
+// ===========================================================================
+// ESTADO
+// ===========================================================================
 
 let usuarioAtual = null;
 
 let planoSelecionadoAtual = '';
 
 
-// ============================================================================
+// ===========================================================================
 // INFORMAÇÕES DOS PLANOS
-// ============================================================================
+// ===========================================================================
 
 const planosExclusivosInfo = {
 
@@ -96,23 +100,32 @@ const planosExclusivosInfo = {
 };
 
 
-// ============================================================================
+// ===========================================================================
 // SELECIONAR PLANO
-// ============================================================================
+// ===========================================================================
 
 async function selectPlan(planName) {
 
-    planoSelecionadoAtual = planName;
+    planoSelecionadoAtual =
+        planName;
 
 
     const modal =
-        document.getElementById('planModal');
+        document.getElementById(
+            'planModal'
+        );
+
 
     const modalPlanName =
-        document.getElementById('modalPlanName');
+        document.getElementById(
+            'modalPlanName'
+        );
+
 
     const modalBenefitsList =
-        document.getElementById('modalBenefitsList');
+        document.getElementById(
+            'modalBenefitsList'
+        );
 
 
     if (modalPlanName) {
@@ -125,7 +138,8 @@ async function selectPlan(planName) {
 
     if (modalBenefitsList) {
 
-        modalBenefitsList.innerHTML = '';
+        modalBenefitsList.innerHTML =
+            '';
 
 
         const beneficios =
@@ -135,34 +149,48 @@ async function selectPlan(planName) {
             ];
 
 
-        beneficios.forEach((beneficio) => {
+        beneficios.forEach(
+            (beneficio) => {
 
-            const li =
-                document.createElement('li');
+                const li =
+                    document.createElement(
+                        'li'
+                    );
 
-            li.innerText =
-                beneficio;
 
-            modalBenefitsList.appendChild(li);
+                li.innerText =
+                    beneficio;
 
-        });
+
+                modalBenefitsList.appendChild(
+                    li
+                );
+
+            }
+        );
 
     }
 
 
     if (modal) {
 
-        modal.classList.add('active');
+        modal.classList.add(
+            'active'
+        );
 
     }
 
 
-    // Se não estiver logado, o modal ainda pode ser visualizado.
-    // A validação será feita ao confirmar.
+    // -----------------------------------------------------------------------
+    // IMPORTANTE:
+    // Não bloqueamos o Enterprise por causa de autenticação aqui.
+    // A autenticação será verificada somente quando o usuário confirmar.
+    // -----------------------------------------------------------------------
+
     if (!usuarioAtual) {
 
         console.warn(
-            'Plano selecionado visualmente: usuário ainda não autenticado.'
+            'Plano selecionado visualmente. Usuário ainda não autenticado.'
         );
 
         return;
@@ -170,14 +198,23 @@ async function selectPlan(planName) {
     }
 
 
-    // Enterprise não altera o plano do usuário neste momento.
-    // Ele primeiro precisa passar pelo processo "Sob Consulta".
-    if (planName === PLANO_SOB_CONSULTA) {
+    // -----------------------------------------------------------------------
+    // ENTERPRISE
+    // -----------------------------------------------------------------------
+
+    if (
+        planName ===
+        PLANO_SOB_CONSULTA
+    ) {
 
         return;
 
     }
 
+
+    // -----------------------------------------------------------------------
+    // OUTROS PLANOS
+    // -----------------------------------------------------------------------
 
     try {
 
@@ -187,22 +224,42 @@ async function selectPlan(planName) {
                 `usuarios/${usuarioAtual.uid}`
             ),
             {
-                planoAdquirido: planName,
+
+                planoAdquirido:
+                    planName,
 
                 planoAtualizadoEm:
                     Date.now()
+
             }
         );
 
 
-        await registrarAuditoria(
-            'Planos: plano selecionado',
+        try {
 
-            `Plano ${planName} selecionado.`,
+            await registrarAuditoria(
 
-            'info'
+                'Planos: plano selecionado',
+
+                `Plano ${planName} selecionado.`,
+
+                'info'
+
+            );
+
+        } catch (erroAuditoria) {
+
+            console.warn(
+                'Auditoria não registrada:',
+                erroAuditoria
+            );
+
+        }
+
+
+        console.log(
+            `Plano ${planName} salvo no Firebase.`
         );
-
 
     } catch (erro) {
 
@@ -216,11 +273,15 @@ async function selectPlan(planName) {
 }
 
 
-// ============================================================================
-// SOLICITAR PLANO SOB CONSULTA
-// ============================================================================
+// ===========================================================================
+// SOLICITAR ENTERPRISE
+// ===========================================================================
 
 async function solicitarPlanoSobConsulta() {
+
+    // -----------------------------------------------------------------------
+    // VERIFICA LOGIN
+    // -----------------------------------------------------------------------
 
     if (!usuarioAtual) {
 
@@ -228,23 +289,25 @@ async function solicitarPlanoSobConsulta() {
             'Faça login para solicitar um preço personalizado.'
         );
 
+
         window.location.href =
             'login.html';
+
 
         return;
 
     }
 
 
-    const agora =
-        Date.now();
-
-
     try {
 
-        // --------------------------------------------------------------------
-        // Busca os dados do usuário
-        // --------------------------------------------------------------------
+        const agora =
+            Date.now();
+
+
+        // -------------------------------------------------------------------
+        // PEGA DADOS DO USUÁRIO
+        // -------------------------------------------------------------------
 
         const perfilSnap =
             await get(
@@ -274,9 +337,9 @@ async function solicitarPlanoSobConsulta() {
             '';
 
 
-        // --------------------------------------------------------------------
-        // Cria / atualiza a solicitação
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // CRIA/ATUALIZA SOLICITAÇÃO
+        // -------------------------------------------------------------------
 
         await set(
 
@@ -290,11 +353,9 @@ async function solicitarPlanoSobConsulta() {
                 uid:
                     usuarioAtual.uid,
 
-                nome:
-                    nome,
+                nome,
 
-                email:
-                    email,
+                email,
 
                 plano:
                     PLANO_SOB_CONSULTA,
@@ -316,28 +377,45 @@ async function solicitarPlanoSobConsulta() {
         );
 
 
-        // --------------------------------------------------------------------
-        // Auditoria
-        // --------------------------------------------------------------------
-
-        await registrarAuditoria(
-
-            'Planos: preço sob consulta solicitado',
-
-            `Cliente solicitou preço do plano ${PLANO_SOB_CONSULTA}.`,
-
-            'info'
-
-        );
-
-
-        // --------------------------------------------------------------------
-        // Autoriza o checkout
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // AUDITORIA
+        // -------------------------------------------------------------------
 
         try {
 
-            sessionStorage.setItem(
+            await registrarAuditoria(
+
+                'Planos: preço sob consulta solicitado',
+
+                `Cliente solicitou preço do plano ${PLANO_SOB_CONSULTA}.`,
+
+                'info'
+
+            );
+
+        } catch (erroAuditoria) {
+
+            console.warn(
+                'Solicitação criada, mas auditoria falhou:',
+                erroAuditoria
+            );
+
+        }
+
+
+        // -------------------------------------------------------------------
+        // AUTORIZAÇÃO DO CHECKOUT
+        //
+        // ALTERAÇÃO PRINCIPAL:
+        // usamos localStorage em vez de sessionStorage.
+        //
+        // sessionStorage é perdido quando a aba/página é encerrada.
+        // localStorage permanece salvo mesmo depois de fechar o navegador.
+        // -------------------------------------------------------------------
+
+        try {
+
+            localStorage.setItem(
 
                 CHAVE_CHECKOUT,
 
@@ -345,6 +423,9 @@ async function solicitarPlanoSobConsulta() {
 
                     plano:
                         PLANO_SOB_CONSULTA,
+
+                    uid:
+                        usuarioAtual.uid,
 
                     criadoEm:
                         agora
@@ -356,20 +437,19 @@ async function solicitarPlanoSobConsulta() {
         } catch (erroStorage) {
 
             console.warn(
-                'Não foi possível salvar a autorização do checkout.',
+                'Não foi possível salvar a autorização do checkout:',
                 erroStorage
             );
 
         }
 
 
-        // --------------------------------------------------------------------
-        // Vai para assinatura
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // ABRE A ASSINATURA
+        // -------------------------------------------------------------------
 
         window.location.href =
             'assinatura.html';
-
 
     } catch (erro) {
 
@@ -388,22 +468,28 @@ async function solicitarPlanoSobConsulta() {
 }
 
 
-// Disponibiliza para o HTML
+// ===========================================================================
+// DISPONIBILIZA AS FUNÇÕES PARA O HTML
+// ===========================================================================
+
 window.solicitarPlanoSobConsulta =
     solicitarPlanoSobConsulta;
-
 
 window.selectPlan =
     selectPlan;
 
 
-// ============================================================================
+// ===========================================================================
 // CARREGAR PLANO ATUAL
-// ============================================================================
+// ===========================================================================
 
 async function carregarPlanoAtual(user) {
 
-    if (!user) return;
+    if (!user) {
+
+        return;
+
+    }
 
 
     try {
@@ -434,7 +520,6 @@ async function carregarPlanoAtual(user) {
 
         }
 
-
     } catch (erro) {
 
         console.error(
@@ -447,12 +532,14 @@ async function carregarPlanoAtual(user) {
 }
 
 
-// ============================================================================
+// ===========================================================================
 // AUTENTICAÇÃO
-// ============================================================================
+// ===========================================================================
 
 onAuthStateChanged(
+
     auth,
+
     async (user) => {
 
         usuarioAtual =
@@ -461,28 +548,37 @@ onAuthStateChanged(
 
         if (user) {
 
-            await carregarPlanoAtual(user);
+            await carregarPlanoAtual(
+                user
+            );
 
         }
 
     }
+
 );
 
 
-// ============================================================================
+// ===========================================================================
 // DOM
-// ============================================================================
+// ===========================================================================
 
 document.addEventListener(
+
     'DOMContentLoaded',
+
     () => {
 
         const modal =
-            document.getElementById('planModal');
+            document.getElementById(
+                'planModal'
+            );
 
 
         const closeModal =
-            document.getElementById('closeModal');
+            document.getElementById(
+                'closeModal'
+            );
 
 
         const btnConfirmar =
@@ -491,12 +587,14 @@ document.addEventListener(
             );
 
 
-        // --------------------------------------------------------------------
-        // Fechar modal
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // FECHAR MODAL
+        // -------------------------------------------------------------------
 
         closeModal?.addEventListener(
+
             'click',
+
             () => {
 
                 modal?.classList.remove(
@@ -504,14 +602,20 @@ document.addEventListener(
                 );
 
             }
+
         );
 
 
         modal?.addEventListener(
+
             'click',
+
             (e) => {
 
-                if (e.target === modal) {
+                if (
+                    e.target ===
+                    modal
+                ) {
 
                     modal.classList.remove(
                         'active'
@@ -520,12 +624,13 @@ document.addEventListener(
                 }
 
             }
+
         );
 
 
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
         // CONFIRMAR ASSINATURA
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
 
         btnConfirmar?.addEventListener(
 
@@ -544,9 +649,9 @@ document.addEventListener(
                 }
 
 
-                // ============================================================
-                // ENTERPRISE / SOB CONSULTA
-                // ============================================================
+                // ===========================================================
+                // ENTERPRISE
+                // ===========================================================
 
                 if (
                     plano ===
@@ -560,20 +665,23 @@ document.addEventListener(
                 }
 
 
-                // ============================================================
-                // PLANOS NORMAIS
-                // ============================================================
+                // ===========================================================
+                // OUTROS PLANOS
+                // ===========================================================
 
                 try {
 
-                    sessionStorage.setItem(
+                    localStorage.setItem(
 
                         CHAVE_CHECKOUT,
 
                         JSON.stringify({
 
-                            plano:
-                                plano,
+                            plano,
+
+                            uid:
+                                usuarioAtual?.uid ||
+                                null,
 
                             criadoEm:
                                 Date.now()
@@ -581,7 +689,6 @@ document.addEventListener(
                         })
 
                     );
-
 
                 } catch (erro) {
 
@@ -592,7 +699,7 @@ document.addEventListener(
 
 
                     alert(
-                        'Não foi possível iniciar a assinatura. Verifique se o navegador permite armazenamento de sessão e tente novamente.'
+                        'Não foi possível iniciar a assinatura. Verifique se o navegador permite armazenamento e tente novamente.'
                     );
 
 
@@ -609,13 +716,16 @@ document.addEventListener(
         );
 
 
-        // --------------------------------------------------------------------
-        // ANIMAÇÃO DOS CARDS
-        // --------------------------------------------------------------------
+        // -------------------------------------------------------------------
+        // ANIMAÇÃO DOS PLANOS
+        // -------------------------------------------------------------------
 
         document
-            .querySelectorAll('.plan-card')
+            .querySelectorAll(
+                '.plan-card'
+            )
             .forEach(
+
                 (card, index) => {
 
                     card.style.opacity =
@@ -629,6 +739,7 @@ document.addEventListener(
 
 
                     setTimeout(
+
                         () => {
 
                             card.style.opacity =
@@ -644,7 +755,9 @@ document.addEventListener(
                     );
 
                 }
+
             );
 
     }
+
 );
