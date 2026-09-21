@@ -4,7 +4,14 @@ import { ref, get, update } from 'https://www.gstatic.com/firebasejs/10.13.2/fir
 import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
 const BASE_URL = window.location.origin + '/GeTech';
+
+// Chave usada para "autorizar" a entrada na página de assinatura.
+// Só é gravada quando o usuário clica em "Confirmar Assinatura" no modal.
+// (assinatura.html e assinatura.js leem esta MESMA chave.)
+const CHAVE_CHECKOUT = 'getech:checkout';
+
 let usuarioAtual = null;
+let planoSelecionadoAtual = '';
 
 const planosExclusivosInfo = {
     'Essencial': [
@@ -33,6 +40,7 @@ const planosExclusivosInfo = {
 };
 
 async function selectPlan(planName) {
+    planoSelecionadoAtual = planName;
     const modal = document.getElementById('planModal');
     const modalPlanName = document.getElementById('modalPlanName');
     const modalBenefitsList = document.getElementById('modalBenefitsList');
@@ -63,7 +71,6 @@ async function selectPlan(planName) {
         console.log(`Plano ${planName} salvo no Firebase.`);
     } catch (erro) {
         console.error('Erro ao salvar plano:', erro);
-        alert('O plano foi selecionado, mas não foi possível salvar a escolha no Firebase.');
     }
 }
 window.selectPlan = selectPlan;
@@ -88,10 +95,31 @@ onAuthStateChanged(auth, async (user) => {
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('planModal');
     const closeModal = document.getElementById('closeModal');
+    const btnConfirmar = document.getElementById('confirmarAssinaturaBtn');
 
     closeModal?.addEventListener('click', () => modal?.classList.remove('active'));
     modal?.addEventListener('click', (e) => {
         if (e.target === modal) modal.classList.remove('active');
+    });
+
+    btnConfirmar?.addEventListener('click', () => {
+        const plano = planoSelecionadoAtual;
+        if (!plano) return;
+
+        try {
+            // Guarda o plano escolhido + horário do clique. A página de assinatura
+            // só abre se encontrar este registro (e ele ainda estiver válido).
+            sessionStorage.setItem(CHAVE_CHECKOUT, JSON.stringify({
+                plano,
+                criadoEm: Date.now()
+            }));
+        } catch (erro) {
+            console.error('Não foi possível iniciar o checkout:', erro);
+            alert('Não foi possível iniciar a assinatura. Verifique se o navegador permite armazenamento de sessão e tente novamente.');
+            return;
+        }
+
+        window.location.href = 'assinatura.html';
     });
 
     document.querySelectorAll('.plan-card').forEach((card, index) => {
