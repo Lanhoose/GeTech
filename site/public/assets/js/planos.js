@@ -3,7 +3,10 @@
 // Página de planos
 // ===========================================================================
 
-import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
+import {
+    auth,
+    db
+} from '../../../Site C/assets/js/firebase-config.js';
 
 import {
     onAuthStateChanged
@@ -25,9 +28,11 @@ import {
 // CONFIGURAÇÕES
 // ===========================================================================
 
-const CHAVE_CHECKOUT = 'getech:checkout';
+const CHAVE_CHECKOUT =
+    'getech:checkout';
 
-const PLANO_SOB_CONSULTA = 'Enterprise';
+const PLANO_SOB_CONSULTA =
+    'Enterprise';
 
 
 // ===========================================================================
@@ -102,7 +107,9 @@ const planosExclusivosInfo = {
 
 function formatarPreco(valor) {
 
-    const numero = Number(valor);
+    const numero =
+        Number(valor);
+
 
     if (
         !Number.isFinite(numero) ||
@@ -112,6 +119,7 @@ function formatarPreco(valor) {
         return 'Preço sob consulta';
 
     }
+
 
     return numero.toLocaleString(
         'pt-BR',
@@ -125,15 +133,14 @@ function formatarPreco(valor) {
 
 
 // ===========================================================================
-// SALVAR DADOS DO CHECKOUT
+// SALVAR CHECKOUT
 // ===========================================================================
 //
-// IMPORTANTE:
-// O preço continua sendo salvo no Firebase.
-// Aqui guardamos apenas uma cópia para a página de assinatura conseguir
-// saber qual solicitação está sendo aberta.
-//
 // O Firebase continua sendo a fonte principal do preço.
+//
+// Este armazenamento serve somente para a página assinatura.html saber
+// qual plano foi selecionado durante a navegação.
+//
 // ===========================================================================
 
 function salvarCheckout(
@@ -155,18 +162,20 @@ function salvarCheckout(
         };
 
 
-        // Se já existe preço definido pelo gestor,
-        // também levamos uma cópia para a tela de assinatura.
+        // Se houver preço definido pelo gestor,
+        // salva também uma cópia para o checkout.
+
+        const numeroPreco =
+            Number(preco);
+
 
         if (
-            Number.isFinite(
-                Number(preco)
-            ) &&
-            Number(preco) > 0
+            Number.isFinite(numeroPreco) &&
+            numeroPreco > 0
         ) {
 
             dadosCheckout.preco =
-                Number(preco);
+                numeroPreco;
 
         }
 
@@ -190,6 +199,7 @@ function salvarCheckout(
             'Erro ao salvar checkout:',
             erro
         );
+
 
         return false;
 
@@ -244,7 +254,8 @@ async function selectPlan(planName) {
 
     if (modalBenefitsList) {
 
-        modalBenefitsList.innerHTML = '';
+        modalBenefitsList.innerHTML =
+            '';
 
 
         const beneficios =
@@ -293,8 +304,8 @@ async function selectPlan(planName) {
     // -----------------------------------------------------------------------
     // ENTERPRISE
     //
-    // Não salva Enterprise como plano adquirido ainda.
-    // O Enterprise primeiro passa pela solicitação de preço.
+    // Não grava como plano adquirido ainda.
+    // O preço precisa ser definido pelo gestor.
     // -----------------------------------------------------------------------
 
     if (
@@ -340,6 +351,12 @@ async function selectPlan(planName) {
         );
 
 
+        // ---------------------------------------------------------------
+        // AUDITORIA
+        //
+        // Se a auditoria falhar, isso NÃO cancela a operação principal.
+        // ---------------------------------------------------------------
+
         try {
 
             await registrarAuditoria(
@@ -355,7 +372,7 @@ async function selectPlan(planName) {
         } catch (erroAuditoria) {
 
             console.warn(
-                'Plano salvo, mas auditoria falhou:',
+                'Plano salvo, mas a auditoria falhou:',
                 erroAuditoria
             );
 
@@ -377,21 +394,18 @@ async function selectPlan(planName) {
 // SOLICITAR PLANO ENTERPRISE
 // ===========================================================================
 //
-// Fluxo:
+// FLUXO:
 //
-// 1. Cliente clica em Enterprise.
-// 2. Sistema verifica o Firebase.
-// 3. Se não existir solicitação:
-//      -> cria no Firebase.
-//      -> status = aguardando_preco.
-//      -> preço ainda não existe.
-// 4. Se já existir sem preço:
-//      -> NÃO cria outra.
-//      -> NÃO sobrescreve.
-//      -> abre assinatura.
-// 5. Se já existir com preço:
-//      -> pega o preço DEFINIDO PELO GESTOR no Firebase.
-//      -> abre assinatura com esse preço.
+// 1. Verifica se o cliente está logado.
+// 2. Consulta solicitacoesPlanos/{uid} no Firebase.
+// 3. Se não existir:
+//      cria a solicitação.
+// 4. Se existir sem preço:
+//      mantém a solicitação existente.
+// 5. Se existir com preço:
+//      usa o preço definido pelo gestor.
+// 6. Vai para assinatura.html.
+//
 // ===========================================================================
 
 async function solicitarPlanoSobConsulta() {
@@ -422,8 +436,12 @@ async function solicitarPlanoSobConsulta() {
             usuarioAtual.uid;
 
 
+        const agora =
+            Date.now();
+
+
         // ===================================================================
-        // REFERÊNCIA DIRETA DO CLIENTE
+        // REFERÊNCIA DA SOLICITAÇÃO
         // ===================================================================
 
         const solicitacaoRef =
@@ -444,7 +462,7 @@ async function solicitarPlanoSobConsulta() {
 
 
         // ===================================================================
-        // JÁ EXISTE UMA SOLICITAÇÃO
+        // JÁ EXISTE SOLICITAÇÃO
         // ===================================================================
 
         if (
@@ -462,7 +480,7 @@ async function solicitarPlanoSobConsulta() {
 
 
             // ===============================================================
-            // PREÇO DEFINIDO PELO GESTOR
+            // PREÇO JÁ DEFINIDO PELO GESTOR
             // ===============================================================
 
             if (
@@ -471,14 +489,10 @@ async function solicitarPlanoSobConsulta() {
             ) {
 
                 console.log(
-                    'Preço do Enterprise encontrado no Firebase:',
+                    'Preço Enterprise encontrado no Firebase:',
                     formatarPreco(preco)
                 );
 
-
-                // -----------------------------------------------------------
-                // SALVA O PREÇO QUE VEIO DO BANCO PARA O CHECKOUT
-                // -----------------------------------------------------------
 
                 const checkoutSalvo =
                     salvarCheckout(
@@ -498,15 +512,16 @@ async function solicitarPlanoSobConsulta() {
                         'Não foi possível iniciar a assinatura.'
                     );
 
+
                     return;
 
                 }
 
 
                 // -----------------------------------------------------------
-                // NÃO ALTERAMOS A SOLICITAÇÃO
+                // NÃO ALTERA A SOLICITAÇÃO.
                 //
-                // O preço continua exatamente como o gestor definiu.
+                // O preço permanece exatamente como o gestor definiu.
                 // -----------------------------------------------------------
 
                 window.location.href =
@@ -519,11 +534,11 @@ async function solicitarPlanoSobConsulta() {
 
 
             // ===============================================================
-            // EXISTE, MAS AINDA NÃO TEM PREÇO
+            // SOLICITAÇÃO EXISTE, MAS AINDA NÃO TEM PREÇO
             // ===============================================================
 
             console.log(
-                'Solicitação Enterprise já existe e ainda aguarda preço.'
+                'Solicitação Enterprise encontrada. Aguardando preço do gestor.'
             );
 
 
@@ -543,18 +558,14 @@ async function solicitarPlanoSobConsulta() {
                     'Não foi possível iniciar a assinatura.'
                 );
 
+
                 return;
 
             }
 
 
             // ---------------------------------------------------------------
-            // NÃO CRIAMOS OUTRA SOLICITAÇÃO.
-            // ---------------------------------------------------------------
-            //
-            // A solicitação original continua no Firebase.
-            //
-            // O gestor poderá definir o preço pela caixa de mensagens.
+            // NÃO CRIA OUTRA SOLICITAÇÃO.
             // ---------------------------------------------------------------
 
             window.location.href =
@@ -570,10 +581,6 @@ async function solicitarPlanoSobConsulta() {
         // NÃO EXISTE SOLICITAÇÃO
         // ===================================================================
 
-        const agora =
-            Date.now();
-
-
         const nome =
             usuarioAtual.displayName ||
             'Cliente';
@@ -585,7 +592,7 @@ async function solicitarPlanoSobConsulta() {
 
 
         // ===================================================================
-        // CRIAR NO FIREBASE
+        // CRIAR SOLICITAÇÃO NO FIREBASE
         // ===================================================================
 
         await set(
@@ -609,6 +616,9 @@ async function solicitarPlanoSobConsulta() {
                 status:
                     'aguardando_preco',
 
+                preco:
+                    null,
+
                 criadaEm:
                     agora,
 
@@ -628,6 +638,10 @@ async function solicitarPlanoSobConsulta() {
         // ===================================================================
         // AUDITORIA
         // ===================================================================
+        //
+        // IMPORTANTE:
+        // Se as Rules bloquearem a auditoria, a solicitação continua válida.
+        // ===================================================================
 
         try {
 
@@ -635,7 +649,7 @@ async function solicitarPlanoSobConsulta() {
 
                 'Planos: preço sob consulta solicitado',
 
-                `Cliente solicitou preço do plano Enterprise.`,
+                `Cliente solicitou preço do plano ${PLANO_SOB_CONSULTA}.`,
 
                 'info'
 
@@ -644,7 +658,7 @@ async function solicitarPlanoSobConsulta() {
         } catch (erroAuditoria) {
 
             console.warn(
-                'Solicitação criada, mas auditoria falhou:',
+                'Solicitação criada, mas a auditoria falhou:',
                 erroAuditoria
             );
 
@@ -671,6 +685,7 @@ async function solicitarPlanoSobConsulta() {
                 'A solicitação foi registrada, mas não foi possível abrir a assinatura.'
             );
 
+
             return;
 
         }
@@ -693,13 +708,13 @@ async function solicitarPlanoSobConsulta() {
 
 
         console.error(
-            'Código do erro:',
+            'Código:',
             erro?.code
         );
 
 
         console.error(
-            'Mensagem do erro:',
+            'Mensagem:',
             erro?.message
         );
 
@@ -726,7 +741,7 @@ window.solicitarPlanoSobConsulta =
 
 
 // ===========================================================================
-// CARREGAR PLANO ATUAL DO USUÁRIO
+// CARREGAR PLANO ATUAL
 // ===========================================================================
 
 async function carregarPlanoAtual(user) {
@@ -843,7 +858,12 @@ document.addEventListener(
 
             'click',
 
-            () => {
+            (event) => {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
 
                 modal?.classList.remove(
                     'active'
@@ -869,6 +889,8 @@ document.addEventListener(
                     modal
                 ) {
 
+                    event.preventDefault();
+
                     modal.classList.remove(
                         'active'
                     );
@@ -888,7 +910,18 @@ document.addEventListener(
 
             'click',
 
-            async () => {
+            async (event) => {
+
+                // -----------------------------------------------------------
+                // IMPORTANTE:
+                //
+                // Impede que o botão envie o formulário e faça F5.
+                // -----------------------------------------------------------
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
 
                 const plano =
                     planoSelecionadoAtual;
@@ -957,6 +990,7 @@ document.addEventListener(
                         'Não foi possível iniciar a assinatura.'
                     );
 
+
                     return;
 
                 }
@@ -1017,4 +1051,4 @@ document.addEventListener(
 
     }
 
-);
+);  

@@ -1,61 +1,172 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planos - ERP Industrial</title>
 
-    <link rel="stylesheet" href="../assets/css/layout.css">
-    <link rel="stylesheet" href="../assets/css/planos.css">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Planos - ERP Industrial
+    </title>
+
+
+    <!-- ============================================================= -->
+    <!-- CSS -->
+    <!-- ============================================================= -->
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/layout.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/planos.css"
+    >
+
 </head>
+
+
 <body>
+
+
+    <!-- ============================================================= -->
+    <!-- HEADER -->
+    <!-- ============================================================= -->
 
     <div id="header"></div>
 
+
+    <!-- ============================================================= -->
+    <!-- CONTEÚDO -->
+    <!-- ============================================================= -->
+
     <main class="container">
+
         <section class="pricing-container">
+
+
+            <!-- ========================================================= -->
+            <!-- TÍTULO -->
+            <!-- ========================================================= -->
+
             <div class="pl">
-                <h1>Planos de Gestão <span class="highlight">GeTech</span></h1>
-                <p>Escolha a inteligência ideal para a vida útil do seu maquinário.</p>
+
+                <h1>
+
+                    Planos de Gestão
+
+                    <span class="highlight">
+                        GeTech
+                    </span>
+
+                </h1>
+
+
+                <p>
+                    Escolha a inteligência ideal para a vida útil
+                    do seu maquinário.
+                </p>
+
             </div>
+
+
+            <!-- ========================================================= -->
+            <!-- PLANOS -->
+            <!-- ========================================================= -->
 
             <div class="plans-grid">
 
-                <!-- PLANO ESSENCIAL -->
+
+                <!-- ===================================================== -->
+                <!-- ESSENCIAL -->
+                <!-- ===================================================== -->
+
                 <div class="plan-card">
-                    <h3>Essencial</h3>
+
+                    <h3>
+                        Essencial
+                    </h3>
+
 
                     <div class="price">
-                        R$ 499<span>/mês</span>
+
+                        R$ 499
+
+                        <span>
+                            /mês
+                        </span>
+
                     </div>
 
+
                     <ul>
-                        <li>Manutenção Corretiva Agendada</li>
-                        <li>Relatórios Mensais em PDF</li>
-                        <li>Suporte em até 24h</li>
-                        <li>Gestão de até 5 Máquinas</li>
+
+                        <li>
+                            Manutenção Corretiva Agendada
+                        </li>
+
+                        <li>
+                            Relatórios Mensais em PDF
+                        </li>
+
+                        <li>
+                            Suporte em até 24h
+                        </li>
+
+                        <li>
+                            Gestão de até 5 Máquinas
+                        </li>
+
                     </ul>
 
-                    <button onclick="selectPlan('Essencial')">
+
+                    <!-- type="button" evita submit/F5 -->
+
+                    <button
+                        type="button"
+                        onclick="selectPlan('Essencial')"
+                    >
                         Começar Agora
                     </button>
+
                 </div>
 
 
-                <!-- PLANO PRO -->
+                <!-- ===================================================== -->
+                <!-- PRO PERFORMANCE -->
+                <!-- ===================================================== -->
+
                 <div class="plan-card featured">
 
                     <div class="badge">
                         Mais Popular
                     </div>
 
-                    <h3>Pro Performance</h3>
+
+                    <h3>
+                        Pro Performance
+                    </h3>
+
 
                     <div class="price">
-                        R$ 1.299<span>/mês</span>
+
+                        R$ 1.299
+
+                        <span>
+                            /mês
+                        </span>
+
                     </div>
 
+
                     <ul>
+
                         <li>
                             <strong>
                                 Manutenção Preditiva com IoT
@@ -77,24 +188,40 @@
                         <li>
                             Análise de Vibração Inclusa
                         </li>
+
                     </ul>
 
-                    <button onclick="selectPlan('Pro Performance')">
+
+                    <!-- type="button" evita submit/F5 -->
+
+                    <button
+                        type="button"
+                        onclick="selectPlan('Pro Performance')"
+                    >
                         Assinar Pro
                     </button>
+
                 </div>
 
 
-                <!-- PLANO ENTERPRISE -->
+                <!-- ===================================================== -->
+                <!-- ENTERPRISE -->
+                <!-- ===================================================== -->
+
                 <div class="plan-card">
 
-                    <h3>Enterprise</h3>
+                    <h3>
+                        Enterprise
+                    </h3>
+
 
                     <div class="price">
                         Sob Consulta
                     </div>
 
+
                     <ul>
+
                         <li>
                             Gestão de Parque Industrial Ilimitado
                         </li>
@@ -110,72 +237,176 @@
                         <li>
                             Treinamento de Equipe In-loco
                         </li>
+
                     </ul>
 
-                    <button onclick="selectPlan('Enterprise')">
+
+                    <!-- ================================================= -->
+                    <!-- IMPORTANTE:
+                         type="button" impede o F5 -->
+                    <!-- ================================================= -->
+
+                    <button
+                        type="button"
+                        onclick="selectPlan('Enterprise')"
+                    >
                         Solicitar Preço
                     </button>
 
                 </div>
 
+
             </div>
+
         </section>
+
     </main>
 
 
-    <!-- MODAL DE SELEÇÃO DO PLANO -->
-    <div id="planModal" class="plan-overlay">
+    <!-- ============================================================= -->
+    <!-- MODAL DO PLANO -->
+    <!-- ============================================================= -->
+
+    <div
+        id="planModal"
+        class="plan-overlay"
+    >
 
         <div class="modal-card">
 
-            <span id="closeModal" class="close-modal">
+
+            <!-- ========================================================= -->
+            <!-- FECHAR -->
+            <!-- ========================================================= -->
+
+            <button
+                type="button"
+                id="closeModal"
+                class="close-modal"
+                aria-label="Fechar"
+            >
                 &times;
-            </span>
+            </button>
+
+
+            <!-- ========================================================= -->
+            <!-- ÍCONE -->
+            <!-- ========================================================= -->
 
             <div class="modal-icon">
                 🎉
             </div>
 
+
+            <!-- ========================================================= -->
+            <!-- TÍTULO -->
+            <!-- ========================================================= -->
+
             <h2>
                 Plano Selecionado!
             </h2>
+
+
+            <!-- ========================================================= -->
+            <!-- NOME -->
+            <!-- ========================================================= -->
 
             <h1 id="modalPlanName">
                 Nome do Plano
             </h1>
 
+
+            <!-- ========================================================= -->
+            <!-- DESCRIÇÃO -->
+            <!-- ========================================================= -->
+
             <p class="modal-subtitle">
-                Você está prestes a impulsionar sua indústria com os seguintes benefícios exclusivos:
+
+                Você está prestes a impulsionar sua indústria
+                com os seguintes benefícios exclusivos:
+
             </p>
 
-            <ul id="modalBenefitsList" class="modal-benefits">
+
+            <!-- ========================================================= -->
+            <!-- BENEFÍCIOS -->
+            <!-- ========================================================= -->
+
+            <ul
+                id="modalBenefitsList"
+                class="modal-benefits"
+            >
             </ul>
 
+
+            <!-- ========================================================= -->
+            <!-- CONFIRMAR -->
+            <!-- ========================================================= -->
+            <!--
+                IMPORTANTE:
+                type="button" impede o navegador de fazer submit/F5.
+            -->
+
             <button
+                type="button"
                 id="confirmarAssinaturaBtn"
-                class="modal-confirm-btn">
+                class="modal-confirm-btn"
+            >
                 Confirmar Assinatura
             </button>
+
 
         </div>
 
     </div>
 
 
+    <!-- ============================================================= -->
+    <!-- FOOTER -->
+    <!-- ============================================================= -->
+
     <div id="footer"></div>
 
 
-    <script type="module" src="../assets/js/planos.js"></script>
+    <!-- ============================================================= -->
+    <!-- JAVASCRIPT -->
+    <!-- ============================================================= -->
 
-    <script type="module" src="../assets/js/component.js"></script>
+    <script
+        type="module"
+        src="../assets/js/planos.js"
+    ></script>
 
-    <script type="module" src="../assets/js/protecao-gestor.js"></script>
 
-    <script type="module" src="../assets/js/verificacaologin.js"></script>
+    <script
+        type="module"
+        src="../assets/js/component.js"
+    ></script>
 
-    <script src="../assets/js/acessibilidade.js"></script>
 
-    <script type="module" src="../../app/assets/js/logs.js"></script>
+    <script
+        type="module"
+        src="../assets/js/protecao-gestor.js"
+    ></script>
+
+
+    <script
+        type="module"
+        src="../assets/js/verificacaologin.js"
+    ></script>
+
+
+    <script
+        src="../assets/js/acessibilidade.js"
+    ></script>
+
+
+    <script
+        type="module"
+        src="../../app/assets/js/logs.js"
+    ></script>
+
 
 </body>
+
 </html>
