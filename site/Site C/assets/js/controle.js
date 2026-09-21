@@ -11,10 +11,19 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 import { registrarAuditoria } from "../../../app/assets/js/auditoria.js";
 
+// Perfis que enxergam a opção "Sistema" no menu e podem abrir sistema.html.
+// (Orçamentos e Mensagens continuam exclusivos de gestor.)
+const PERFIS_COM_ACESSO_AO_SISTEMA = ['cliente', 'patrocinador', 'gestor'];
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // Elementos da interface
-    const itensGestor = document.querySelectorAll('.restrito.gestor');
+    // O item "Sistema" do menu é identificado pelo link (sistema.html), assim
+    // as páginas não precisam ser alteradas: ele sai do grupo "só gestor" e
+    // passa a seguir a lista PERFIS_COM_ACESSO_AO_SISTEMA.
+    const restritosGestor = Array.from(document.querySelectorAll('.restrito.gestor'));
+    const itensSistema = restritosGestor.filter(el => el.querySelector('a[href="sistema.html"]'));
+    const itensGestor = restritosGestor.filter(el => !itensSistema.includes(el));
     const itensPatrocinador = document.querySelectorAll('.restrito.patrocinador');
     const avatarImg = document.getElementById('avatarUsuario');
     const botaoSairContainer = document.getElementById('menuSair');
@@ -23,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Enquanto o Firebase ainda não respondeu, esconde tudo que é restrito
     // (evita "piscar" conteúdo restrito antes da checagem terminar)
     itensGestor.forEach(el => el.classList.add('escondido'));
+    itensSistema.forEach(el => el.classList.add('escondido'));
     itensPatrocinador.forEach(el => el.classList.add('escondido'));
     if (botaoSairContainer) botaoSairContainer.style.display = 'none';
 
@@ -71,10 +81,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!logado) {
             itensGestor.forEach(el => el.classList.add('escondido'));
+            itensSistema.forEach(el => el.classList.add('escondido'));
             itensPatrocinador.forEach(el => el.classList.add('escondido'));
             if (botaoSairContainer) botaoSairContainer.style.display = 'none';
             return;
         }
+
+        // Menu "Sistema": aparece para cliente, patrocinador e gestor.
+        const podeVerSistema = PERFIS_COM_ACESSO_AO_SISTEMA.includes(perfil);
+        itensSistema.forEach(el => el.classList.toggle('escondido', !podeVerSistema));
 
         if (perfil === 'gestor') {
             itensGestor.forEach(el => el.classList.remove('escondido'));
@@ -101,8 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        if (window.location.pathname.includes("sistema.html") ||
-            window.location.pathname.includes("orcamento.html") ||
+        if (window.location.pathname.includes("sistema.html")) {
+            if (!PERFIS_COM_ACESSO_AO_SISTEMA.includes(perfil)) {
+                alert("⚠️ Acesso restrito! Faça login como Cliente, Patrocinador ou Gestor para continuar.");
+                window.location.href = "login.html";
+            }
+        }
+
+        if (window.location.pathname.includes("orcamento.html") ||
             window.location.pathname.includes("mensagem.html")) {
             if (perfil !== 'gestor') {
                 alert("⚠️ Acesso restrito! Apenas Gestores podem acessar esta área.");
