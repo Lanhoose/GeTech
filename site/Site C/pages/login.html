@@ -57,15 +57,39 @@
                 <input type="password" id="senha" placeholder="Digite sua senha" required>
             </div>
 
+            <p id="mensagem" class="mensagem-form" role="alert" aria-live="polite"></p>
+
             <button type="submit" class="btn-login">Entrar</button>
         </form>
 
         <div class="links-auxiliares">
-            <a href="#">Esqueceu a senha?</a><br><br>
+            <a href="#" id="linkEsqueceuSenha">Esqueceu a senha?</a><br><br>
             <span>Não tem conta? <a href="cadastro.html">Cadastre-se aqui</a></span>
         </div>
     </div>
 </main>
+
+<!-- MODAL: RECUPERAÇÃO DE SENHA -->
+<div class="modal-overlay" id="modalRecuperarSenha" role="dialog" aria-modal="true" aria-labelledby="tituloRecuperarSenha">
+    <div class="modal-card">
+        <button type="button" class="modal-fechar" id="fecharRecuperarSenha" aria-label="Fechar">&times;</button>
+
+        <h3 id="tituloRecuperarSenha">Recuperar senha</h3>
+        <p class="modal-texto">Informe o e-mail da sua conta. Enviaremos um link para você criar uma nova senha.</p>
+
+        <form id="formRecuperarSenha" novalidate>
+            <div class="form-group">
+                <label for="emailRecuperacao">E-mail</label>
+                <input type="email" id="emailRecuperacao" placeholder="seuemail@exemplo.com" autocomplete="email" required>
+            </div>
+
+            <p id="mensagemRecuperacao" class="mensagem-form" role="status" aria-live="polite"></p>
+
+            <button type="submit" class="btn-login" id="btnEnviarRecuperacao">Enviar link de redefinição</button>
+            <button type="button" class="btn-secundario" id="btnCancelarRecuperacao">Voltar ao login</button>
+        </form>
+    </div>
+</div>
 
 
 <footer>
