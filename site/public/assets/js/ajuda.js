@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', () => {
     // --- 1. SELEÇÃO DE ELEMENTOS ---
     const cards = document.querySelectorAll('.category-card');
@@ -32,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         iot: "Nossos <strong>sensores IoT</strong> coletam vibração, temperatura e rotação magnética do maquinário em tempo real. Os dados são criptografados e enviados diretamente para o seu painel de controle.",
         preditiva: "A <strong>Manutenção Preditiva</strong> usa algoritmos de Inteligência Artificial para analisar os dados dos sensores IoT. Ela identifica anomalias microscópicas e avisa sua equipe semanas antes de uma quebra real acontecer, reduzindo custos em até 35%.",
         api: "Sim! O plano Enterprise libera acesso completo à nossa <strong>API RESTful</strong>, permitindo que você conecte os alertas e métricas da GeTech diretamente com o ERP da sua empresa (como SAP, TOTVS, etc).",
-        suporte: "Nosso suporte técnico especializado atende via chat ou abertura de chamado. Clientes <em>Pro</em> têm tempo de resposta garantido em menos de 4 hours para paradas críticas.",
+        suporte: "Nosso suporte técnico especializado atende via chat ou abertura de chamado. Clientes <em>Pro</em> têm tempo de resposta garantido em menos de 4 horas para paradas críticas.",
         senha: "Para alterar sua senha ou credenciais de acesso ao painel, vá no menu superior, clique em <strong>Configurações > Segurança</strong> e selecione 'Atualizar Senha'.",
         getech: "A <strong>GeTech</strong> é uma startup de tecnologia focada em <strong>soluções de monitoramento e manutenção preditiva</strong> para a indústria. Fundada em 2024, nossa missão é transformar dados em inteligência para reduzir custos e aumentar a eficiência operacional das fábricas brasileiras."
     };
