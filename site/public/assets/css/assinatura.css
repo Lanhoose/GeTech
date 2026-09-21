@@ -354,3 +354,58 @@
 [data-theme="light"] .cep-status.error {
     color: #dc2626;
 }
+/* BOTÃO CONFIRMAR E ATIVAR ASSINATURA */
+.submit-subscription-btn {
+    display: block;
+    width: 100%;
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--accent-cyan, #007bff);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.submit-subscription-btn:hover:not(:disabled) {
+    background: var(--accent-cyan-hv, #0066d6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.45);
+}
+
+.submit-subscription-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.submit-subscription-btn:focus-visible {
+    outline: 3px solid rgba(0, 123, 255, 0.5);
+    outline-offset: 3px;
+}
+
+/* Quando o gestor ainda não definiu o preço (botão desabilitado pelo JS) */
+.submit-subscription-btn:disabled {
+    background: var(--plan-border, rgba(255, 255, 255, 0.15));
+    color: var(--plan-text-muted, #94a3b8);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Tema claro */
+[data-theme="light"] .submit-subscription-btn {
+    background: var(--accent-cyan, #06b6d4);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+
+[data-theme="light"] .submit-subscription-btn:hover:not(:disabled) {
+    background: var(--accent-cyan-hv, #0891b2);
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+}
