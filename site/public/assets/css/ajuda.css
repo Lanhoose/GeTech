@@ -346,7 +346,28 @@
     font-family: inherit;
 }
 
-.chip-btn:hover {
+.chip-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Balão já utilizado: fica visível, porém inerte */
+.chip-btn.chip-usado {
+    text-decoration: line-through;
+    opacity: 0.35;
+}
+
+.chip-btn:disabled:hover {
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border-color: var(--border-card);
+    transform: none;
+    box-shadow: none;
+}
+
+.chip-btn:not(:disabled):hover {
     background: var(--accent-cyan);
     color: #000000; 
     border-color: var(--accent-cyan);

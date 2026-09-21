@@ -43,6 +43,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const suggestionsContainer = document.createElement('div');
     suggestionsContainer.className = 'chat-suggestions';
 
+    // true enquanto a resposta simulada da IA está a caminho.
+    let respondendo = false;
+
     const suggestionsList = [
         { label: "📋 Planos", query: "Quais são os planos da GeTech?" },
         { label: "💰 Valores", query: "Qual o preço dos pacotes?" },
@@ -53,18 +56,44 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: "🎰 GeTech", query: "O que é a GeTech?" }
     ];
 
+    // Cada balão só pode ser usado uma vez. Além disso, enquanto a IA "digita"
+    // todos ficam travados — sem isso dava para clicar em sequência e inundar
+    // o chat com a mesma pergunta repetida.
+    const chips = [];
+
     suggestionsList.forEach(item => {
         const chip = document.createElement('button');
         chip.className = 'chip-btn';
+        chip.type = 'button';
         chip.innerText = item.label;
-        
+        chip.dataset.query = item.query;
+
         chip.addEventListener('click', () => {
+            if (chip.disabled || respondendo) return;
+
+            marcarChipComoUsado(chip);
             userMsgInput.value = item.query;
             handleChatSend();
         });
-        
+
+        chips.push(chip);
         suggestionsContainer.appendChild(chip);
     });
+
+    const marcarChipComoUsado = (chip) => {
+        chip.disabled = true;
+        chip.classList.add('chip-usado');
+        chip.title = 'Pergunta já enviada';
+    };
+
+    // Trava/destrava os balões ainda não usados e o campo de envio.
+    const definirEstadoEntrada = (bloqueado) => {
+        chips.forEach(chip => {
+            if (!chip.classList.contains('chip-usado')) chip.disabled = bloqueado;
+        });
+        if (sendBtn) sendBtn.disabled = bloqueado;
+        if (userMsgInput) userMsgInput.disabled = bloqueado;
+    };
 
     const chatInputArea = chatWindow.querySelector('.chat-input');
     chatWindow.insertBefore(suggestionsContainer, chatInputArea);
@@ -95,11 +124,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const handleChatSend = () => {
+        if (respondendo) return;
+
         const query = userMsgInput.value.trim();
         if (!query) return;
 
         appendMessage(query, 'user');
         userMsgInput.value = "";
+
+        // Se a mesma pergunta foi digitada à mão, o balão correspondente
+        // também sai de circulação.
+        chips.forEach(chip => {
+            if (chip.dataset.query.toLowerCase() === query.toLowerCase()) marcarChipComoUsado(chip);
+        });
+
+        respondendo = true;
+        definirEstadoEntrada(true);
 
         typingIndicator.style.display = 'block';
         chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -108,6 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
             typingIndicator.style.display = 'none';
             const botAnswer = getAiResponse(query);
             appendMessage(botAnswer, 'bot');
+
+            respondendo = false;
+            definirEstadoEntrada(false);
+            userMsgInput.focus();
         }, 1000);
     };
 
