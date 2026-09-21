@@ -40,6 +40,33 @@ function perfilEhGestor(perfil) {
     return String(perfil?.tipo || '').toLowerCase() === 'gestor';
 }
 
+// Converte qualquer formato de log (antigo ou novo) para o formato padrão da tela:
+// { id, dataHora (ISO), usuario, acao, detalhe, criticidade }.
+// Logs antigos gravados por registrarAuditoria() usavam descricao/nivel/data
+// e dataHora numérico — sem isso apareciam como "undefined".
+function normalizarLog(firebaseId, log = {}) {
+    let dataHora = log.dataHora ?? log.data ?? null;
+    const ts = typeof dataHora === 'number' ? dataHora : new Date(dataHora).getTime();
+    dataHora = Number.isFinite(ts) ? new Date(ts).toISOString() : '';
+
+    return {
+        ...log,
+        firebaseId,
+        id: log.id || firebaseId,
+        dataHora,
+        usuario: log.usuario || 'Sistema',
+        acao: log.acao || 'Evento',
+        detalhe: log.detalhe ?? log.descricao ?? '',
+        criticidade: String(log.criticidade ?? log.nivel ?? 'info').toLowerCase()
+    };
+}
+
+function logsDoSnapshot(valor) {
+    return Object.entries(valor || {})
+        .map(([firebaseId, log]) => normalizarLog(firebaseId, log))
+        .sort((a, b) => new Date(b.dataHora).getTime() - new Date(a.dataHora).getTime());
+}
+
 export const Auditoria = {
     MAX_LOGS: 500,
 
@@ -88,9 +115,7 @@ export const Auditoria = {
             const snap = await get(consulta);
             if (!snap.exists()) return [];
 
-            return Object.entries(snap.val())
-                .map(([firebaseId, log]) => ({ firebaseId, ...log }))
-                .sort((a, b) => new Date(b.dataHora).getTime() - new Date(a.dataHora).getTime());
+            return logsDoSnapshot(snap.val());
         } catch (erro) {
             console.error('[Auditoria] Erro ao obter logs:', erro);
             return [];
@@ -117,7 +142,7 @@ async function podarLogs() {
         const entradas = Object.entries(snap.val());
         if (entradas.length <= Auditoria.MAX_LOGS) return;
 
-        entradas.sort(([, a], [, b]) => new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime());
+        entradas.sort(([, a], [, b]) => new Date(normalizarLog('', a).dataHora).getTime() - new Date(normalizarLog('', b).dataHora).getTime());
         const quantidadeRemover = entradas.length - Auditoria.MAX_LOGS;
         await Promise.all(
             entradas.slice(0, quantidadeRemover).map(([id]) => remove(ref(db, `auditoria/${id}`)))
@@ -249,11 +274,7 @@ async function iniciarPaginaLogs() {
     );
 
     onValue(consulta, (snapshot) => {
-        const logs = snapshot.exists()
-            ? Object.entries(snapshot.val())
-                .map(([firebaseId, log]) => ({ firebaseId, ...log }))
-                .sort((a, b) => new Date(b.dataHora).getTime() - new Date(a.dataHora).getTime())
-            : [];
+        const logs = snapshot.exists() ? logsDoSnapshot(snapshot.val()) : [];
 
         atualizarTela(logs);
         console.log(`[Auditoria] ${logs.length} logs sincronizados em tempo real.`);

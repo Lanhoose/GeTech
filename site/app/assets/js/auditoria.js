@@ -26,11 +26,11 @@ import {
 // VERIFICAR SE O USUÁRIO É GESTOR
 // ===========================================================================
 
-async function usuarioEhGestor(user) {
+async function obterPerfilGestor(user) {
 
     if (!user) {
 
-        return false;
+        return null;
 
     }
 
@@ -48,7 +48,7 @@ async function usuarioEhGestor(user) {
 
         if (!snapshot.exists()) {
 
-            return false;
+            return null;
 
         }
 
@@ -63,9 +63,9 @@ async function usuarioEhGestor(user) {
             ).toLowerCase();
 
 
-        return (
-            tipo === "gestor"
-        );
+        return tipo === "gestor"
+            ? dados
+            : null;
 
 
     } catch (erro) {
@@ -76,7 +76,7 @@ async function usuarioEhGestor(user) {
         );
 
 
-        return false;
+        return null;
 
     }
 
@@ -115,13 +115,13 @@ export async function registrarAuditoria(
     // VERIFICAR PERMISSÃO
     // =======================================================================
 
-    const ehGestor =
-        await usuarioEhGestor(
+    const perfil =
+        await obterPerfilGestor(
             user
         );
 
 
-    if (!ehGestor) {
+    if (!perfil) {
 
         // ===============================================================
         // USUÁRIO COMUM
@@ -158,38 +158,39 @@ export async function registrarAuditoria(
         // DADOS
         // ===================================================================
 
+        // Mesmo formato usado por Auditoria.registrar (logs.js) e lido
+        // pela tela de Logs: detalhe / criticidade / dataHora (ISO).
         const dadosAuditoria = {
 
             id:
                 auditoriaRef.key,
+
+            dataHora:
+                new Date().toISOString(),
+
+            usuario:
+                perfil.nome ||
+                user.displayName ||
+                user.email ||
+                "Convidado/Sistema",
+
+            usuarioUid:
+                user.uid,
 
             acao:
                 String(
                     acao || "Evento"
                 ),
 
-            descricao:
+            detalhe:
                 String(
                     descricao || ""
                 ),
 
-            nivel:
+            criticidade:
                 String(
                     nivel || "info"
-                ),
-
-            usuario:
-                user.email ||
-                "",
-
-            usuarioUid:
-                user.uid,
-
-            data:
-                new Date().toISOString(),
-
-            dataHora:
-                Date.now()
+                ).toLowerCase()
 
         };
 

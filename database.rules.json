@@ -45,9 +45,12 @@
       ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
     },
     "postsBlog": {
-      ".read": "auth != null",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
-    },
+  ".read": "auth != null",
+  "$postId": {
+    ".write": "auth != null && ((!data.exists() && newData.child('criadoPor').val() === auth.uid) || (data.exists() && (data.child('criadoPor').val() === auth.uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')))",
+    ".validate": "newData.hasChildren(['title','type','date','desc','authorName','criadoEm','criadoPor']) && newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 150 && newData.child('desc').isString() && newData.child('desc').val().length > 0 && newData.child('desc').val().length <= 5000 && newData.child('criadoPor').val() === (data.exists() ? data.child('criadoPor').val() : auth.uid)"
+  }
+},
     "auditoria": {
       ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
       ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
