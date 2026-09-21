@@ -279,92 +279,193 @@ async function selectPlan(planName) {
 
 async function solicitarPlanoSobConsulta() {
 
-    // -----------------------------------------------------------------------
-    // VERIFICA LOGIN
-    // -----------------------------------------------------------------------
+    // ============================================================
+    // VERIFICAR LOGIN
+    // ============================================================
 
     if (!usuarioAtual) {
 
         alert(
-            'Faça login para solicitar um preço personalizado.'
+            "Faça login para solicitar o plano Enterprise."
         );
 
-
-        window.location.href =
-            'login.html';
-
+        window.location.href = "login.html";
 
         return;
-
     }
 
 
     try {
 
+        const uid =
+            usuarioAtual.uid;
+
         const agora =
             Date.now();
 
 
-        // -------------------------------------------------------------------
-        // PEGA DADOS DO USUÁRIO
-        // -------------------------------------------------------------------
+        // ============================================================
+        // VERIFICAR SE JÁ EXISTE UMA SOLICITAÇÃO
+        // ============================================================
 
-        const perfilSnap =
-            await get(
-                ref(
-                    db,
-                    `usuarios/${usuarioAtual.uid}`
-                )
+        const solicitacaoRef =
+            ref(
+                db,
+                `solicitacoesPlanos/${uid}`
             );
 
 
-        const perfil =
-            perfilSnap.exists()
-                ? perfilSnap.val()
-                : {};
+        const solicitacaoSnap =
+            await get(
+                solicitacaoRef
+            );
 
+
+        // ============================================================
+        // SE JÁ EXISTIR
+        // ============================================================
+
+        if (solicitacaoSnap.exists()) {
+
+            const solicitacao =
+                solicitacaoSnap.val();
+
+
+            // --------------------------------------------------------
+            // JÁ TEM PREÇO DEFINIDO
+            // --------------------------------------------------------
+
+            const preco =
+                Number(
+                    solicitacao.preco
+                );
+
+
+            if (
+                Number.isFinite(preco) &&
+                preco > 0
+            ) {
+
+                try {
+
+                    localStorage.setItem(
+
+                        CHAVE_CHECKOUT,
+
+                        JSON.stringify({
+
+                            plano:
+                                "Enterprise",
+
+                            uid,
+
+                            criadoEm:
+                                agora
+
+                        })
+
+                    );
+
+                } catch (erroStorage) {
+
+                    console.warn(
+                        "Não foi possível salvar o checkout:",
+                        erroStorage
+                    );
+
+                }
+
+
+                // O preço já foi definido pelo gestor.
+                // Não tentamos criar outra solicitação.
+
+                window.location.href =
+                    "assinatura.html";
+
+                return;
+
+            }
+
+
+            // --------------------------------------------------------
+            // AINDA ESTÁ AGUARDANDO O GESTOR
+            // --------------------------------------------------------
+
+            try {
+
+                localStorage.setItem(
+
+                    CHAVE_CHECKOUT,
+
+                    JSON.stringify({
+
+                        plano:
+                            "Enterprise",
+
+                        uid,
+
+                        criadoEm:
+                            agora
+
+                    })
+
+                );
+
+            } catch (erroStorage) {
+
+                console.warn(
+                    "Não foi possível salvar o checkout:",
+                    erroStorage
+                );
+
+            }
+
+
+            // Já existe uma solicitação.
+            // Não criamos outra e não sobrescrevemos a atual.
+
+            window.location.href =
+                "assinatura.html";
+
+            return;
+
+        }
+
+
+        // ============================================================
+        // PRIMEIRA SOLICITAÇÃO
+        // ============================================================
 
         const nome =
-            perfil.nome ||
-            perfil.nomeCompleto ||
             usuarioAtual.displayName ||
-            'Cliente';
+            "Cliente";
 
 
         const email =
-            perfil.email ||
             usuarioAtual.email ||
-            '';
+            "";
 
-
-        // -------------------------------------------------------------------
-        // CRIA/ATUALIZA SOLICITAÇÃO
-        // -------------------------------------------------------------------
 
         await set(
 
-            ref(
-                db,
-                `solicitacoesPlanos/${usuarioAtual.uid}`
-            ),
+            solicitacaoRef,
 
             {
 
                 uid:
-                    usuarioAtual.uid,
+                    uid,
 
-                nome,
+                nome:
+                    nome,
 
-                email,
+                email:
+                    email,
 
                 plano:
-                    PLANO_SOB_CONSULTA,
+                    "Enterprise",
 
                 status:
-                    'aguardando_preco',
-
-                preco:
-                    null,
+                    "aguardando_preco",
 
                 criadaEm:
                     agora,
@@ -377,41 +478,35 @@ async function solicitarPlanoSobConsulta() {
         );
 
 
-        // -------------------------------------------------------------------
+        // ============================================================
         // AUDITORIA
-        // -------------------------------------------------------------------
+        // ============================================================
 
         try {
 
             await registrarAuditoria(
 
-                'Planos: preço sob consulta solicitado',
+                "Planos: preço sob consulta solicitado",
 
-                `Cliente solicitou preço do plano ${PLANO_SOB_CONSULTA}.`,
+                `Cliente solicitou preço do plano Enterprise.`,
 
-                'info'
+                "info"
 
             );
 
         } catch (erroAuditoria) {
 
             console.warn(
-                'Solicitação criada, mas auditoria falhou:',
+                "Solicitação criada, mas auditoria falhou:",
                 erroAuditoria
             );
 
         }
 
 
-        // -------------------------------------------------------------------
-        // AUTORIZAÇÃO DO CHECKOUT
-        //
-        // ALTERAÇÃO PRINCIPAL:
-        // usamos localStorage em vez de sessionStorage.
-        //
-        // sessionStorage é perdido quando a aba/página é encerrada.
-        // localStorage permanece salvo mesmo depois de fechar o navegador.
-        // -------------------------------------------------------------------
+        // ============================================================
+        // SALVAR CHECKOUT
+        // ============================================================
 
         try {
 
@@ -422,10 +517,10 @@ async function solicitarPlanoSobConsulta() {
                 JSON.stringify({
 
                     plano:
-                        PLANO_SOB_CONSULTA,
+                        "Enterprise",
 
                     uid:
-                        usuarioAtual.uid,
+                        uid,
 
                     criadoEm:
                         agora
@@ -437,36 +532,36 @@ async function solicitarPlanoSobConsulta() {
         } catch (erroStorage) {
 
             console.warn(
-                'Não foi possível salvar a autorização do checkout:',
+                "Não foi possível salvar o checkout:",
                 erroStorage
             );
 
         }
 
 
-        // -------------------------------------------------------------------
-        // ABRE A ASSINATURA
-        // -------------------------------------------------------------------
+        // ============================================================
+        // IR PARA ASSINATURA
+        // ============================================================
 
         window.location.href =
-            'assinatura.html';
+            "assinatura.html";
+
 
     } catch (erro) {
 
         console.error(
-            'Erro ao enviar solicitação de preço:',
+            "ERRO COMPLETO AO SOLICITAR ENTERPRISE:",
             erro
         );
 
 
         alert(
-            'Não foi possível enviar a solicitação. Tente novamente.'
+            "Não foi possível enviar a solicitação. Tente novamente."
         );
 
     }
 
 }
-
 
 // ===========================================================================
 // DISPONIBILIZA AS FUNÇÕES PARA O HTML
