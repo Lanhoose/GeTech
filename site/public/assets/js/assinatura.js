@@ -1275,12 +1275,67 @@ async function finalizarAssinatura(
     }
 
 
-    const precoFinal =
+    let precoFinal =
         plano.preco === null
 
             ? precoSobConsulta
 
             : plano.preco;
+
+
+    // ------------------------------------------------------------------------
+    // RECONFIRMA O PREÇO DIRETO NO FIREBASE (Enterprise)
+    //
+    // O preço do Enterprise é definido pelo gestor em "solicitacoesPlanos".
+    // Nunca confiamos apenas no valor já carregado em memória: buscamos o
+    // valor mais recente agora, na hora de confirmar, para evitar enviar
+    // um preço desatualizado (ou adulterado) para o servidor. As Rules do
+    // Firebase também bloqueiam qualquer tentativa de gravar um valor
+    // diferente do definido pelo gestor.
+    // ------------------------------------------------------------------------
+
+    if (
+        plano.preco === null
+    ) {
+
+        try {
+
+            const snapAtual =
+                await get(
+                    ref(
+                        db,
+                        `solicitacoesPlanos/${usuario.uid}`
+                    )
+                );
+
+            const precoAtual =
+                snapAtual.exists()
+                    ? Number(
+                        snapAtual.val()?.preco
+                    )
+                    : null;
+
+            precoFinal =
+                Number.isFinite(precoAtual) && precoAtual > 0
+                    ? precoAtual
+                    : null;
+
+            atualizarEstadoSobConsulta(
+                precoFinal
+            );
+
+        } catch (erroPreco) {
+
+            console.error(
+                'Erro ao reconfirmar o preço do Enterprise:',
+                erroPreco
+            );
+
+            precoFinal = null;
+
+        }
+
+    }
 
 
     // ------------------------------------------------------------------------
