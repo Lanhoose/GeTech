@@ -5,7 +5,7 @@
     "usuarios": {
       "$uid": {
         ".read": "auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
-        ".write": "auth != null && (root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && !data.exists()))",
+        ".write": "auth != null && (root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && (!data.exists() || newData.child('tipo').val() === data.child('tipo').val())))",
         ".validate": "newData.hasChildren(['email','tipo']) && (!data.exists() || newData.child('tipo').val() === data.child('tipo').val() || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
       }
     },
