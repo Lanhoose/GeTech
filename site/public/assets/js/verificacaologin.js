@@ -15,7 +15,13 @@ import {
     get
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-window.BASE_URL = window.location.origin + "/GeTech/site/";
+// Raiz do site (SEM barra no final). Todos os destinos abaixo são montados a
+// partir dela, para nunca gerar "//" nem apontar para pasta inexistente.
+const SITE_ROOT = window.location.origin + "/GeTech/site";
+const URL_LOGIN = `${SITE_ROOT}/public/pages/login.html`;
+const URL_APP = `${SITE_ROOT}/app/app.html`;
+
+window.BASE_URL = SITE_ROOT;
 
 let usuarioAtual = null;
 
@@ -76,8 +82,8 @@ async function atualizarInterface(user) {
     } else {
         authSection.innerHTML = `
             <div class="auth-buttons">
-                <a href="${window.BASE_URL}/pages/login.html" class="btn-login">Entrar</a>
-                <a href="${window.BASE_URL}/pages/login.html" class="btn-cadastro">Cadastrar</a>
+                <a href="${URL_LOGIN}" class="btn-login">Entrar</a>
+                <a href="${URL_LOGIN}" class="btn-cadastro">Cadastrar</a>
             </div>
         `;
     }
@@ -88,13 +94,19 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 async function logout() {
+    // Avisa o protecao-gestor.js que esta saída é intencional, para ele não
+    // mostrar "Faça login..." nem disputar o redirecionamento.
+    window.__getechSaindo = true;
+
     try {
         await signOut(auth);
     } catch (erro) {
         console.error("Erro ao sair:", erro);
     }
     usuarioAtual = null;
-    window.location.href = `${window.BASE_URL}/pages/index.html`;
+
+    // As páginas do public exigem login; depois de sair, vai direto ao login.
+    window.location.href = URL_LOGIN;
 }
 
 async function redirecionarUsuario() {
@@ -102,14 +114,14 @@ async function redirecionarUsuario() {
     const user = auth.currentUser;
 
     if (!user) {
-        window.location.href = `${window.BASE_URL}/pages/login.html`;
+        window.location.href = URL_LOGIN;
         return;
     }
 
     const perfil = await carregarUsuario(user);
 
     if (perfil?.tipo === "gestor") {
-        window.location.href = `${window.BASE_URL}app/app.html`;
+        window.location.href = URL_APP;
     } else {
         alert("Acesso negado. Apenas usuários com perfil Gestor possuem acesso ao painel.");
     }

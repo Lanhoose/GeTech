@@ -16,6 +16,7 @@ import {
 import { registrarAuditoria } from './auditoria.js';
 
 window.BASE_URL = window.location.origin + "/GeTech/site";
+const URL_LOGIN = `${window.BASE_URL}/public/pages/login.html`;
 
 // ==========================================================================
 // TEMA
@@ -63,7 +64,7 @@ async function obterPerfil(user) {
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        window.location.href = `${window.BASE_URL}/pages/login.html`;
+        window.location.href = URL_LOGIN;
         return;
     }
 
@@ -72,7 +73,7 @@ onAuthStateChanged(auth, async (user) => {
     if (!usuarioAtual || usuarioAtual.tipo !== "gestor") {
         alert("Acesso restrito. Apenas usuários com perfil Gestor podem acessar o painel.");
         await signOut(auth).catch(() => {});
-        window.location.href = `${window.BASE_URL}/pages/index.html`;
+        window.location.href = URL_LOGIN;
         return;
     }
 
@@ -102,7 +103,7 @@ window.logout = async function logout() {
     } catch (erro) {
         console.error("Erro ao sair:", erro);
     } finally {
-        window.location.href = `${window.BASE_URL}/pages/index.html`;
+        window.location.href = URL_LOGIN;
     }
 };
 

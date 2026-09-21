@@ -11,7 +11,11 @@ import {
     set
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
-window.BASE_URL = window.location.origin + "/GeTech/site";
+const SITE_ROOT = window.location.origin + "/GeTech/site";
+const URL_INDEX = `${SITE_ROOT}/public/pages/index.html`;
+const URL_APP = `${SITE_ROOT}/app/app.html`;
+
+window.BASE_URL = SITE_ROOT;
 
 function mostrarMensagem(elemento, texto, tipo) {
     if (!elemento) return;
@@ -51,9 +55,9 @@ window.fazerLogin = async function fazerLogin() {
 
         setTimeout(() => {
             if ((dados.tipo || "").toLowerCase() === "gestor") {
-                window.location.href = `${window.BASE_URL}/../app/app.html`;
+                window.location.href = URL_APP;
             } else {
-                window.location.href = `${window.BASE_URL}/pages/index.html`;
+                window.location.href = URL_INDEX;
             }
         }, 500);
 
@@ -105,7 +109,7 @@ window.cadastrar = async function cadastrar() {
         mostrarMensagem(msg, "Cadastro realizado com sucesso!", "sucesso");
 
         setTimeout(() => {
-            window.location.href = `${window.BASE_URL}/pages/index.html`;
+            window.location.href = URL_INDEX;
         }, 700);
 
     } catch (erro) {
@@ -152,7 +156,7 @@ onAuthStateChanged(auth, async (user) => {
         if ((dados.tipo || "").toLowerCase() === "gestor") {
             // Só redireciona se esta for a página de login.
             if (window.location.pathname.endsWith("/login.html")) {
-                window.location.href = `${window.BASE_URL}/../app/app.html`;
+                window.location.href = URL_APP;
             }
         }
     } catch (erro) {

@@ -36,6 +36,10 @@ function bloquearAcesso(mensagem, destino) {
 }
 
 onAuthStateChanged(auth, async (user) => {
+    // Clique em "Sair": o logout() do verificacaologin.js já cuida do
+    // redirecionamento. Sem isso, o alerta aparece e os dois redirecionam.
+    if (window.__getechSaindo) return;
+
     if (!user) {
         bloquearAcesso("Faça login para acessar esta página.", DESTINO_LOGIN);
         return;
