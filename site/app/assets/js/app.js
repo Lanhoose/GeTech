@@ -110,9 +110,22 @@ window.logout = async function logout() {
 // ==========================================================================
 // NAVEGAÇÃO PARA MÓDULOS
 // ==========================================================================
+// Módulos que realmente existem em site/app/modules/.
+// Os cards de Qualidade, Suprimentos e Produção apontavam para pastas
+// inexistentes e davam 404 — agora avisam em vez de quebrar a navegação.
+const MODULOS_DISPONIVEIS = [
+    "geral", "estoque", "manutencao", "rh",
+    "pedidos", "logs", "sistema", "manual"
+];
+
 window.abrirModulo = function abrirModulo(nome) {
     if (!authInicializado || !usuarioAtual || usuarioAtual.tipo !== "gestor") {
         alert("Acesso restrito. Faça login como Gestor.");
+        return;
+    }
+
+    if (!MODULOS_DISPONIVEIS.includes(nome)) {
+        alert("Este módulo ainda está em desenvolvimento.");
         return;
     }
 

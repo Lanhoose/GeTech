@@ -269,7 +269,7 @@
     </div>
 
     <script type="module">    // ---- FIREBASE ----
-    import { auth, db } from '../../../../Site C/assets/js/firebase-config.js';
+    import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
     import { ref, push, set, update, remove, onValue, get } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
     import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
     import { registrarAuditoria } from '../../assets/js/auditoria.js';
@@ -468,7 +468,7 @@ function alternarTema() {
         await registrarLog(`OP ${ordem.numero} avançou para "${next}"`);
     }
 
-    async async function excluirPorId(id) {
+    async function excluirPorId(id) {
         if (!confirm('Deseja remover permanentemente esta ordem?')) return;
         const op = ordensCache.find(o => String(o.id) === String(id));
         if (!op) return;
@@ -731,7 +731,7 @@ function alternarTema() {
     }
 
     // ---- LOGOUT ----
-    function logout() { onclick="window.location.href='../../app.html'"; }
+    function logout() { window.location.href = '../../app.html'; }
 
     // ---- FECHAR MODAL AO CLICAR FORA ----
     document.getElementById('modal-nova-op').addEventListener('click',function(e){ if(e.target===this) fecharModal(); });
@@ -743,7 +743,7 @@ function alternarTema() {
 
         if (!user) {
             alert('Sua sessão expirou. Faça login novamente.');
-            window.location.href = '../../Site C/pages/login.html';
+            window.location.href = '../../../Site C/pages/login.html';
             return;
         }
 
@@ -753,19 +753,30 @@ function alternarTema() {
 
             if (String(perfil.tipo || '').toLowerCase() !== 'gestor') {
                 alert('Acesso restrito. Apenas gestores podem acessar este módulo.');
-                window.location.href = '../../Site C/pages/login.html';
+                window.location.href = '../../../Site C/pages/login.html';
                 return;
             }
         } catch (erro) {
             console.error('[Pedidos] Erro ao verificar o perfil do usuário:', erro);
             alert('Não foi possível verificar seu perfil de acesso.');
-            window.location.href = '../../Site C/pages/login.html';
+            window.location.href = '../../../Site C/pages/login.html';
             return;
         }
 
         const usuario = document.getElementById('usuario');
         if (usuario) usuario.textContent = `Bem-vindo, ${user.displayName || user.email || 'Usuário'}!`;
         carregarDadosIniciais();
+    });
+
+    // O script é type="module": nada vai para o escopo global automaticamente.
+    // Sem este Object.assign os onclick="..." do HTML quebram com "x is not defined".
+    Object.assign(window, {
+        abrirModalNovaOP, alternarTema, avancarOrdem, baixarExcel, baixarPDF,
+        buscarCEP, calcularFrete, excluirOrdem, excluirPorId, fecharModal,
+        fecharModalDetalhes, gerarPDFOrdem, limparLogs, logout, mudarStatusEntrega,
+        rastrearEntregador, rastrearPedido, renderizarKanban, salvarNovaOP,
+        salvarOrdem, setPrioridade, trocarPerfil, trocarTela, trocarTelaEntregador,
+        verDetalhes, getLogs
     });
 
     window.getOrdens = getOrdens;

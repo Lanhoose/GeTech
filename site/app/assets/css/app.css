@@ -350,3 +350,18 @@ body {
         gap: 16px;
     }
 }
+/* Cards de módulos ainda não implementados */
+.card.card-em-breve {
+    opacity: .55;
+}
+.card.card-em-breve::after {
+    content: "Em breve";
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: .72rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+}

@@ -289,12 +289,21 @@ async function iniciarPaginaLogs() {
     await carregar();
 }
 
+// onAuthStateChanged dispara mais de uma vez (refresh de token, re-login).
+// Sem esta trava os detectores eram registrados de novo e cada clique gerava
+// dois ou mais logs duplicados.
+let detectoresIniciados = false;
+
 onAuthStateChanged(auth, async (user) => {
     if (!user) return;
     await registrarAcessoAutomatico();
-    iniciarDetectorCliques();
-    iniciarDetectorTema();
-    await iniciarPaginaLogs();
+
+    if (!detectoresIniciados) {
+        detectoresIniciados = true;
+        iniciarDetectorCliques();
+        iniciarDetectorTema();
+        await iniciarPaginaLogs();
+    }
 });
 
 window.solicitarLogsFirebase = async function() {
