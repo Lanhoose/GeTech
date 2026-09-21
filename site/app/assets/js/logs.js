@@ -14,10 +14,30 @@ import {
 
 const BASE_URL = window.location.origin + '/GeTech';
 
+// Cache do perfil para não ler /usuarios/<uid> a cada clique.
+let perfilEmCache = { uid: null, perfil: null };
+
 async function obterPerfilAtual(user) {
     if (!user) return null;
-    const snap = await get(ref(db, `usuarios/${user.uid}`));
-    return snap.exists() ? snap.val() : {};
+
+    if (perfilEmCache.uid === user.uid && perfilEmCache.perfil) {
+        return perfilEmCache.perfil;
+    }
+
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
+        const perfil = snap.exists() ? snap.val() : {};
+        perfilEmCache = { uid: user.uid, perfil };
+        return perfil;
+    } catch (erro) {
+        console.warn('[Auditoria] Não foi possível ler o perfil do usuário.');
+        return null;
+    }
+}
+
+// Somente gestores podem escrever em "auditoria" (ver database.rules.json).
+function perfilEhGestor(perfil) {
+    return String(perfil?.tipo || '').toLowerCase() === 'gestor';
 }
 
 export const Auditoria = {
@@ -26,8 +46,15 @@ export const Auditoria = {
     async registrar(usuario, acao, detalhe, criticidade = 'info') {
         try {
             const user = auth.currentUser;
+            if (!user) return null; // visitante: não grava
+
             const perfil = await obterPerfilAtual(user);
-            const nome = usuario || perfil?.nome || user?.displayName || user?.email || 'Convidado/Sistema';
+
+            // Cliente/usuário comum: as Rules bloqueiam a escrita em "auditoria".
+            // Sai em silêncio para não gerar PERMISSION_DENIED no console.
+            if (!perfilEhGestor(perfil)) return null;
+
+            const nome = usuario || perfil?.nome || user.displayName || user.email || 'Convidado/Sistema';
 
             const novoLog = {
                 id: 'LOG-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
@@ -46,7 +73,11 @@ export const Auditoria = {
             await podarLogs();
             return novoLog;
         } catch (erro) {
-            console.error('[Auditoria] Erro ao registrar:', erro);
+            if (erro?.code === 'PERMISSION_DENIED' || String(erro?.message || '').includes('PERMISSION_DENIED')) {
+                console.warn('[Auditoria] Registro não permitido pelas Rules.');
+            } else {
+                console.error('[Auditoria] Erro ao registrar:', erro);
+            }
             return null;
         }
     },
