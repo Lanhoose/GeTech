@@ -1,14 +1,28 @@
-
-
 let modal;
 let modalSucesso;
 
-// Texto da política de privacidade organizado para reuso
+// Texto da política de privacidade organizado de forma completa e profissional (LGPD)
 let textoPrivacidade = [
-    "Finalidade: Seus dados são usados apenas para suporte técnico.",
-    "Acesso: Você pode solicitar a correção ou exclusão de seus dados a qualquer momento.",
-    "Segurança: Implementamos criptografia para proteger informações de manutenção industrial.",
-    "Retenção: Mantemos os dados apenas pelo período necessário para o histórico da máquina."
+    "GeTech - Política de Privacidade e Proteção de Dados",
+    "A GeTech está comprometida com a segurança, transparência e proteção dos dados pessoais e operacionais de seus clientes e parceiros, em conformidade com a LGPD (Lei nº 13.709/2018).",
+    "",
+    "1. Finalidade do Tratamento de Dados:",
+    "- Suporte Técnico: Atendimento, gerenciamento de chamados e comunicação sobre ordens de serviço.",
+    "- Gestão de Manutenção Industrial: Registro do histórico operacional e acompanhamento das máquinas.",
+    "",
+    "2. Coleta e Categorização dos Dados:",
+    "- Dados Cadastrais: Nome, e-mail, telefone, cargo e empresa para identificação e suporte.",
+    "- Dados Técnicos: Histórico de manutenção, modelos de máquinas e relatórios de falhas.",
+    "",
+    "3. Direitos do Titular dos Dados:",
+    "Você pode solicitar a qualquer momento o acesso, confirmação, correção, atualização ou exclusão de seus dados pessoais através dos nossos canais de suporte.",
+    "",
+    "4. Segurança da Informação:",
+    "- Criptografia: Implementamos protocolos para proteger dados em transmissão e armazenamento.",
+    "- Controle de Acesso: Acesso restrito apenas a profissionais autorizados.",
+    "",
+    "5. Retenção e Descarte de Dados:",
+    "Mantemos os dados apenas pelo período necessário para atender às finalidades de suporte e suporte ao histórico do equipamento, realizando o descarte seguro após o término da necessidade legal ou contratual."
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,7 +92,7 @@ function aceitarTermos() {
     }
 }
 
-// Função de geração de PDF assistida por biblioteca externa
+// Função de geração de PDF assistida por biblioteca externa (jsPDF)
 async function gerarPDF() {
     const lib = window.jspdf ? window.jspdf.jsPDF : window.jsPDF;
     if (!lib) {
@@ -90,33 +104,51 @@ async function gerarPDF() {
     
     // Título do PDF
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("GeTech - Política de Privacidade", 20, 20);
+    doc.setFontSize(15);
+    doc.text("GeTech - Política de Privacidade e Proteção de Dados", 20, 20);
     
     // Subtítulo
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.text("Documento oficial gerado pelo portal.", 20, 28);
+    doc.setFontSize(10);
+    doc.text("Documento oficial gerado pelo portal em conformidade com a LGPD.", 20, 27);
     
     // Linha divisória
-    doc.line(20, 33, 190, 33);
+    doc.line(20, 31, 190, 31);
 
     // Configurações para o corpo do texto
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
+    doc.setFontSize(10);
     
-    let eixoY = 45;
+    let eixoY = 40;
     const margemEsquerda = 20;
-    const larguraMaxima = 170; // Evita que o texto saia para a direita
+    const larguraMaxima = 170; // Evita que o texto ultrapasse a margem da página
 
-    textoPrivacidade.forEach(linha => {
+    textoPrivacidade.slice(1).forEach(linha => {
+        if (linha === "") {
+            eixoY += 4; // Espaçamento entre parágrafos
+            return;
+        }
+
+        // Destaca títulos e subtópicos em negrito no PDF
+        if (linha.match(/^\d\./)) {
+            doc.setFont("helvetica", "bold");
+        } else {
+            doc.setFont("helvetica", "normal");
+        }
+
         // Quebra o texto automaticamente para caber na página
         const linhasQuebradas = doc.splitTextToSize(linha, larguraMaxima);
         
+        // Verifica se precisa de uma nova página
+        if (eixoY + (linhasQuebradas.length * 5) > 280) {
+            doc.addPage();
+            eixoY = 20;
+        }
+
         doc.text(linhasQuebradas, margemEsquerda, eixoY);
         
         // Ajusta o eixo Y dinamicamente para o próximo bloco de texto
-        eixoY += (linhasQuebradas.length * 7) + 5;
+        eixoY += (linhasQuebradas.length * 5) + 3;
     });
 
     doc.save("Privacidade_GeTech.pdf");
