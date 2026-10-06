@@ -1,28 +1,28 @@
 let modal;
 let modalSucesso;
 
-// Texto da política de privacidade organizado de forma completa e profissional (LGPD)
+// Texto da política de privacidade altamente profissional (Adequado à LGPD)
 let textoPrivacidade = [
-    "GeTech - Política de Privacidade e Proteção de Dados",
-    "A GeTech está comprometida com a segurança, transparência e proteção dos dados pessoais e operacionais de seus clientes e parceiros, em conformidade com a LGPD (Lei nº 13.709/2018).",
+    "POLÍTICA DE PRIVACIDADE E PROTEÇÃO DE DADOS PESSOAIS - GETECH",
+    "A GeTech Soluções em Manutenção Industrial reafirma seu compromisso com a privacidade e a segurança da informação, tratando dados pessoais e operacionais estritamente em conformidade com a LGPD (Lei nº 13.709/2018).",
     "",
-    "1. Finalidade do Tratamento de Dados:",
-    "- Suporte Técnico: Atendimento, gerenciamento de chamados e comunicação sobre ordens de serviço.",
-    "- Gestão de Manutenção Industrial: Registro do histórico operacional e acompanhamento das máquinas.",
+    "1. ABRANGÊNCIA E FINALIDADE DO TRATAMENTO DE DADOS:",
+    "• Suporte Técnico Especializado: Triagem de chamados operacionais, prestação de assistência técnica e comunicação referente a ordens de serviço.",
+    "• Gestão de Manutenção Industrial: Registro do histórico de intervenções, diagnósticos preditivos e acompanhamento contínuo dos ativos industriais.",
     "",
-    "2. Coleta e Categorização dos Dados:",
-    "- Dados Cadastrais: Nome, e-mail, telefone, cargo e empresa para identificação e suporte.",
-    "- Dados Técnicos: Histórico de manutenção, modelos de máquinas e relatórios de falhas.",
+    "2. CATEGORIZAÇÃO DAS INFORMAÇÕES TRATADAS:",
+    "• Dados Cadastrais e de Contato: Nome, e-mail corporativo, telefone, cargo e empresa para gestão do relacionamento contratual.",
+    "• Dados Operacionais e Técnicos: Histórico de manutenção, especificações de máquinas, relatórios de falhas e logs de chamados.",
     "",
-    "3. Direitos do Titular dos Dados:",
-    "Você pode solicitar a qualquer momento o acesso, confirmação, correção, atualização ou exclusão de seus dados pessoais através dos nossos canais de suporte.",
+    "3. DIREITOS DOS TITULARES DE DADOS (ART. 18 DA LGPD):",
+    "O titular dos dados possui o direito de solicitar a qualquer momento a confirmação de existência de tratamento, acesso aos dados, correção de inconsistências ou a exclusão/anonimização de dados pessoais desnecessários através do nosso portal oficial.",
     "",
-    "4. Segurança da Informação:",
-    "- Criptografia: Implementamos protocolos para proteger dados em transmissão e armazenamento.",
-    "- Controle de Acesso: Acesso restrito apenas a profissionais autorizados.",
+    "4. SEGURANÇA DA INFORMAÇÃO E PREVENÇÃO:",
+    "• Criptografia Avançada: Protocolos de alta segurança para proteção na transmissão e armazenamento de relatórios e dados industriais.",
+    "• Gestão Rigorosa de Acesso: Acesso restrito e concedido sob o princípio do menor privilégio apenas a profissionais autorizados.",
     "",
-    "5. Retenção e Descarte de Dados:",
-    "Mantemos os dados apenas pelo período necessário para atender às finalidades de suporte e suporte ao histórico do equipamento, realizando o descarte seguro após o término da necessidade legal ou contratual."
+    "5. RETENÇÃO E CICLO DE VIDA DOS DADOS:",
+    "Os dados são conservados estritamente pelo período necessário para atender às finalidades de suporte técnico e à preservação do histórico operacional dos equipamentos industriais, sendo descartados de forma segura ao término do ciclo contratual ou da exigência legal."
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -102,53 +102,48 @@ async function gerarPDF() {
     
     const doc = new lib();
     
-    // Título do PDF
+    // Cabeçalho do PDF
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(15);
+    doc.setFontSize(14);
     doc.text("GeTech - Política de Privacidade e Proteção de Dados", 20, 20);
     
-    // Subtítulo
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.text("Documento oficial gerado pelo portal em conformidade com a LGPD.", 20, 27);
+    doc.setFontSize(9);
+    doc.text("Documento Oficial Corporativo • Conformidade com a Lei Geral de Proteção de Dados (LGPD)", 20, 26);
     
-    // Linha divisória
-    doc.line(20, 31, 190, 31);
+    // Linha de divisão
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, 30, 190, 30);
 
-    // Configurações para o corpo do texto
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
+    doc.setFontSize(9.5);
     
-    let eixoY = 40;
+    let eixoY = 38;
     const margemEsquerda = 20;
-    const larguraMaxima = 170; // Evita que o texto ultrapasse a margem da página
+    const larguraMaxima = 170;
 
     textoPrivacidade.slice(1).forEach(linha => {
         if (linha === "") {
-            eixoY += 4; // Espaçamento entre parágrafos
+            eixoY += 3;
             return;
         }
 
-        // Destaca títulos e subtópicos em negrito no PDF
+        // Destaque para as seções principais
         if (linha.match(/^\d\./)) {
             doc.setFont("helvetica", "bold");
         } else {
             doc.setFont("helvetica", "normal");
         }
 
-        // Quebra o texto automaticamente para caber na página
         const linhasQuebradas = doc.splitTextToSize(linha, larguraMaxima);
         
-        // Verifica se precisa de uma nova página
-        if (eixoY + (linhasQuebradas.length * 5) > 280) {
+        // Paginação automática
+        if (eixoY + (linhasQuebradas.length * 5) > 275) {
             doc.addPage();
             eixoY = 20;
         }
 
         doc.text(linhasQuebradas, margemEsquerda, eixoY);
-        
-        // Ajusta o eixo Y dinamicamente para o próximo bloco de texto
-        eixoY += (linhasQuebradas.length * 5) + 3;
+        eixoY += (linhasQuebradas.length * 4.5) + 2.5;
     });
 
     doc.save("Privacidade_GeTech.pdf");
