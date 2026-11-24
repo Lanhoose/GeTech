@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 </head>
 <body>
 
@@ -54,6 +55,7 @@
                 <div><label>Modelo:</label><input type="text" id="modelo" placeholder="Ex: G-200" required /></div>
                 <div><label>Número de Série:</label><input type="text" id="numeroSerie" placeholder="Ex: SN-12345" required /></div>
                 <div><label>Data da Última Manutenção:</label><input type="date" id="dataUltimaManutencao" required /></div>
+                <div><label for="proximaPreventiva">Próxima preventiva</label><input type="date" id="proximaPreventiva"></div>
                 <button type="submit" class="btn-app">Cadastrar Equipamento</button>
             </form>
             <p id="dadosmaquina"></p>
@@ -88,16 +90,46 @@
                         <option value="concluido">Concluído</option>
                     </select>
                 </div>
+                <div>
+                    <label for="tecnicoOS">Técnico responsável</label>
+                    <select id="tecnicoOS"><option value="">Sem técnico atribuído</option></select>
+                </div>
+                <fieldset id="pecasOS">
+                    <legend>Peças da ordem</legend>
+                    <div data-pecas></div>
+                    <button type="button" data-adicionar-peca class="btn-app btn-outline-app">Adicionar peça</button>
+                </fieldset>
+                <div id="revisaoOS" hidden></div>
                 <button type="submit" class="btn-app">Abrir Ordem de Serviço</button>
+                <button type="button" id="cancelarEdicaoOS" class="btn-app btn-outline-app" hidden>Cancelar edição</button>
             </form>
             <p id="ordem_servico"></p>
 
             <h3>Histórico de Intervenções</h3>
             <button id="btnConsultarOS" class="btn-app btn-outline-app">Atualizar Histórico</button>
             <div id="listaOS"></div>
+            <details>
+                <summary>Gerenciar acesso dos técnicos</summary>
+                <form id="acessoTecnico" class="app-form">
+                    <label for="contaTecnico">Conta existente</label>
+                    <select id="contaTecnico" required></select>
+                    <button type="submit" class="btn-app">Conceder acesso técnico</button>
+                </form>
+                <p id="acessoTecnicoStatus" role="status"></p>
+            </details>
         </section>
 
     </main>
+
+    <dialog id="fichaMaquina" aria-labelledby="tituloFichaMaquina">
+        <h2 id="tituloFichaMaquina"></h2>
+        <p id="dadosFichaMaquina"></p>
+        <div id="qrMaquina"></div>
+        <a id="linkFichaMaquina">Link da ficha</a>
+        <h3>Histórico de manutenção</h3>
+        <div id="historicoFichaMaquina"></div>
+        <form method="dialog"><button class="btn-app btn-outline-app">Fechar ficha</button></form>
+    </dialog>
 
     <footer>
         <p>&copy; 2026 M.A.P - Manutenção Ativa Preventiva</p>

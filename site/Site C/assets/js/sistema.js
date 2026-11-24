@@ -26,7 +26,7 @@ function exibirMaquinas(dados, container) {
   Object.entries(dados).forEach(([id, item]) => {
     const card = document.createElement('div');
     card.className = 'card-item';
-    card.innerHTML = `<strong>Máquina:</strong> ${escapar(item.nomeMaquina)}<br><strong>Modelo:</strong> ${escapar(item.modeloMaquina)}<br><strong>S/N:</strong> ${escapar(item.numeroDeSerie)}<br><small>ID: ${escapar(id)}</small>`;
+    card.innerHTML = `<strong>Máquina:</strong> ${escapar(item.nome || item.nomeMaquina)}<br><strong>Modelo:</strong> ${escapar(item.modelo || item.modeloMaquina)}<br><strong>S/N:</strong> ${escapar(item.serie || item.numeroDeSerie)}<br><small>ID: ${escapar(id)}</small>`;
     container.appendChild(card);
   });
 }
@@ -102,10 +102,14 @@ $('ordemServico')?.addEventListener('submit', async (e) => {
   if (perfilAtual !== 'gestor') return;
   const el = $('ordem_servico');
   try {
+    if ($('statusOS')?.value === 'concluido') {
+      mensagem(el, 'Conclua ordens pelo m?dulo Manuten??o do painel ERP.', true);
+      return;
+    }
     await push(ref(db, 'ordensServico'), {
-      maquinaOs: $('maquinaOS')?.value.trim() || '',
-      descricaoOs: $('descricaoOS')?.value.trim() || '',
-      statusOs: $('statusOS')?.value || 'pendente',
+      maquina: $('maquinaOS')?.value.trim() || '',
+      descricao: $('descricaoOS')?.value.trim() || '',
+      status: $('statusOS')?.value || 'pendente',
       criadoEm: new Date().toISOString(),
       criadoPor: auth.currentUser.uid
     });

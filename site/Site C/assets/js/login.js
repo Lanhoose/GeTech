@@ -41,6 +41,8 @@ document.getElementById('loginForm')?.addEventListener('submit', async function(
         if (usuarioEncontrado.tipo === 'gestor') {
             alert(`✅ Bem-vindo, Gestor ${usuarioEncontrado.nome}! Entrando no sistema administrativo...`);
             window.location.href = "sistema.html";
+        } else if (usuarioEncontrado.tipo === 'tecnico') {
+            window.location.href = '../../app/modules/manutencao/tecnico.html';
         } else if (usuarioEncontrado.tipo === 'patrocinador') {
             alert(`✅ Bem-vindo, ${usuarioEncontrado.nome}! Entrando no painel de patrocinador...`);
             window.location.href = "patrocinadores.html";

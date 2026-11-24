@@ -115,7 +115,7 @@ window.logout = async function logout() {
 // inexistentes e davam 404 — agora avisam em vez de quebrar a navegação.
 const MODULOS_DISPONIVEIS = [
     "geral", "estoque", "manutencao", "rh",
-    "pedidos", "logs", "sistema", "manual"
+    "pedidos", "logs", "sistema", "manual", "moderacao"
 ];
 
 window.abrirModulo = function abrirModulo(nome) {

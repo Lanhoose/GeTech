@@ -7,9 +7,15 @@ import {
     set,
     update,
     get,
-    serverTimestamp
+    serverTimestamp, increment
 } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 import { registrarAuditoria } from './auditoria.js';
+import { editorPecas, resumoPecas } from './pecas-os.js';
+import { anexarFoto, abrirFicha, idFicha, urlFicha } from './ficha-maquina.js';
+
+const campo = id => document.getElementById(id);
+const editor = editorPecas(campo('pecasOS'));
+let tecnicos = {};
 
 const BASE_URL = window.location.origin + '/GeTech';
 
@@ -17,7 +23,8 @@ let listaMaquinas = [];
 let historicoOS = [];
 let emModoEdicao = false;
 let idMaquinaSendoEditada = null;
-let emModoEdicaoOS = false;
+let versaoOS = 0;
+let execucaoOS;
 let idOSSendoEditada = null;
 let usuarioAtual = null;
 let listenersIniciados = false;
@@ -99,12 +106,12 @@ function atualizarSelectMaquinas() {
 
     listaMaquinas.forEach((maquina) => {
         const opt = document.createElement('option');
-        opt.value = maquina.nome;
+        opt.value = maquina.id;
         opt.textContent = `${maquina.nome} — ${maquina.modelo} (Série: ${maquina.serie})`;
         select.appendChild(opt);
     });
 
-    if (selecaoAtual && listaMaquinas.some(m => m.nome === selecaoAtual)) {
+    if (selecaoAtual && listaMaquinas.some(m => m.id === selecaoAtual)) {
         select.value = selecaoAtual;
     }
 }
@@ -152,6 +159,11 @@ function exibirMaquinas(filtro = '') {
         botao.textContent = '✏️ Editar';
         botao.addEventListener('click', () => prepararEdicao(m.id));
         card.appendChild(botao);
+        const ficha = document.createElement('a');
+        ficha.href = urlFicha(m.id);
+        ficha.textContent = 'Ficha e QR Code';
+        ficha.style.display = 'block';
+        card.appendChild(ficha);
         container.appendChild(card);
     });
 }
@@ -165,6 +177,7 @@ async function prepararEdicao(id) {
     const campo_numeroSerie=document.querySelector('#numeroSerie'); if(campo_numeroSerie) campo_numeroSerie.value = maq.serie || '';
     const campo_dataUltimaManutencao=document.querySelector('#dataUltimaManutencao'); if(campo_dataUltimaManutencao) campo_dataUltimaManutencao.value = maq.dataUltimaManutencao || '';
 
+    campo('proximaPreventiva').value = maq.proximaPreventiva || '';
     emModoEdicao = true;
     idMaquinaSendoEditada = id;
 
@@ -251,71 +264,168 @@ function exibirHistoricoOS() {
         const botao = document.createElement('button');
         botao.className = 'btn-app btn-outline-app';
         botao.style.cssText = 'position:absolute; bottom:8px; right:8px; width:auto; padding:4px 10px; font-size:0.8rem;';
-        botao.textContent = '✏️ Editar';
+        botao.textContent = 'Editar';
         botao.addEventListener('click', () => prepararEdicaoOS(os.id));
-        card.appendChild(botao);
+        if (os.status !== 'concluido') card.appendChild(botao);
+        if (os.execucao || os.pecas || os.tecnicoUid) {
+            const detalhe = document.createElement('p');
+            detalhe.textContent = [
+                os.tecnicoUid && (tecnicos[os.tecnicoUid]?.nome || tecnicos[os.tecnicoUid]?.email || 'T?cnico atribu?do'),
+                os.execucao && os.status !== 'concluido' && 'Aguardando revis?o',
+                resumoPecas(os.pecas || os.execucao?.pecas)
+            ].filter(Boolean).join(' ? ');
+            card.appendChild(detalhe);
+        }
         container.appendChild(card);
     });
 }
 
+function maquinaDaOrdem(os) {
+    if (os.maquinaId) return listaMaquinas.find(m => m.id === os.maquinaId);
+    const candidatas = listaMaquinas.filter(m => m.nome === os.maquina);
+    return candidatas.length === 1 ? candidatas[0] : undefined;
+}
+
 function prepararEdicaoOS(id) {
     const os = historicoOS.find(item => item.id === id);
-    if (!os) return;
+    if (!os || os.status === 'concluido') return;
 
     atualizarSelectMaquinas();
-    const campo_maquinaOS=document.querySelector('#maquinaOS'); if(campo_maquinaOS) campo_maquinaOS.value = os.maquina || '';
-    const campo_descricaoOS=document.querySelector('#descricaoOS'); if(campo_descricaoOS) campo_descricaoOS.value = os.descricao || '';
-    const campo_statusOS=document.querySelector('#statusOS'); if(campo_statusOS) campo_statusOS.value = os.status || 'pendente';
+    campo('maquinaOS').value = maquinaDaOrdem(os)?.id || '';
+    campo('descricaoOS').value = os.descricao || '';
+    campo('statusOS').value = os.status || 'pendente';
+    campo('tecnicoOS').value = os.tecnicoUid || '';
+    campo('tecnicoOS').disabled = Boolean(os.execucao);
+    editor.preencher(os.execucao ? os.execucao.pecas : os.pecas);
 
-    emModoEdicaoOS = true;
-    idOSSendoEditada = id;
-
-    const btnSub = document.querySelector('#ordemServico button[type="submit"]');
-    if (btnSub) {
-        btnSub.textContent = '💾 Salvar Alterações';
-        btnSub.style.background = '#27ae60';
+    const revisao = campo('revisaoOS');
+    revisao.replaceChildren();
+    revisao.hidden = !os.execucao;
+    if (os.execucao) {
+        const relato = document.createElement('p');
+        relato.textContent = os.execucao.relato;
+        revisao.append('Relato do t?cnico', relato);
+        anexarFoto(revisao, os.execucao.foto);
+        const devolver = document.createElement('button');
+        devolver.type = 'button';
+        devolver.className = 'btn-app btn-outline-app';
+        devolver.textContent = 'Devolver para ajuste';
+        devolver.onclick = async () => {
+            devolver.disabled = true;
+            try {
+                await update(ref(db, `ordensServico/${id}`), {
+                    execucao: null,
+                    status: 'em andamento',
+                    revisaoDevolvidaEm: os.execucao.enviadoEm,
+                    versao: (os.versao || 0) + 1,
+                    atualizadoEm: serverTimestamp(),
+                    atualizadoPor: usuarioAtual.uid
+                });
+                limparEdicaoOS();
+                mostrarMensagem('ordem_servico', 'Ordem devolvida ao t?cnico.');
+            } catch (erro) {
+                console.error(erro);
+                mostrarMensagem('ordem_servico', 'N?o foi poss?vel devolver a ordem. Reabra a edi??o e tente novamente.', 'erro');
+            } finally {
+                devolver.disabled = false;
+            }
+        };
+        revisao.append(devolver);
     }
 
-    document.querySelector('#ordemServico')?.scrollIntoView({ behavior: 'smooth' });
+    idOSSendoEditada = id;
+    versaoOS = os.versao || 0;
+    execucaoOS = os.execucao?.enviadoEm;
+    campo('cancelarEdicaoOS').hidden = false;
+    campo('ordemServico').querySelector('[type="submit"]').textContent = 'Salvar ordem';
+    campo('ordemServico').scrollIntoView({ behavior: 'smooth' });
 }
-window.prepararEdicaoOS = prepararEdicaoOS;
-window.exibirHistoricoOS = exibirHistoricoOS;
+
+function limparEdicaoOS() {
+    idOSSendoEditada = null;
+    versaoOS = 0;
+    execucaoOS = undefined;
+    campo('ordemServico').reset();
+    campo('tecnicoOS').disabled = false;
+    campo('cancelarEdicaoOS').hidden = true;
+    campo('revisaoOS').hidden = true;
+    campo('ordemServico').querySelector('[type="submit"]').textContent = 'Abrir Ordem de Servi?o';
+    editor.preencher(null);
+}
 
 async function salvarOrdemServico(dados) {
-    if (!usuarioAtual) throw new Error('Usuário não autenticado.');
-
-    if (emModoEdicaoOS && idOSSendoEditada) {
-        const atual = historicoOS.find(item => item.id === idOSSendoEditada);
-        await update(ref(db, `ordensServico/${idOSSendoEditada}`), {
-            ...dados,
-            data: atual?.data || new Date().toLocaleString('pt-BR'),
-            atualizadoEm: serverTimestamp(),
-            atualizadoPor: usuarioAtual.uid
-        });
-        await registrarAuditoria('Manutenção: ordem de serviço atualizada', `OS ${idOSSendoEditada} atualizada.`, 'info');
-        mostrarMensagem('ordem_servico', '✅ Ordem de Serviço atualizada com sucesso!');
-    } else {
-        const novaRef = push(ref(db, 'ordensServico'));
-        await set(novaRef, {
+    const uid = usuarioAtual?.uid;
+    if (!uid) throw new Error('Sess?o expirada.');
+    const ordens = ref(db, 'ordensServico');
+    const id = idOSSendoEditada;
+    if (!id) {
+        if (dados.status === 'concluido') throw new Error('Abra a ordem antes de conclu?-la.');
+        await set(push(ordens), {
             ...dados,
             data: new Date().toLocaleString('pt-BR'),
-            criadoEm: serverTimestamp(),
-            atualizadoEm: serverTimestamp(),
-            criadoPor: usuarioAtual.uid,
-            atualizadoPor: usuarioAtual.uid
+            criadoEm: serverTimestamp(), atualizadoEm: serverTimestamp(),
+            criadoPor: uid, atualizadoPor: uid, versao: 1
         });
-        await registrarAuditoria('Manutenção: ordem de serviço criada', `OS da máquina ${dados.maquina || 'sem máquina'} criada.`, 'info');
-        mostrarMensagem('ordem_servico', '🚀 Ordem de Serviço aberta com sucesso!');
+        void registrarAuditoria('Manuten??o: ordem aberta', dados.maquina, 'info');
+        return;
     }
 
-    emModoEdicaoOS = false;
-    idOSSendoEditada = null;
-    const btnSub = document.querySelector('#ordemServico button[type="submit"]');
-    if (btnSub) {
-        btnSub.textContent = 'Abrir Ordem de Serviço';
-        btnSub.style.background = '';
+    const ordem = ref(db, `ordensServico/${id}`);
+    const atual = (await get(ordem)).val();
+    if (!atual) throw new Error('Ordem indispon?vel.');
+    if (atual.status === 'concluido') throw new Error('Esta ordem j? foi conclu?da.');
+    if ((atual.versao || 0) !== versaoOS || atual.execucao?.enviadoEm !== execucaoOS) {
+        throw new Error('A ordem mudou. Abra a edi??o novamente para revisar os dados.');
     }
-    document.querySelector('#ordemServico')?.reset();
+    if (atual.execucao && dados.tecnicoUid !== atual.tecnicoUid) throw new Error('Devolva a revis?o antes de trocar o t?cnico.');
+
+    const campos = {
+        ...dados,
+        atualizadoEm: serverTimestamp(),
+        atualizadoPor: uid,
+        versao: versaoOS + 1
+    };
+
+    if (dados.status !== 'concluido') {
+        await update(ordem, campos);
+        void registrarAuditoria('Manuten??o: ordem atualizada', `OS ${id} atualizada.`, 'info');
+        return;
+    }
+
+    if ((atual.tecnicoUid || dados.tecnicoUid) && !atual.execucao) {
+        throw new Error('Aguarde o t?cnico enviar a ordem para revis?o antes de concluir.');
+    }
+    const estoque = (await get(ref(db, 'estoque'))).val() || {};
+    for (const [pecaId, peca] of Object.entries(dados.pecas || {})) {
+        if (Number(estoque[pecaId]?.quantidade ?? -1) < peca.quantidade) {
+            throw new Error(`Saldo insuficiente para ${peca.nome}.`);
+        }
+    }
+
+    const chaveOrdem = `ordensServico/${id}`;
+    const alteracoes = {};
+    Object.entries({
+        ...campos,
+        encerradaEm: serverTimestamp(),
+        encerradaPor: uid,
+        revisaoConfirmadaEm: atual.execucao?.enviadoEm ?? null
+    }).forEach(([chave, valor]) => { alteracoes[`${chaveOrdem}/${chave}`] = valor; });
+    for (const [pecaId, peca] of Object.entries(dados.pecas || {})) {
+        alteracoes[`estoque/${pecaId}/quantidade`] = increment(-peca.quantidade);
+        alteracoes[`estoque/${pecaId}/atualizadoEm`] = new Date().toISOString();
+        alteracoes[`estoque/${pecaId}/atualizadoPor`] = uid;
+    }
+    alteracoes[`movimentacoesOS/${id}`] = {
+        encerradaEm: serverTimestamp(), gestorUid: uid, maquinaId: dados.maquinaId, pecas: dados.pecas
+    };
+    const logId = push(ref(db, 'auditoria')).key;
+    alteracoes[`auditoria/${logId}`] = {
+        id: logId, dataHora: new Date().toISOString(), usuario: usuarioAtual.email || uid, usuarioUid: uid,
+        acao: 'Manuten??o: ordem conclu?da',
+        detalhe: `OS ${id} ? ${dados.maquina}. ${resumoPecas(dados.pecas) || 'Sem pe?as utilizadas.'}`,
+        criticidade: 'info'
+    };
+    await update(ref(db), alteracoes);
 }
 
 function iniciarListenersFirebase() {
@@ -324,21 +434,97 @@ function iniciarListenersFirebase() {
 
     onValue(ref(db, 'maquinas'), (snapshot) => {
         const dados = snapshot.val() || {};
-        listaMaquinas = Object.entries(dados).map(([id, valor]) => ({ id, ...valor }));
+        listaMaquinas = Object.entries(dados).map(([id, valor]) => ({
+            ...valor, id,
+            nome: valor.nome || valor.nomeMaquina,
+            modelo: valor.modelo || valor.modeloMaquina,
+            serie: valor.serie || valor.numeroDeSerie
+        }));
         listaMaquinas.sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR'));
         exibirMaquinas(document.querySelector('#buscaNomeMaquinas')?.value || '');
         atualizarSelectMaquinas();
+        atualizarFicha();
     });
 
     onValue(ref(db, 'ordensServico'), (snapshot) => {
         const dados = snapshot.val() || {};
-        historicoOS = Object.entries(dados).map(([id, valor]) => ({ id, ...valor }));
-        historicoOS.sort((a, b) => String(b.data || '').localeCompare(String(a.data || ''), 'pt-BR'));
+        historicoOS = Object.entries(dados).map(([id, valor]) => ({
+            ...valor, id,
+            maquina: valor.maquina || valor.maquinaOs || valor.maquinaOS,
+            descricao: valor.descricao ?? valor.descricaoOs ?? valor.descricaoOS ?? '',
+            status: valor.status || valor.statusOs || 'pendente',
+            data: valor.data || (valor.criadoEm ? new Date(valor.criadoEm).toLocaleString('pt-BR') : '')
+        }));
+        historicoOS.sort((a, b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0));
         exibirHistoricoOS();
+        atualizarFicha();
+    }, erro => mostrarMensagem('ordem_servico', escaparHTML(erro.message), 'erro'));
+
+    onValue(ref(db, 'estoque'), async snap => {
+        const catalogo = Object.fromEntries(Object.entries(snap.val() || {}).map(([id, item]) => [id, item.nome]));
+        editor.atualizarCatalogo(catalogo);
+        try {
+            const anterior = (await get(ref(db, 'catalogoPecas'))).val() || {};
+            const mudancas = {};
+            for (const [id, nome] of Object.entries(catalogo)) {
+                if (typeof nome === 'string' && nome && anterior[id] !== nome) mudancas[id] = nome;
+            }
+            if (Object.keys(mudancas).length) await update(ref(db, 'catalogoPecas'), mudancas);
+        } catch (erro) {
+            console.error('N?o foi poss?vel sincronizar o cat?logo usado pelos t?cnicos.', erro);
+            campo('acessoTecnicoStatus').textContent = 'N?o foi poss?vel sincronizar o cat?logo de pe?as.';
+        }
+    });
+
+    onValue(ref(db, 'usuarios'), snap => {
+        const contas = Object.entries(snap.val() || {});
+        tecnicos = Object.fromEntries(contas.filter(([, perfil]) => perfil.tipo === 'tecnico'));
+        const contasDisponiveis = Object.fromEntries(contas.filter(([, perfil]) => ['usuario', 'cliente'].includes(perfil.tipo)));
+        atualizarOpcoesConta(campo('tecnicoOS'), tecnicos, 'Sem t?cnico atribu?do');
+        atualizarOpcoesConta(campo('contaTecnico'), contasDisponiveis, 'Selecione uma conta');
+        exibirHistoricoOS();
+    }, erro => {
+        console.error(erro);
+        campo('acessoTecnicoStatus').textContent = 'N?o foi poss?vel carregar as contas.';
     });
 }
 
+function atualizarFicha() {
+    const maquina = listaMaquinas.find(m => m.id === idFicha);
+    if (maquina) abrirFicha(maquina, historicoOS.filter(os => maquinaDaOrdem(os)?.id === maquina.id));
+    else if (idFicha) mostrarMensagem('dadosmaquina', 'Máquina não encontrada.');
+}
+
+function atualizarOpcoesConta(select, contas, placeholder) {
+    const selecionada = select.value;
+    select.replaceChildren(new Option(placeholder, ''));
+    Object.entries(contas).forEach(([id, perfil]) => select.add(new Option(perfil.email || perfil.nome || id, id)));
+    select.value = Object.hasOwn(contas, selecionada) ? selecionada : '';
+}
+
 function configurarEventos() {
+    campo('cancelarEdicaoOS').onclick = limparEdicaoOS;
+    campo('acessoTecnico').onsubmit = async (evento) => {
+        evento.preventDefault();
+        const botao = evento.currentTarget.querySelector('button');
+        if (botao.disabled) return;
+        botao.disabled = true;
+        try {
+            const id = campo('contaTecnico').value;
+            if (!id) return;
+            const perfilRef = ref(db, `usuarios/${id}`);
+            const perfil = (await get(perfilRef)).val();
+            if (!['usuario', 'cliente'].includes(perfil?.tipo)) throw new Error('A conta mudou. Atualize a lista.');
+            await update(perfilRef, { tipo: 'tecnico' });
+            campo('acessoTecnicoStatus').textContent = 'Acesso concedido. O t?cnico entra com a conta existente.';
+            void registrarAuditoria('Manuten??o: acesso t?cnico concedido', perfil.email || id);
+        } catch (erro) {
+            console.error(erro);
+            campo('acessoTecnicoStatus').textContent = 'N?o foi poss?vel conceder acesso.';
+        } finally {
+            botao.disabled = false;
+        }
+    };
     const formMaquinas = document.querySelector('#cadastroMaquinas');
     formMaquinas?.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -346,7 +532,8 @@ function configurarEventos() {
             nome: document.querySelector('#nomeMaquina')?.value?.trim() || '',
             modelo: document.querySelector('#modelo')?.value?.trim() || '',
             serie: document.querySelector('#numeroSerie')?.value?.trim() || '',
-            dataUltimaManutencao: document.querySelector('#dataUltimaManutencao')?.value || ''
+            dataUltimaManutencao: document.querySelector('#dataUltimaManutencao')?.value || '',
+            proximaPreventiva: campo('proximaPreventiva').value || null
         };
         try {
             await salvarMaquina(dados);
@@ -369,23 +556,32 @@ function configurarEventos() {
     const formOS = document.querySelector('#ordemServico');
     formOS?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const maquina = document.querySelector('#maquinaOS')?.value;
-        if (!maquina) {
-            mostrarMensagem('ordem_servico', '⚠️ Selecione uma máquina válida antes de abrir a Ordem de Serviço.', 'erro');
+        const botao = formOS.querySelector('[type="submit"]');
+        if (botao.disabled) return;
+        const maquina = listaMaquinas.find(item => item.id === campo('maquinaOS').value);
+        const descricao = campo('descricaoOS').value.trim();
+        if (!maquina || !descricao) {
+            mostrarMensagem('ordem_servico', 'Selecione a m?quina e informe a descri??o.', 'erro');
             return;
         }
-
-        const dados = {
-            maquina,
-            descricao: document.querySelector('#descricaoOS')?.value?.trim() || '',
-            status: document.querySelector('#statusOS')?.value || ''
-        };
-
+        botao.disabled = true;
         try {
-            await salvarOrdemServico(dados);
+            const status = campo('statusOS').value;
+            await salvarOrdemServico({
+                maquina: maquina.nome, maquinaId: maquina.id, descricao, status,
+                tecnicoUid: campo('tecnicoOS').value || null,
+                pecas: editor.ler()
+            });
+            limparEdicaoOS();
+            mostrarMensagem('ordem_servico', status === 'concluido' ? 'Ordem conclu?da e estoque atualizado.' : 'Ordem salva.');
         } catch (erro) {
             console.error(erro);
-            mostrarMensagem('ordem_servico', `❌ Não foi possível salvar a Ordem de Serviço: ${escaparHTML(erro.message)}`, 'erro');
+            const mensagem = erro.code === 'PERMISSION_DENIED'
+                ? 'Salvamento recusado. Confira se a ordem ou o saldo mudou e tente novamente.'
+                : erro.message;
+            mostrarMensagem('ordem_servico', escaparHTML(mensagem), 'erro');
+        } finally {
+            botao.disabled = false;
         }
     });
 
@@ -454,6 +650,7 @@ function importarExcel(event) {
                         nome: String(maquina.nome),
                         modelo: String(maquina.modelo || ''),
                         serie: String(maquina.serie || maquina['Número de Série'] || ''),
+                        proximaPreventiva: String(maquina.proximaPreventiva || ''),
                         dataUltimaManutencao: String(maquina.dataUltimaManutencao || maquina['Última Manutenção'] || ''),
                         criadoEm: serverTimestamp(),
                         atualizadoEm: serverTimestamp(),
@@ -508,6 +705,12 @@ onAuthStateChanged(auth, async (user) => {
         const snap = await get(ref(db, `usuarios/${user.uid}`));
         const perfil = snap.exists() ? snap.val() : {};
         if (perfil.tipo !== 'gestor') {
+            if (perfil.tipo === 'tecnico') {
+                const url = new URL('tecnico.html', location.href);
+                url.search = location.search;
+                location.replace(url);
+                return;
+            }
             alert('Acesso restrito. Apenas gestores podem acessar este painel.');
             window.location.href = `${BASE_URL}/site/Site C/pages/index.html`;
             return;

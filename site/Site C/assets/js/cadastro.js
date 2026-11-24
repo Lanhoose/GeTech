@@ -116,10 +116,7 @@ document.getElementById('cadastroForm')?.addEventListener('submit', async functi
         });
         await registrarAuditoria('Cadastro: usuário criado', `Perfil ${tipoUsuario} criado para ${nomeUsuario} (${emailUsuario}).`, 'info');
 
-        if (tipoUsuario === 'gestor') {
-            alert("✅ Perfil GESTOR cadastrado com sucesso! Redirecionando para o Painel...");
-            window.location.href = "sistema.html";
-        } else if (tipoUsuario === 'patrocinador') {
+        if (tipoUsuario === 'patrocinador') {
             alert("✅ Perfil PATROCINADOR cadastrado com sucesso! Redirecionando para o seu Painel...");
             window.location.href = "patrocinadores.html";
         } else {

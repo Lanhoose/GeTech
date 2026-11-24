@@ -85,13 +85,14 @@ form.addEventListener('submit', async (evento) => {
 
     botaoSalvar.disabled = true;
     try {
-        await set(push(depoimentosRef), {
+        await set(push(ref(db, 'depoimentosPendentes')), {
             nome, cargo, texto, nota,
             criadoEm: serverTimestamp(),
             criadoPor: user.uid
         });
         form.reset();
         overlay.classList.add('hidden');
+        status.textContent = 'Depoimento enviado. Ele aparecerá após a aprovação do gestor.';
     } catch (erro) {
         console.error('Erro ao salvar depoimento.', erro);
         alert(erro.code === 'PERMISSION_DENIED'

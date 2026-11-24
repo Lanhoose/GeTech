@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Moderação | GeTech</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/manutencao.css">
+</head>
+<body>
+    <script>document.documentElement.dataset.theme = localStorage.getItem('theme') || 'dark';</script>
+    <header class="header-modulo">
+        <div><small>GeTech</small><h2>Moderação</h2></div>
+        <a class="btn-voltar" href="../../app.html">Voltar ao painel</a>
+    </header>
+    <main class="app-container manutencao-tecnico">
+        <p id="statusModeracao" role="status"></p>
+        <section class="card-app" id="filaModeracao" hidden>
+            <h2>Blog</h2>
+            <div id="postsBlog"></div>
+            <h2>Depoimentos</h2>
+            <div id="depoimentos"></div>
+            <h2>Conteúdo oculto</h2>
+            <div id="ocultos"></div>
+        </section>
+    </main>
+    <script type="module" src="../../assets/js/moderacao.js"></script>
+</body>
+</html>

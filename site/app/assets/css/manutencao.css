@@ -1,3 +1,53 @@
+.app-container.manutencao-tecnico {
+    margin-top: calc(var(--header-height) + 1rem);
+}
+
+.peca-linha {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(4.5rem, 7rem) auto;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.peca-linha > * {
+    min-width: 0;
+}
+
+#fichaMaquina {
+    width: min(42rem, calc(100% - 2rem));
+    max-height: 85vh;
+    padding: 1.25rem;
+    background: var(--mod-card-bg);
+    color: var(--mod-label);
+    border: 1px solid var(--mod-input-border);
+    border-radius: 0.75rem;
+}
+
+#fichaMaquina::backdrop {
+    background: rgb(0 0 0 / 60%);
+}
+
+#qrMaquina img, .foto-servico {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0.5rem 0;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 420px) {
+    .peca-linha {
+        grid-template-columns: minmax(0, 1fr) minmax(4.5rem, 6rem);
+    }
+    .peca-linha button {
+        grid-column: 1 / -1;
+    }
+}
+
 :root,
 [data-theme="light"] {
     --mod-header-bg:    #2c3e50;

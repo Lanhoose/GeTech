@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minhas ordens | GeTech</title>
+    <link rel="stylesheet" href="../../assets/css/global.css">
+    <link rel="stylesheet" href="../../assets/css/manutencao.css">
+</head>
+<body>
+    <script>document.documentElement.dataset.theme = localStorage.getItem('theme') || 'dark';</script>
+    <header class="header-modulo">
+        <div><small>GeTech</small><h2>Área do técnico</h2></div>
+        <button id="sair" class="btn-voltar" type="button">Sair</button>
+    </header>
+    <main class="app-container manutencao-tecnico">
+        <section class="card-app">
+            <h2>Minhas ordens de serviço</h2>
+            <p id="statusTecnico" role="status"></p>
+            <div id="ordensTecnico"></div>
+            <template id="formExecucao">
+                <form class="app-form">
+                    <label>Serviço realizado
+                        <textarea rows="3" required maxlength="3000" name="relato"></textarea>
+                    </label>
+                    <label>Foto do serviço (opcional)
+                        <input type="file" accept="image/*" name="foto">
+                    </label>
+                    <fieldset>
+                        <legend>Peças usadas</legend>
+                        <div data-pecas></div>
+                        <button class="btn-app btn-outline-app" type="button" data-adicionar-peca>Adicionar peça</button>
+                    </fieldset>
+                    <button class="btn-app" type="submit">Enviar para revisão</button>
+                    <p role="status"></p>
+                </form>
+            </template>
+        </section>
+    </main>
+    <dialog id="fichaMaquina" aria-labelledby="tituloFichaMaquina">
+        <h2 id="tituloFichaMaquina"></h2>
+        <p id="dadosFichaMaquina"></p>
+        <a id="linkFichaMaquina">Link da ficha</a>
+        <h3>Histórico das suas ordens</h3>
+        <div id="historicoFichaMaquina"></div>
+        <form method="dialog"><button class="btn-app btn-outline-app">Fechar ficha</button></form>
+    </dialog>
+    <script type="module" src="../../assets/js/manutencao-tecnico.js"></script>
+</body>
+</html>

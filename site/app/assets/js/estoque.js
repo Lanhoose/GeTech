@@ -3,7 +3,7 @@
 // ==========================================================================
 import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { ref, get, push, set, update } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { ref, get, push, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 import { registrarAuditoria } from "./auditoria.js";
 
 const URL_LOGIN = "../../../Site C/pages/login.html";
@@ -66,27 +66,43 @@ async function movimentar(tipo) {
 
     const campo = document.querySelector('#valorMovimentacao');
     const valor = Number(campo?.value);
-    if (!valor || valor <= 0) return alert('Informe uma quantidade válida!');
+    if (!Number.isFinite(valor) || valor <= 0) return alert('Informe uma quantidade válida!');
 
-    const novaQtd = tipo === 'entrada' ? estoqueAtual + valor : estoqueAtual - valor;
-    if (novaQtd < 0) return alert('Estoque insuficiente para essa saída!');
-
-    await update(ref(db, `estoque/${itemAtualId}`), {
-        quantidade: novaQtd,
-        atualizadoEm: new Date().toISOString(),
-        atualizadoPor: usuarioAtual?.uid || null
-    });
-
-    await registrarAuditoria(
-        `Estoque: ${tipo}`,
-        `${nomeProdutoAtual}: ${tipo} de ${valor} un. (${estoqueAtual} → ${novaQtd}).`,
-        'info'
-    );
-
-    estoqueAtual = novaQtd;
-    if (campo) campo.value = '';
-    atualizarVisor();
-    await carregar();
+    const id = itemAtualId;
+    const botoes = ['#btnEntrada', '#btnSaida'].map(seletor => document.querySelector(seletor));
+    if (botoes.some(botao => botao?.disabled)) return;
+    botoes.forEach(botao => { if (botao) botao.disabled = true; });
+    const delta = tipo === 'entrada' ? valor : -valor;
+    const itemRef = ref(db, `estoque/${id}`);
+    try {
+        await get(itemRef);
+        const resultado = await runTransaction(itemRef, item => {
+            if (!item || !Number.isFinite(item.quantidade) || item.quantidade + delta < 0) return;
+            return {
+                ...item,
+                quantidade: item.quantidade + delta,
+                atualizadoEm: new Date().toISOString(),
+                atualizadoPor: usuarioAtual.uid
+            };
+        }, { applyLocally: false });
+        if (!resultado.committed) {
+            alert('Saldo insuficiente ou item indispon?vel.');
+            return;
+        }
+        const item = resultado.snapshot.val();
+        void registrarAuditoria(`Estoque: ${tipo}`, `${item.nome}: ${tipo} de ${valor} un. Saldo: ${item.quantidade}.`);
+        if (id === itemAtualId) {
+            estoqueAtual = item.quantidade;
+            if (campo) campo.value = '';
+            atualizarVisor();
+        }
+        await carregar();
+    } catch (erro) {
+        console.error(erro);
+        alert('N?o foi poss?vel movimentar o estoque.');
+    } finally {
+        botoes.forEach(botao => { if (botao) botao.disabled = false; });
+    }
 }
 
 document.querySelector('#btnEntrada')?.addEventListener('click', () => movimentar('entrada'));
@@ -102,19 +118,32 @@ document.querySelector('#btnRegistrar')?.addEventListener('click', async () => {
     if (!nome || qtd <= 0) return alert('Preencha os dados corretamente!');
     if (!usuarioAtual) return alert('Sessão expirada. Faça login novamente.');
 
-    const r = push(ref(db, 'estoque'));
-    await set(r, {
-        nome,
-        quantidade: qtd,
-        criadoEm: new Date().toISOString(),
-        atualizadoEm: new Date().toISOString(),
-        criadoPor: usuarioAtual.uid
-    });
-
-    await registrarAuditoria('Estoque: novo item', `Item ${nome} cadastrado com quantidade ${qtd}.`, 'info');
-    nomeEl.value = '';
-    qtdEl.value = '';
-    await carregar();
+    if (!Number.isFinite(qtd)) return alert('Informe uma quantidade v?lida.');
+    const botao = document.querySelector('#btnRegistrar');
+    if (botao.disabled) return;
+    botao.disabled = true;
+    const id = push(ref(db, 'estoque')).key;
+    try {
+        await update(ref(db), {
+            [`estoque/${id}`]: {
+                nome,
+                quantidade: qtd,
+                criadoEm: new Date().toISOString(),
+                atualizadoEm: new Date().toISOString(),
+                criadoPor: usuarioAtual.uid
+            },
+            [`catalogoPecas/${id}`]: nome
+        });
+        void registrarAuditoria('Estoque: novo item', `Item ${nome} cadastrado com quantidade ${qtd}.`);
+        nomeEl.value = '';
+        qtdEl.value = '';
+        await carregar();
+    } catch (erro) {
+        console.error(erro);
+        alert('N?o foi poss?vel cadastrar o item.');
+    } finally {
+        botao.disabled = false;
+    }
 });
 
 onAuthStateChanged(auth, async user => {

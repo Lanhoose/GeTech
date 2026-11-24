@@ -15,6 +15,16 @@ const SITE_ROOT = window.location.origin + "/GeTech/site";
 const URL_INDEX = `${SITE_ROOT}/public/pages/index.html`;
 const URL_APP = `${SITE_ROOT}/app/app.html`;
 
+function destinoPerfil(tipo) {
+    const maquina = new URLSearchParams(location.search).get('maquina');
+    if (tipo === 'gestor' && !maquina) return URL_APP;
+    if (tipo !== 'tecnico' && tipo !== 'gestor') return URL_INDEX;
+    const pagina = tipo === 'tecnico' ? 'tecnico' : 'manutencao';
+    const destino = new URL(`${SITE_ROOT}/app/modules/manutencao/${pagina}.html`);
+    if (maquina) destino.searchParams.set('maquina', maquina);
+    return destino.href;
+}
+
 window.BASE_URL = SITE_ROOT;
 
 function mostrarMensagem(elemento, texto, tipo) {
@@ -54,11 +64,7 @@ window.fazerLogin = async function fazerLogin() {
         mostrarMensagem(msg, "Login realizado com sucesso!", "sucesso");
 
         setTimeout(() => {
-            if ((dados.tipo || "").toLowerCase() === "gestor") {
-                window.location.href = URL_APP;
-            } else {
-                window.location.href = URL_INDEX;
-            }
+            window.location.href = destinoPerfil(dados.tipo);
         }, 500);
 
     } catch (erro) {
@@ -153,11 +159,8 @@ onAuthStateChanged(auth, async (user) => {
         if (!snap.exists()) return;
 
         const dados = snap.val();
-        if ((dados.tipo || "").toLowerCase() === "gestor") {
-            // Só redireciona se esta for a página de login.
-            if (window.location.pathname.endsWith("/login.html")) {
-                window.location.href = URL_APP;
-            }
+        if (['gestor', 'tecnico'].includes(dados.tipo) && location.pathname.endsWith('/login.html')) {
+            window.location.href = destinoPerfil(dados.tipo);
         }
     } catch (erro) {
         console.error("Erro ao verificar sessão Firebase:", erro);
