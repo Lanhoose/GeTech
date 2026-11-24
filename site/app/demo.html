@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GeTech | Demonstração</title>
+    <link rel="stylesheet" href="assets/css/app.css">
+    <style>
+        main { width: min(52rem, calc(100% - 2rem)); margin: 2rem auto; }
+        section { margin-top: 1rem; }
+        form, .demo-acoes { display: flex; gap: .75rem; flex-wrap: wrap; align-items: center; }
+        label, h2 { margin-bottom: .5rem; }
+        input, textarea, button { font: inherit; padding: .55rem; max-width: 100%; }
+        [hidden] { display: none !important; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>GeTech — Demonstração</h1>
+        <p>Experimente uma ordem de serviço com dados fictícios, salvos neste navegador.</p>
+        <div class="demo-acoes">
+            <a href="../public/pages/login.html">Voltar ao login</a>
+            <button id="reiniciar" type="button">Reiniciar teste</button>
+        </div>
+        <section class="card">
+            <h2>Estoque</h2>
+            <p id="saldo"></p>
+        </section>
+        <section class="card">
+            <h2>Ordem de serviço — Torno CNC</h2>
+            <p id="situacao" role="status"></p>
+            <form id="servico">
+                <label>Serviço realizado <input name="relato" placeholder="Ex. Troca do filtro" required maxlength="160"></label>
+                <label>Filtros usados <input name="quantidade" type="number" min="0" max="100" value="1" required></label>
+                <button>Enviar para revisão</button>
+            </form>
+            <div id="revisao" class="demo-acoes" hidden>
+                <button id="concluir" type="button">Concluir e baixar estoque</button>
+                <button id="devolver" type="button">Devolver para ajuste</button>
+            </div>
+        </section>
+        <section class="card">
+            <h2>Histórico da máquina e auditoria</h2>
+            <p id="historico"></p>
+        </section>
+    </main>
+    <script type="module" src="assets/js/demo.js"></script>
+</body>
+</html>

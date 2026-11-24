@@ -1,6 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { getAuth, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import { getDatabase, connectDatabaseEmulator } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+
+export const ambienteTeste = location.origin === 'http://127.0.0.1:8765';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCCi1lxIFfVibbHZ03qRHMgVjiHHsw2aDs",
@@ -12,6 +14,15 @@ const firebaseConfig = {
   appId: "1:1024669001098:web:64fb016d59d01872945473"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(ambienteTeste ? {
+  apiKey: 'demo-getech-local',
+  projectId: 'demo-getech',
+  databaseURL: 'https://demo-getech-default-rtdb.firebaseio.com'
+} : firebaseConfig);
 export const auth = getAuth(app);
 export const db = getDatabase(app);
+
+if (ambienteTeste) {
+  connectAuthEmulator(auth, 'http://127.0.0.1:9099');
+  connectDatabaseEmulator(db, '127.0.0.1', 9000);
+}
