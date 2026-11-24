@@ -21,6 +21,7 @@
 
         <section class="feed-section">
             <h2>🚀 Feed da Comunidade</h2>
+            <p id="feedStatus" role="status"></p>
             <div id="feedContainer" class="feed-container">
                 </div>
         </section>
@@ -34,7 +35,7 @@
                 <p class="text-muted mb-4">Preencha os dados abaixo para publicar no feed.</p>
                 
                 <form id="maintenanceForm">
-                    <input type="text" id="machineName" placeholder="Título da sua postagem..." required>
+                    <input type="text" id="machineName" placeholder="Título da sua postagem..." maxlength="150" required>
                     
                     <select id="type">
                         <option value="❓ Dúvida">❓ Dúvida</option>
@@ -43,7 +44,7 @@
                         <option value="🚀 Notícia">🚀 Notícia</option>
                     </select>
                     
-                    <textarea id="description" rows="5" placeholder="Escreva aqui o conteúdo do seu post..." required></textarea>
+                    <textarea id="description" rows="5" placeholder="Escreva aqui o conteúdo do seu post..." maxlength="5000" required></textarea>
                     
                     <button type="submit" class="btn-submit">Publicar no Feed</button>
                 </form>

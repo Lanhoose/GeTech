@@ -19,10 +19,10 @@
             <!-- OVERLAY / MODAL -->
             <div id="form-overlay" class="overlay hidden">
                 <section id="form-container" class="form-modal">
-                    <div class="form-card">
+                    <form id="form-depoimento" class="form-card">
                         <h3>Compartilhe sua Experiência</h3>
-                        <input type="text" id="nome" placeholder="Nome Completo">
-                        <input type="text" id="cargo" placeholder="Cargo e Empresa">
+                        <input type="text" id="nome" placeholder="Nome Completo" maxlength="120" required>
+                        <input type="text" id="cargo" placeholder="Cargo e Empresa" maxlength="150" required>
                         <select id="nota">
                             <option value="★★★★★">5 Estrelas</option>
                             <option value="★★★★☆">4 Estrelas</option>
@@ -30,17 +30,18 @@
                             <option value="★★☆☆☆">2 Estrelas</option>
                             <option value="★☆☆☆☆">1 Estrela</option>
                         </select>
-                        <textarea id="texto" placeholder="Seu depoimento..."></textarea>
+                        <textarea id="texto" placeholder="Seu depoimento..." maxlength="2000" required></textarea>
                         
                         <div class="form-actions">
-                            <button id="btn-salvar">Salvar Depoimento</button>
-                            <button id="btn-cancelar">Cancelar</button>
+                            <button type="submit" id="btn-salvar">Salvar Depoimento</button>
+                            <button type="button" id="btn-cancelar">Cancelar</button>
                         </div>
-                    </div>
+                    </form>
                 </section>
             </div>
 
             <!-- GRID DE DEPOIMENTOS -->
+            <p id="depoimentos-status" role="status"></p>
             <div class="testimonials-grid" id="grid-depoimentos">
 
                 <article class="card">
@@ -96,7 +97,7 @@
 
     <script type="module" src="../assets/js/component.js"></script>
     <script type="module" src="../assets/js/protecao-gestor.js"></script>
-    <script src="../assets/js/depoimentos.js"></script>
+    <script type="module" src="../assets/js/depoimentos.js"></script>
     <script  type="module" src="../assets/js/verificacaologin.js"></script>
     <script src="../assets/js/acessibilidade.js"></script>
     <script type="module" src="../../app/assets/js/logs.js"></script>

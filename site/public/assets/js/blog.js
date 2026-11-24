@@ -3,8 +3,7 @@ import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/f
 import { ref, get, push, set, onValue, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
-let usuarioAtual = null;
-let perfilAtual = {};
+let pararFeed;
 
 const postsIniciais = [
     {
@@ -43,10 +42,13 @@ function escaparHTML(valor) {
 }
 
 async function carregarPerfil(user) {
-    if (!user) return {};
-    const snap = await get(ref(db, `usuarios/${user.uid}`));
-    perfilAtual = snap.exists() ? snap.val() : {};
-    return perfilAtual;
+    try {
+        const snap = await get(ref(db, `usuarios/${user.uid}`));
+        return snap.val() || {};
+    } catch (erro) {
+        console.warn('Não foi possível carregar o perfil do autor.', erro);
+        return {};
+    }
 }
 
 function createPostCard(post) {
@@ -88,26 +90,33 @@ function fecharModal() {
     if (modal) modal.style.display = 'none';
 }
 
-async function carregarFeed() {
-    const feedContainer = document.getElementById('feedContainer');
-    if (!feedContainer) return;
-
+function carregarFeed(user) {
+    pararFeed?.();
     renderizarPosts(postsIniciais);
+    const status = document.getElementById('feedStatus');
+    status.textContent = '';
+    if (!user) return;
 
-    onValue(ref(db, 'postsBlog'), (snapshot) => {
+    pararFeed = onValue(ref(db, 'postsBlog'), (snapshot) => {
         const dados = snapshot.val() || {};
         const postsFirebase = Object.entries(dados)
             .map(([id, post]) => ({ id, ...post }))
             .sort((a, b) => Number(b.criadoEm || 0) - Number(a.criadoEm || 0));
 
         renderizarPosts([...postsFirebase, ...postsIniciais]);
+    }, (erro) => {
+        console.error('Erro ao carregar o blog.', erro);
+        status.textContent = 'Não foi possível carregar as publicações da comunidade.';
     });
 }
 
 async function publicarPost(evento) {
     evento.preventDefault();
     const form = evento.currentTarget;
-    if (!usuarioAtual) {
+    const botao = form.querySelector('[type="submit"]');
+    if (botao.disabled) return;
+    const user = auth.currentUser;
+    if (!user) {
         alert('Faça login para publicar no blog.');
         return;
     }
@@ -117,40 +126,45 @@ async function publicarPost(evento) {
     const desc = document.getElementById('description')?.value.trim();
     if (!title || !type || !desc) return;
 
-    const autorNome = perfilAtual.nome || usuarioAtual.displayName || usuarioAtual.email?.split('@')[0] || 'Desenvolvedor GeTech';
-    const autorEmail = usuarioAtual.email || perfilAtual.email || '';
     const currentDate = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
+    botao.disabled = true;
     try {
+        const perfil = await carregarPerfil(user);
+        if (auth.currentUser?.uid !== user.uid) {
+            alert('Sua sessão mudou. Entre novamente para publicar.');
+            return;
+        }
         const novaRef = push(ref(db, 'postsBlog'));
         await set(novaRef, {
             title,
             type,
             date: currentDate,
             desc,
-            authorName: autorNome,
-            authorEmail: autorEmail,
+            authorName: perfil.nome || user.displayName || user.email?.split('@')[0] || 'Desenvolvedor GeTech',
+            authorEmail: user.email || perfil.email || '',
             criadoEm: serverTimestamp(),
-            criadoPor: usuarioAtual.uid
+            criadoPor: user.uid
         });
 
-        await registrarAuditoria('Blog: post publicado', `Post '${title}' publicado.`, 'info');
         form.reset();
         fecharModal();
+        void registrarAuditoria('Blog: post publicado', `Post '${title}' publicado.`, 'info')
+            .catch(erro => console.warn('Não foi possível registrar a auditoria do post.', erro));
     } catch (erro) {
         console.error(erro);
-        alert('Não foi possível publicar o post no Firebase.');
+        alert(erro.code === 'PERMISSION_DENIED'
+            ? 'O banco recusou a publicação. Verifique as permissões do blog com o administrador.'
+            : 'Não foi possível publicar. Tente novamente.');
+    } finally {
+        botao.disabled = false;
     }
 }
 
 window.abrirModalPost = abrirModal;
 window.fecharModalPost = fecharModal;
 
-onAuthStateChanged(auth, async (user) => {
-    usuarioAtual = user;
-    if (user) await carregarPerfil(user);
-    await carregarFeed();
-});
+onAuthStateChanged(auth, carregarFeed);
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('openModalBtn')?.addEventListener('click', abrirModal);
