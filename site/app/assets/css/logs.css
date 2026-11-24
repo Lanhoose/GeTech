@@ -679,3 +679,9 @@ body {
     color: var(--text-secondary);
     word-break: break-all;
 }
+
+@media (max-width: 576px) {
+    .filter-bar { display: grid; grid-template-columns: minmax(0, 1fr); }
+    .filter-bar .filter-group { min-width: 0; width: 100%; }
+    .filter-bar input, .filter-bar select { box-sizing: border-box; min-width: 0; width: 100%; }
+}

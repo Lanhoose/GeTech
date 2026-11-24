@@ -39,7 +39,8 @@
             </div>
             <div class="card" style="margin-top: 20px;">
                 <h3>Itens no Pátio (Aguardando Liberação)</h3>
-                <table>
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela de itens">
+                    <table>
                     <thead>
                         <tr>
                             <th>Produto</th>
@@ -49,6 +50,7 @@
                     </thead>
                     <tbody id="corpoTabela"></tbody>
                 </table>
+                </div>
             </div>
         </div>
 
@@ -58,6 +60,7 @@
                 <h2 id="produtoSelecionado">Nenhum item selecionado</h2>
                 <div id="visorQtd" class="visor">0</div>
                 <input type="number" id="valorMovimentacao" placeholder="Quantidade">
+                <p id="previsaoSaida" aria-live="polite"></p>
                 <div style="display: flex; gap: 10px;">
                     <button id="btnEntrada" style="background: #27ae60;">+ Entrada</button>
                     <button id="btnSaida"   style="background: #c0392b;">- Saída</button>

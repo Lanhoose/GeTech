@@ -57,6 +57,9 @@
                 <label for="filtroDataFim">Até</label>
                 <input type="date" id="filtroDataFim" />
             </div>
+            <label class="filter-group">Usuário<input type="search" id="filtroUsuario" placeholder="Nome, e-mail ou ID"></label>
+            <label class="filter-group">Ação<input type="search" id="filtroAcao" placeholder="Ex. ordem concluída"></label>
+            <span id="statusFiltros" role="status"></span>
             <button class="btn-filter-clear" onclick="limparFiltros()" title="Limpar filtros">✕ Limpar</button>
         </section>
 
@@ -115,33 +118,33 @@
         // ── FILTROS ─────────────────────────────────────────────────────────
         let _logsCache = [];
 
-        function aplicarFiltros() {
-            const texto       = document.getElementById('filtroTexto').value.toLowerCase().trim();
-            const criticidade = document.getElementById('filtroCriticidade').value;
-            const dataInicio  = document.getElementById('filtroDataInicio').value;  
-            const dataFim     = document.getElementById('filtroDataFim').value;
+        const camposFiltro = ['filtroTexto', 'filtroUsuario', 'filtroAcao', 'filtroCriticidade', 'filtroDataInicio', 'filtroDataFim'];
+        const normalizar = valor => String(valor ?? '').normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+        const diaLocal = new Intl.DateTimeFormat('sv-SE', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
-            const filtrados = _logsCache.filter(log => {
-                const haystack = [log.id, log.usuario, log.usuarioEmail, log.acao, log.detalhe].join(' ').toLowerCase();
-                if (texto && !haystack.includes(texto)) return false;
-                if (criticidade && log.criticidade !== criticidade) return false;
-
-                const dataLog = log.dataHora.slice(0, 10); 
-                if (dataInicio && dataLog < dataInicio) return false;
-                if (dataFim    && dataLog > dataFim)    return false;
-
-                return true;
+        function logsFiltrados() {
+            const [busca, usuario, acao, criticidade, inicio, fim] = camposFiltro.map(id => document.getElementById(id).value);
+            const intervaloInvalido = Boolean(inicio && fim && inicio > fim);
+            document.getElementById('statusFiltros').textContent = intervaloInvalido ? 'A data inicial deve ser anterior ou igual à final.' : '';
+            if (intervaloInvalido) return [];
+            return _logsCache.filter(log => {
+                const data = new Date(log.dataHora);
+                const dia = Number.isFinite(data.getTime()) ? diaLocal.format(data) : '';
+                return normalizar([log.id, log.usuario, log.usuarioEmail, log.acao, log.detalhe].join(' ')).includes(normalizar(busca))
+                    && normalizar([log.usuario, log.usuarioEmail, log.usuarioUid].join(' ')).includes(normalizar(usuario))
+                    && normalizar(log.acao).includes(normalizar(acao))
+                    && (!criticidade || log.criticidade === criticidade)
+                    && (!(inicio || fim) || (dia && (!inicio || dia >= inicio) && (!fim || dia <= fim)));
             });
+        }
 
-            renderizarLogs(filtrados);
+        function aplicarFiltros() {
+            renderizarLogs(logsFiltrados());
         }
 
         function limparFiltros() {
-            document.getElementById('filtroTexto').value       = '';
-            document.getElementById('filtroCriticidade').value = '';
-            document.getElementById('filtroDataInicio').value  = '';
-            document.getElementById('filtroDataFim').value     = '';
-            renderizarLogs(_logsCache);
+            camposFiltro.forEach(id => { document.getElementById(id).value = ''; });
+            aplicarFiltros();
         }
 
         // ── RENDERIZAÇÃO ────────────────────────────────────────────────────
@@ -163,27 +166,37 @@
     }
 
     logs.forEach(log => {
-        const dataFormatada = new Date(log.dataHora).toLocaleString('pt-BR');
+        const data = new Date(log.dataHora);
         const row = document.createElement('tr');
-        
-        // Define a criticidade padrão caso venha vazia ou indefinida
-        const criticidadeClasse = log.criticidade ? log.criticidade.toLowerCase() : 'info';
-
-        row.innerHTML = `
-            <td class="log-id">${log.id}</td>
-            <td class="log-date">${dataFormatada}</td>
-            <td class="log-user"><strong>${log.usuario}</strong>${log.usuarioEmail && log.usuarioEmail !== log.usuario ? `<br><small class="log-email">${String(log.usuarioEmail).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</small>` : ''}</td>
-            <td class="log-action">${log.acao}</td>
-            <td class="log-detail" title="${log.detalhe}">${log.detalhe}</td>
-            <td><span class="badge-status-log badge-${criticidadeClasse}">${criticidadeClasse.toUpperCase()}</span></td>
-        `;
+        const valores = [log.id, Number.isFinite(data.getTime()) ? data.toLocaleString('pt-BR') : '—',
+            log.usuario, log.acao, log.detalhe];
+        const classes = ['log-id', 'log-date', 'log-user', 'log-action', 'log-detail'];
+        valores.forEach((valor, indice) => {
+            const celula = row.insertCell();
+            celula.className = classes[indice];
+            celula.textContent = valor;
+        });
+        if (log.usuarioEmail && log.usuarioEmail !== log.usuario) {
+            const email = document.createElement('small');
+            email.className = 'log-email';
+            email.textContent = log.usuarioEmail;
+            row.cells[2].append(document.createElement('br'), email);
+        }
+        const os = log.ordemServicoId || (/^OS ([\w-]+)\s/.exec(log.detalhe) || [])[1];
+        if (/^[\w-]+$/.test(os || '') && normalizar(log.acao) === 'manutencao: ordem concluida') {
+            const link = document.createElement('a');
+            link.href = '../manutencao/manutencao.html?' + new URLSearchParams({ os });
+            link.textContent = 'Abrir ordem';
+            row.cells[4].append(document.createElement('br'), link);
+        }
+        const criticidade = ['info', 'aviso', 'critico'].includes(log.criticidade) ? log.criticidade : 'info';
+        const badge = document.createElement('span');
+        badge.className = 'badge-status-log badge-' + criticidade;
+        badge.textContent = String(log.criticidade || 'info').toUpperCase();
+        row.insertCell().append(badge);
         tbody.appendChild(row);
     });
 }
-        // Disponibiliza a renderização para o listener em tempo real do logs.js.
-        // Isso garante atualização imediata quando outro módulo grava no Firebase.
-        window.renderizarLogs = renderizarLogs;
-
         async function carregarTabelaLogs() {
             if (!window.Auditoria) {
                 console.warn('[Logs] Auditoria ainda não foi carregado.');
@@ -192,11 +205,11 @@
 
             try {
                 _logsCache = await window.Auditoria.obterLogs();
-                renderizarLogs(_logsCache);
+                aplicarFiltros();
             } catch (erro) {
                 console.error('[Logs] Erro ao carregar tabela:', erro);
                 _logsCache = [];
-                renderizarLogs(_logsCache);
+                aplicarFiltros();
             }
         }
 
@@ -224,26 +237,18 @@
         });
 
         function exportarLogs() {
-            const logsVisiveis = _logsCache.filter(log => {
-                const texto       = document.getElementById('filtroTexto').value.toLowerCase().trim();
-                const criticidade = document.getElementById('filtroCriticidade').value;
-                const dataInicio  = document.getElementById('filtroDataInicio').value;
-                const dataFim     = document.getElementById('filtroDataFim').value;
-                const haystack    = [log.id, log.usuario, log.usuarioEmail, log.acao, log.detalhe].join(' ').toLowerCase();
-                const dataLog     = log.dataHora.slice(0, 10);
-                if (texto       && !haystack.includes(texto))    return false;
-                if (criticidade && log.criticidade !== criticidade) return false;
-                if (dataInicio  && dataLog < dataInicio)          return false;
-                if (dataFim     && dataLog > dataFim)             return false;
-                return true;
-            });
+            const logsVisiveis = logsFiltrados();
 
             if (logsVisiveis.length === 0) return alert("Não há registros para exportar.");
 
-            let csv = "ID;Data/Hora;Usuario;Email;Acao;Detalhe;Criticidade\n";
-            logsVisiveis.forEach(l => {
-                csv += `${l.id};${l.dataHora};${l.usuario};${l.usuarioEmail || ''};${l.acao};"${l.detalhe}";${l.criticidade}\n`;
-            });
+            const campoCsv = valor => {
+                const texto = String(valor ?? '');
+                const seguro = /^[\s]*[=+@-]/.test(texto) ? "'" + texto : texto;
+                return '"' + seguro.replaceAll('"', '""') + '"';
+            };
+            const linhas = logsVisiveis.map(l => [l.id, l.dataHora, l.usuario, l.usuarioEmail, l.acao, l.detalhe, l.criticidade]
+                .map(campoCsv).join(';'));
+            const csv = ['ID;Data/Hora;Usuario;Email;Acao;Detalhe;Criticidade', ...linhas].join('\r\n');
 
             const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
@@ -260,10 +265,7 @@
             await carregarTabelaLogs();
 
             // Atribui os escutadores dos filtros em tempo real
-            document.getElementById('filtroTexto').addEventListener('input', aplicarFiltros);
-            document.getElementById('filtroCriticidade').addEventListener('change', aplicarFiltros);
-            document.getElementById('filtroDataInicio').addEventListener('change', aplicarFiltros);
-            document.getElementById('filtroDataFim').addEventListener('change', aplicarFiltros);
+            camposFiltro.forEach(id => document.getElementById(id).addEventListener('input', aplicarFiltros));
 
             // Executa a remoção do track invisível de forma uniforme e cadenciada para os 3 blocos
             setTimeout(() => {

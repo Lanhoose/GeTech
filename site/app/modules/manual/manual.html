@@ -372,10 +372,12 @@
         <details class="manual-page">
           <summary>${pg.title}<span class="manual-file">${pg.file}</span></summary>
           <div class="manual-purpose">${pg.purpose}</div>
-          <table>
+          <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela de instruções">
+              <table>
             <tr><th>Elemento</th><th>Tipo</th><th>O que faz</th></tr>
             ${pg.rows.map(r=>`<tr><td>${r[0]}</td><td><span class="manual-badge ${badgeFor(r[1])}">${r[1]}</span></td><td>${r[2]}</td></tr>`).join('')}
           </table>
+          </div>
         </details>
       `).join('');
     }

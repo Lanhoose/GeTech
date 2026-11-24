@@ -54,7 +54,8 @@
             <button class="btn-add" onclick="adicionarItem()">Adicionar</button>
         </div>
 
-        <table id="tabela">
+        <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela de orçamentos">
+            <table id="tabela">
             <thead>
                 <tr>
                     <th>Item</th>
@@ -66,6 +67,7 @@
             </thead>
             <tbody></tbody>
         </table>
+        </div>
 
         <div class="total-container">
             Total: <span>R$ <span id="valorTotal">0,00</span></span>

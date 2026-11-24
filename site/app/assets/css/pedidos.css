@@ -876,3 +876,9 @@ body.dark-mode .frete-card { box-shadow: 0 4px 15px rgba(0,0,0,0.35); }
         text-align: center;
     }
 }
+
+.modal-content { box-sizing: border-box; max-height: 90dvh; }
+.kanban-board > *, .form-grid > * { min-width: 0; }
+@media (max-width: 500px) {
+    .modal-content { padding: 16px; }
+}

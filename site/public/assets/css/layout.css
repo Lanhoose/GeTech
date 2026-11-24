@@ -878,3 +878,9 @@ main { flex: 1; }
         width: 100%;
     }
 }
+
+.user-logged, .footer-col { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 800px) {
+    .menu { max-height: min(65dvh, 480px); }
+    .menu a, .auth a { min-height: 44px; }
+}

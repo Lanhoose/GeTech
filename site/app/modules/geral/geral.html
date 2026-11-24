@@ -85,7 +85,8 @@
 
             <div class="doc-section">
                 <h2><i class="fas fa-layer-group"></i> Tecnologias Utilizadas</h2>
-                <table class="tech-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="tech-table">
                     <thead>
                         <tr><th>Tecnologia</th><th>Uso no Projeto</th><th>Onde Aparece</th></tr>
                     </thead>
@@ -103,6 +104,7 @@
                         <tr><td><code>localStorage</code></td><td>Somente preferência de tema (claro/escuro)</td><td><code>app.js</code>, <code>logs.js</code></td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 
@@ -190,7 +192,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             <div class="doc-section">
                 <h2><i class="fas fa-shield-alt"></i> Autenticação (Firebase)</h2>
                 <p>Toda a configuração fica em um único arquivo — <code>Site C/assets/js/firebase-config.js</code> — que exporta <code>auth</code> e <code>db</code>. Os módulos do <code>app/</code> importam esse mesmo arquivo por caminho relativo.</p>
-                <table class="auth-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="auth-table">
                     <thead>
                         <tr><th>Etapa</th><th>Arquivo</th><th>O que acontece</th></tr>
                     </thead>
@@ -202,6 +205,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                         <tr><td>5. Logout</td><td><code>app.js</code></td><td>Registra a auditoria, executa <code>signOut()</code> e volta ao portal</td></tr>
                     </tbody>
                 </table>
+                </div>
                 <div class="code-block" style="margin-top:16px;">
 <span class="cm">// padrão de proteção usado em todos os módulos</span>
 <span class="fn">onAuthStateChanged</span>(auth, <span class="kw">async</span> (user) =&gt; {
@@ -238,7 +242,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             <div class="doc-section">
                 <h2><i class="fas fa-database"></i> Nós do Realtime Database</h2>
                 <p>Estrutura de dados usada pelo projeto. Com exceção dos nós de leitura autenticada, todos exigem perfil <code>gestor</code>.</p>
-                <table class="tech-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="tech-table">
                     <thead><tr><th>Nó</th><th>Conteúdo</th><th>Escrito por</th></tr></thead>
                     <tbody>
                         <tr><td><code>usuarios/{uid}</code></td><td>Nome, e-mail, tipo (gestor / cliente) e foto</td><td><code>cadastro.js</code>, <code>configuracoes.js</code></td></tr>
@@ -253,6 +258,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                         <tr><td><code>chamadosChatbot</code></td><td>Chamados abertos pelo chat do Site C</td><td><code>chat.js</code>, <code>mensagem.js</code></td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <div class="section-divider"></div>
@@ -270,7 +276,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
     }
   }
 }</div>
-                <table class="tech-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="tech-table">
                     <thead><tr><th>Exceção</th><th>Regra aplicada</th></tr></thead>
                     <tbody>
                         <tr><td><code>usuarios/{uid}</code></td><td>O próprio usuário lê e cria seu registro; só gestor altera o campo <code>tipo</code></td></tr>
@@ -279,6 +286,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                         <tr><td><code>auditoria</code></td><td>Registros não podem ser sobrescritos por quem não é gestor; exige <code>id</code>, <code>dataHora</code>, <code>usuario</code> e <code>acao</code></td></tr>
                     </tbody>
                 </table>
+                </div>
                 <div class="alert-box" style="margin-top:16px;">
                     <span class="icon">💡</span>
                     <span>Alterou as regras? Publique no console (Realtime Database → Regras). O arquivo do repositório é apenas a versão de referência — ele não é aplicado sozinho.</span>
@@ -310,7 +318,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
         <div id="tela-modulos" class="panel-card" style="display:none;">
             <div class="doc-section">
                 <h2><i class="fas fa-globe"></i> Páginas do Site Público</h2>
-                <table class="tech-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="tech-table">
                     <thead><tr><th>Página</th><th>Arquivo</th><th>Status</th></tr></thead>
                     <tbody>
                         <tr><td>Painel Central</td><td><code>index.html</code></td><td><span class="status-badge done">✓ pronto</span></td></tr>
@@ -331,13 +340,15 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                         <tr><td>Template</td><td><code>_template.html</code></td><td><span class="status-badge done">✓ base para novas páginas</span></td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <div class="section-divider"></div>
 
             <div class="doc-section">
                 <h2><i class="fas fa-cubes"></i> Módulos ERP</h2>
-                <table class="tech-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="tech-table">
                     <thead><tr><th>Módulo</th><th>Caminho</th><th>Conceito</th><th>Status</th></tr></thead>
                     <tbody>
                         <tr><td>Visão Geral</td><td><code>modules/geral/geral.html</code></td><td>Documentação técnica + árvore de diretórios</td><td><span class="status-badge done">✓ pronto</span></td></tr>
@@ -352,6 +363,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                         <tr><td>Suprimentos</td><td><code>modules/suprimentos/</code></td><td>—</td><td><span class="status-badge notcreated">✗ não criado</span></td></tr>
                     </tbody>
                 </table>
+                </div>
                 <div class="alert-box" style="margin-top:16px;">
                     <span class="icon">⚠️</span>
                     <span>O dashboard (<code>app.html</code>) já exibe cards de <strong>Produção</strong>, <strong>Qualidade</strong> e <strong>Suprimentos</strong>. Como as pastas não existem, clicar neles leva a um 404 — criar os módulos ou ocultar os cards.</span>
@@ -363,7 +375,8 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
             <div class="doc-section">
                 <h2><i class="fas fa-store" style="color:#9b59b6;"></i> Páginas do Site C</h2>
                 <p>Portal do cliente, no mesmo nível hierárquico de <code>app/</code> e <code>public/</code>. Não usa o sistema de componentes do site institucional, mas é ele quem hospeda o <code>firebase-config.js</code> compartilhado por todo o projeto.</p>
-                <table class="tech-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="tech-table">
                     <thead><tr><th>Página</th><th>Arquivo</th><th>Descrição</th></tr></thead>
                     <tbody>
                         <tr><td>Home</td><td><code>index.html</code></td><td>Entrada principal do portal cliente</td></tr>
@@ -379,6 +392,7 @@ document.<span class="fn">addEventListener</span>(<span class="str">"DOMContentL
                         <tr><td>Redirecionar</td><td><code>redirecionar.html</code></td><td>Ponte de navegação entre as zonas</td></tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 
@@ -457,7 +471,8 @@ http://127.0.0.1:5500/GeTech/index.html</div>
 
             <div class="doc-section">
                 <h2><i class="fas fa-clipboard-list"></i> Pendências Restantes</h2>
-                <table class="tech-table">
+                <div class="tabela-rolavel" tabindex="0" role="region" aria-label="Tabela da documentação">
+                    <table class="tech-table">
                     <thead><tr><th>Item / Funcionalidade</th><th>Tipo de Escopo</th><th>Prioridade</th></tr></thead>
                     <tbody>
                         <tr>
@@ -497,6 +512,7 @@ http://127.0.0.1:5500/GeTech/index.html</div>
                         </tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
 

@@ -14,7 +14,7 @@
     min-width: 0;
 }
 
-#fichaMaquina {
+#fichaMaquina, #devolverOS {
     width: min(42rem, calc(100% - 2rem));
     max-height: 85vh;
     padding: 1.25rem;
@@ -24,7 +24,7 @@
     border-radius: 0.75rem;
 }
 
-#fichaMaquina::backdrop {
+#fichaMaquina::backdrop, #devolverOS::backdrop {
     background: rgb(0 0 0 / 60%);
 }
 
@@ -294,4 +294,26 @@ footer { margin-top: 0; }
 @media (min-width: 600px) {
     /* Opcional: Se quiser que campos específicos fiquem lado a lado em telas maiores, 
        você pode aplicar classes de utilidade, mas mantive o grid flexível. */
+}
+
+.cartao-os {
+    border: 1px solid var(--mod-input-border);
+    scroll-margin-top: 11rem;
+}
+.cartao-os:focus { outline: 2px solid var(--mod-accent); }
+.acoes-os { display: flex; flex-wrap: wrap; gap: .5rem; }
+.acoes-os button { width: auto; }
+.filtros-os { grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); }
+.manutencao-tecnico form { margin-top: 1rem; grid-template-columns: 1fr; }
+.manutencao-tecnico fieldset { min-width: 0; }
+
+.pendente-moderacao { border-inline-start: 4px solid var(--mod-accent); }
+
+#fichaMaquina, #devolverOS { box-sizing: border-box; max-height: 85dvh; }
+.card-app, .cartao-os, #historicoFichaMaquina { min-width: 0; overflow-wrap: anywhere; }
+.app-form fieldset, .app-form > *, .busca-row input { min-width: 0; }
+@media (max-width: 768px) {
+    .app-container.manutencao-tecnico { margin-top: 20px; }
+    .nav-modulo { flex-wrap: wrap; justify-content: center; white-space: normal; }
+    .cartao-os { scroll-margin-top: 1rem; }
 }

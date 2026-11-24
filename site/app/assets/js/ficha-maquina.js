@@ -49,7 +49,12 @@ export function abrirFicha(maquina, ordens) {
     const historico = document.getElementById('historicoFichaMaquina');
     historico.replaceChildren();
     if (!ordens.length) historico.textContent = 'Nenhuma ordem disponível para esta máquina.';
-    for (const os of ordens) {
+    const ordenadas = [...ordens].sort((a, b) => {
+        const fechadas = Number(b.status === 'concluido') - Number(a.status === 'concluido');
+        const data = os => new Date(os.encerradaEm || os.criadoEm || 0).getTime() || 0;
+        return fechadas || data(b) - data(a);
+    });
+    for (const os of ordenadas) {
         const item = document.createElement('article');
         item.className = 'maq-card';
         const titulo = document.createElement('strong');

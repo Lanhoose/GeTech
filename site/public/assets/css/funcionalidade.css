@@ -44,7 +44,7 @@ body {
 /* Grid de 6 Cards */
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
     gap: 25px;
 }
 
@@ -215,7 +215,7 @@ body {
 @media (max-width: 480px) {
     .features-grid {
         /* Permite que o card reduza um pouco mais caso a tela seja muito estreita (como iPhones antigos) */
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
     }
 
     .card-container {

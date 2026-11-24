@@ -3,7 +3,7 @@
 // ==========================================================================
 import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { ref, get, push, update, runTransaction } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { ref, get, push, update, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 import { registrarAuditoria } from "./auditoria.js";
 
 const URL_LOGIN = "../../../Site C/pages/login.html";
@@ -12,6 +12,7 @@ let usuarioAtual = null;
 let itemAtualId = null;      // id do registro no Firebase (faltava: sem ele não dá para atualizar)
 let estoqueAtual = 0;
 let nomeProdutoAtual = '';
+let pararEstoque;
 
 function esc(v) {
     return String(v ?? '')
@@ -32,14 +33,31 @@ function atualizarVisor() {
     const visor = document.querySelector('#visorQtd');   // o HTML usa #visorQtd, não #estoqueAtual
     if (produto) produto.textContent = nomeProdutoAtual ? 'Item: ' + nomeProdutoAtual : 'Nenhum item selecionado';
     if (visor) visor.textContent = estoqueAtual;
+    atualizarPrevisao();
 }
 
-async function carregar() {
+function atualizarPrevisao() {
+    const campo = document.querySelector('#valorMovimentacao');
+    const previsao = document.querySelector('#previsaoSaida');
+    if (!previsao) return;
+    const valor = Number(campo?.value);
+    previsao.textContent = !itemAtualId || !Number.isFinite(valor) || valor <= 0 ? ''
+        : valor > estoqueAtual ? `Saldo atual: ${estoqueAtual}. Faltam ${valor - estoqueAtual} para a saída.`
+        : `Saldo atual: ${estoqueAtual}. Após a saída: ${estoqueAtual - valor}.`;
+}
+
+function carregar(snapshot) {
     const tabela = document.querySelector('#corpoTabela');
     if (!tabela) return;
 
-    const snap = await get(ref(db, 'estoque'));
-    const dados = snap.val() || {};
+    const dados = snapshot.val() || {};
+    if (itemAtualId) {
+        const item = dados[itemAtualId];
+        if (!item) itemAtualId = null;
+        estoqueAtual = Number(item?.quantidade) || 0;
+        nomeProdutoAtual = item?.nome || '';
+        atualizarVisor();
+    }
 
     tabela.innerHTML = '';
     Object.entries(dados).forEach(([id, v]) => {
@@ -91,12 +109,10 @@ async function movimentar(tipo) {
         }
         const item = resultado.snapshot.val();
         void registrarAuditoria(`Estoque: ${tipo}`, `${item.nome}: ${tipo} de ${valor} un. Saldo: ${item.quantidade}.`);
-        if (id === itemAtualId) {
-            estoqueAtual = item.quantidade;
-            if (campo) campo.value = '';
-            atualizarVisor();
+        if (id === itemAtualId && campo && Number(campo.value) === valor) {
+            campo.value = '';
+            atualizarPrevisao();
         }
-        await carregar();
     } catch (erro) {
         console.error(erro);
         alert('N?o foi poss?vel movimentar o estoque.');
@@ -137,7 +153,6 @@ document.querySelector('#btnRegistrar')?.addEventListener('click', async () => {
         void registrarAuditoria('Estoque: novo item', `Item ${nome} cadastrado com quantidade ${qtd}.`);
         nomeEl.value = '';
         qtdEl.value = '';
-        await carregar();
     } catch (erro) {
         console.error(erro);
         alert('N?o foi poss?vel cadastrar o item.');
@@ -146,7 +161,10 @@ document.querySelector('#btnRegistrar')?.addEventListener('click', async () => {
     }
 });
 
+document.querySelector('#valorMovimentacao')?.addEventListener('input', atualizarPrevisao);
+
 onAuthStateChanged(auth, async user => {
+    pararEstoque?.();
     usuarioAtual = user;
     if (!user) { location.href = URL_LOGIN; return; }
 
@@ -156,5 +174,6 @@ onAuthStateChanged(auth, async user => {
         location.href = URL_LOGIN;
         return;
     }
-    carregar();
+    if (auth.currentUser?.uid !== user.uid) return;
+    pararEstoque = onValue(ref(db, 'estoque'), carregar, erro => console.error('Erro ao atualizar estoque.', erro));
 });

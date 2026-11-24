@@ -107,6 +107,16 @@
 
             <h3>Histórico de Intervenções</h3>
             <button id="btnConsultarOS" class="btn-app btn-outline-app">Atualizar Histórico</button>
+            <p id="filtroOSStatus" role="status"></p>
+            <div class="app-form filtros-os">
+                <label>Máquina<select id="filtroMaquinaOS"><option value="">Todas as máquinas</option></select></label>
+                <label>Técnico<select id="filtroTecnicoOS"><option value="">Todos os técnicos</option></select></label>
+                <label>Status<select id="filtroEtapaOS">
+                    <option value="">Todos os status</option><option value="pendente">Pendente</option>
+                    <option value="em andamento">Em andamento</option><option value="revisao">Aguardando revisão</option>
+                    <option value="concluido">Concluída</option>
+                </select></label>
+            </div>
             <div id="listaOS"></div>
             <details>
                 <summary>Gerenciar acesso dos técnicos</summary>
@@ -120,6 +130,16 @@
         </section>
 
     </main>
+
+    <dialog id="devolverOS">
+        <form class="app-form" id="formDevolverOS">
+            <label for="motivoDevolucao">Motivo da devolução</label>
+            <textarea id="motivoDevolucao" required maxlength="1000"></textarea>
+            <p id="devolucaoStatus" role="status"></p>
+            <button type="submit" class="btn-app">Devolver para ajuste</button>
+            <button type="button" id="cancelarDevolucao" class="btn-app btn-outline-app">Cancelar</button>
+        </form>
+    </dialog>
 
     <dialog id="fichaMaquina" aria-labelledby="tituloFichaMaquina">
         <h2 id="tituloFichaMaquina"></h2>

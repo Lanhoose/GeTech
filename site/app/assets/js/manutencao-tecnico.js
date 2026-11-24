@@ -1,6 +1,6 @@
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
-import { ref, get, set, onValue, query, orderByChild, equalTo, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+import { ref, get, runTransaction, onValue, query, orderByChild, equalTo, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
 import { editorPecas, resumoPecas } from './pecas-os.js';
 import { anexarFoto, abrirFicha, idFicha, urlFicha } from './ficha-maquina.js';
 
@@ -48,6 +48,11 @@ function criarCartao(id, ordem, user) {
     const situacao = document.createElement('p');
     situacao.textContent = ordem.execucao && ordem.status !== 'concluido' ? 'Aguardando revisão' : ordem.status;
     card.append(titulo, descricao, situacao);
+    if (ordem.motivoDevolucao && !ordem.execucao && ordem.status !== 'concluido') {
+        const motivo = document.createElement('p');
+        motivo.textContent = 'Motivo da devolução: ' + ordem.motivoDevolucao;
+        card.append(motivo);
+    }
     if (ordem.maquinaId) {
         const link = document.createElement('a');
         link.href = urlFicha(ordem.maquinaId);
@@ -68,6 +73,20 @@ function criarCartao(id, ordem, user) {
     editor.atualizarCatalogo(catalogo);
     editor.preencher(ordem.pecas);
     card.append(form);
+    let sequenciaFoto = 0;
+    form.elements.foto.onchange = async () => {
+        const atual = ++sequenciaFoto;
+        const previa = form.querySelector('[data-previa-foto]');
+        previa.replaceChildren();
+        const mensagem = form.querySelector('[role="status"]');
+        mensagem.textContent = '';
+        try {
+            const foto = await prepararFoto(form.elements.foto.files[0]);
+            if (atual === sequenciaFoto) anexarFoto(previa, foto);
+        } catch (erro) {
+            if (atual === sequenciaFoto) mensagem.textContent = erro.message;
+        }
+    };
     form.onsubmit = async (evento) => {
         evento.preventDefault();
         const botao = form.querySelector('[type="submit"]');
@@ -80,9 +99,11 @@ function criarCartao(id, ordem, user) {
             if (!relato) throw new Error('Descreva o serviço realizado.');
             const pecas = editor.ler();
             const foto = await prepararFoto(form.elements.foto.files[0]);
-            await set(ref(db, `ordensServico/${id}/execucao`), {
-                relato, pecas, foto, uid: user.uid, enviadoEm: serverTimestamp(), versaoOS: ordem.versao || 0
-            });
+            const resultado = await runTransaction(ref(db, `ordensServico/${id}/execucao`), atual => {
+                if (atual) return;
+                return { relato, pecas, foto, uid: user.uid, enviadoEm: serverTimestamp(), versaoOS: ordem.versao || 0 };
+            }, { applyLocally: false });
+            if (!resultado.committed) throw new Error('Esta ordem já foi enviada para revisão.');
         } catch (erro) {
             console.error(erro);
             mensagem.textContent = erro.code === 'PERMISSION_DENIED'
@@ -134,6 +155,8 @@ onAuthStateChanged(auth, async user => {
     ++versaoFicha;
     lista.replaceChildren();
     cartoes.clear();
+    const ficha = document.getElementById('fichaMaquina');
+    if (ficha.open) ficha.close();
     if (!user) {
         location.replace(login);
         return;

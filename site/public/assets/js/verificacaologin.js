@@ -52,7 +52,9 @@ async function carregarUsuario(user) {
 }
 
 async function atualizarInterface(user) {
-    usuarioAtual = await carregarUsuario(user);
+    const perfil = await carregarUsuario(user);
+    if ((auth.currentUser?.uid ?? null) !== (user?.uid ?? null)) return;
+    usuarioAtual = perfil;
 
     const authSection = document.getElementById("auth-section");
     const menuConfig = document.getElementById("menu-configuracoes");
@@ -72,13 +74,14 @@ async function atualizarInterface(user) {
         authSection.innerHTML = `
             <div class="user-info">
                 <span class="user-logged">
-                    Bem-vindo, <strong>${nomeExibicao}</strong>!
+                    Bem-vindo, <strong></strong>!
                 </span>
                 <button type="button" onclick="logout()" class="btn-logout">
                     Sair
                 </button>
             </div>
         `;
+        authSection.querySelector('strong').textContent = nomeExibicao;
     } else {
         authSection.innerHTML = `
             <div class="auth-buttons">

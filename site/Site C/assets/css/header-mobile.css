@@ -143,3 +143,8 @@
         margin-left: 5px;
     }
 }
+
+@media (max-width: 900px) {
+    header nav.menu-aberto { max-height: 65dvh; overflow-y: auto; overscroll-behavior: contain; }
+    header nav li a { box-sizing: border-box; min-height: 44px; overflow-wrap: anywhere; }
+}

@@ -19,6 +19,7 @@ const emAndamento = new Set();
 async function mover(origem, destino, id, acao) {
     const chave = `${origem}/${id}`;
     if (emAndamento.has(chave)) return;
+    if ((['postsBlogOcultos', 'depoimentosOcultos'].includes(origem) || acao === 'Ocultamento') && !confirm('Confirmar esta mudança de visibilidade?')) return;
     emAndamento.add(chave);
     renderizar();
     try {
@@ -45,7 +46,13 @@ function criarCartao(origem, id, conteudo) {
     tipo.textContent = secoes[origem].rotulo;
     const texto = document.createElement('p');
     texto.textContent = conteudo.desc || conteudo.texto;
-    card.append(tipo, titulo, texto);
+    const meta = document.createElement('p');
+    const data = new Date(conteudo.criadoEm || NaN);
+    meta.textContent = [conteudo.authorName || conteudo.nome || 'Autor não informado',
+        Number.isFinite(data.getTime()) ? data.toLocaleString('pt-BR') : conteudo.date || 'Data não informada'].join(' · ');
+    const pendente = origem === 'depoimentosPendentes';
+    card.classList.toggle('pendente-moderacao', pendente);
+    card.append(tipo, titulo, meta, texto);
     const acoes = {
         postsBlog: [['Ocultar', 'postsBlogOcultos', 'Ocultamento']],
         postsBlogOcultos: [['Restaurar', 'postsBlog', 'Restauro']],
@@ -76,6 +83,10 @@ function renderizar() {
                 return pendente(b) - pendente(a) || (b.conteudo.criadoEm || 0) - (a.conteudo.criadoEm || 0);
             });
         for (const { origem, id, conteudo } of itens) lista.append(criarCartao(origem, id, conteudo));
+        if (listaId === 'depoimentos') {
+            const total = itens.filter(item => item.origem === 'depoimentosPendentes').length;
+            document.getElementById('contadorPendentes').textContent = `${total} aguardando aprovação`;
+        }
         if (!itens.length) lista.textContent = 'Nenhum conteúdo nesta lista.';
     }
 }

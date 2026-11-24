@@ -227,3 +227,5 @@ details.manual-page[open] { border-color: var(--mod-accent); }
     .diagram-toolbar { flex-direction: column; align-items: flex-start; gap: 8px; }
     .manual-lightbox-toolbar { justify-content: center; }
 }
+
+.tabela-rolavel { min-width: 0; max-width: 100%; overflow-x: auto; }

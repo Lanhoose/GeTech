@@ -345,3 +345,5 @@
                 width: max-content;
             }
         }
+
+.tabela-rolavel { min-width: 0; max-width: 100%; overflow-x: auto; }

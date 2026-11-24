@@ -16,12 +16,15 @@ const URL_INDEX = `${SITE_ROOT}/public/pages/index.html`;
 const URL_APP = `${SITE_ROOT}/app/app.html`;
 
 function destinoPerfil(tipo) {
-    const maquina = new URLSearchParams(location.search).get('maquina');
-    if (tipo === 'gestor' && !maquina) return URL_APP;
+    const parametros = new URLSearchParams(location.search);
+    const maquina = parametros.get('maquina');
+    const os = parametros.get('os');
+    if (tipo === 'gestor' && !maquina && !os) return URL_APP;
     if (tipo !== 'tecnico' && tipo !== 'gestor') return URL_INDEX;
     const pagina = tipo === 'tecnico' ? 'tecnico' : 'manutencao';
     const destino = new URL(`${SITE_ROOT}/app/modules/manutencao/${pagina}.html`);
     if (maquina) destino.searchParams.set('maquina', maquina);
+    if (os && tipo === 'gestor') destino.searchParams.set('os', os);
     return destino.href;
 }
 

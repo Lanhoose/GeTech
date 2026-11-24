@@ -16,6 +16,16 @@ import { anexarFoto, abrirFicha, idFicha, urlFicha } from './ficha-maquina.js';
 const campo = id => document.getElementById(id);
 const editor = editorPecas(campo('pecasOS'));
 let tecnicos = {};
+let estoqueOS;
+let ordemDevolvida;
+let gravandoOS = false;
+const ordemLink = new URLSearchParams(location.search).get('os');
+const etapas = { pendente: 'Pendente', 'em andamento': 'Em andamento', revisao: 'Aguardando revisão', concluido: 'Concluída' };
+const etapa = os => os.execucao && os.status !== 'concluido' ? 'revisao' : os.status;
+const faltas = (pecas, estoque) => Object.entries(pecas || {}).flatMap(([id, peca]) => {
+    const saldo = Number(estoque[id]?.quantidade) || 0;
+    return saldo < peca.quantidade ? [`${peca.nome}: faltam ${peca.quantidade - saldo} (saldo ${saldo})`] : [];
+});
 
 const BASE_URL = window.location.origin + '/GeTech';
 
@@ -234,50 +244,103 @@ async function salvarMaquina(dados) {
 }
 
 function exibirHistoricoOS() {
-    const container = document.querySelector('#listaOS');
-    if (!container) return;
-    container.innerHTML = '';
+    const container = campo('listaOS');
+    const maquina = campo('filtroMaquinaOS').value;
+    const tecnico = campo('filtroTecnicoOS').value;
+    const status = campo('filtroEtapaOS').value;
+    container.replaceChildren();
+    const ordens = historicoOS.filter(os => (!maquina || maquinaDaOrdem(os)?.id === maquina)
+        && (!tecnico || (os.tecnicoUid || 'sem-tecnico') === tecnico)
+        && (!status || etapa(os) === status));
+    if (!ordens.length) container.textContent = 'Nenhuma ordem corresponde aos filtros.';
 
-    if (historicoOS.length === 0) {
-        container.innerHTML = '<p style="color:#999; margin-top:12px;">Nenhuma ordem registrada ainda.</p>';
-        return;
-    }
-
-    historicoOS.forEach((os) => {
-        const cor = os.status === 'concluido'
-            ? '#27ae60'
-            : os.status === 'em andamento'
-                ? '#f39c12'
-                : '#e74c3c';
-
-        const card = document.createElement('div');
-        card.style.cssText = 'border:1px solid var(--mod-input-border,#ddd); padding:15px; padding-bottom:45px; margin-top:10px; border-radius:6px; position:relative; background:var(--mod-card-bg,white);';
-        card.innerHTML = `
-            <span style="position:absolute; top:15px; right:15px; color:${cor}; font-weight:bold; font-size:0.8rem; text-transform:uppercase;">
-                ● ${escaparHTML(os.status)}
-            </span>
-            <strong>Equipamento:</strong> ${escaparHTML(os.maquina)}<br>
-            <p style="margin:5px 0; color:var(--mod-label,#555);">${escaparHTML(os.descricao)}</p>
-            <small style="color:#999;">Data: ${escaparHTML(os.data)}</small>
-        `;
-
-        const botao = document.createElement('button');
-        botao.className = 'btn-app btn-outline-app';
-        botao.style.cssText = 'position:absolute; bottom:8px; right:8px; width:auto; padding:4px 10px; font-size:0.8rem;';
-        botao.textContent = 'Editar';
-        botao.addEventListener('click', () => prepararEdicaoOS(os.id));
-        if (os.status !== 'concluido') card.appendChild(botao);
-        if (os.execucao || os.pecas || os.tecnicoUid) {
+    for (const os of ordens) {
+        const card = document.createElement('article');
+        card.className = 'maq-card cartao-os';
+        card.id = 'os-' + os.id;
+        const titulo = document.createElement('h4');
+        titulo.textContent = os.maquina;
+        const info = document.createElement('p');
+        info.textContent = [etapas[etapa(os)] || os.status, os.data, tecnicos[os.tecnicoUid]?.nome || tecnicos[os.tecnicoUid]?.email].filter(Boolean).join(' · ');
+        const descricao = document.createElement('p');
+        descricao.textContent = os.descricao;
+        card.append(titulo, info, descricao);
+        const pecas = os.status === 'concluido' ? os.pecas : os.execucao ? os.execucao.pecas : os.pecas;
+        if (os.execucao?.relato || pecas) {
             const detalhe = document.createElement('p');
-            detalhe.textContent = [
-                os.tecnicoUid && (tecnicos[os.tecnicoUid]?.nome || tecnicos[os.tecnicoUid]?.email || 'T?cnico atribu?do'),
-                os.execucao && os.status !== 'concluido' && 'Aguardando revis?o',
-                resumoPecas(os.pecas || os.execucao?.pecas)
-            ].filter(Boolean).join(' ? ');
-            card.appendChild(detalhe);
+            detalhe.textContent = [os.execucao?.relato, resumoPecas(pecas)].filter(Boolean).join(' · ');
+            card.append(detalhe);
+            anexarFoto(card, os.execucao?.foto);
         }
-        container.appendChild(card);
-    });
+        if (os.motivoDevolucao && etapa(os) === 'em andamento') {
+            const motivo = document.createElement('p');
+            motivo.textContent = 'Devolução: ' + os.motivoDevolucao;
+            card.append(motivo);
+        }
+        const saldo = estoqueOS ? faltas(pecas, estoqueOS) : [];
+        if (os.status !== 'concluido' && saldo.length) {
+            const aviso = document.createElement('p');
+            aviso.textContent = saldo.join(' · ');
+            card.append(aviso);
+        }
+        if (os.status !== 'concluido') {
+            const acoes = document.createElement('div');
+            acoes.className = 'acoes-os';
+            const editar = botaoOS('Editar', () => prepararEdicaoOS(os.id));
+            acoes.append(editar);
+            if (os.execucao || !os.tecnicoUid) {
+                const concluir = botaoOS('Concluir', () => concluirCartao(os, pecas));
+                concluir.disabled = Boolean(saldo.length);
+                acoes.append(concluir);
+            }
+            if (os.execucao) acoes.append(botaoOS('Devolver', () => abrirDevolucao(os)));
+            card.append(acoes);
+        }
+        container.append(card);
+    }
+    const alvo = ordemLink && document.getElementById('os-' + ordemLink);
+    if (alvo && !linkDestacado) {
+        linkDestacado = true;
+        alvo.tabIndex = -1;
+        alvo.focus();
+        alvo.scrollIntoView({ block: 'center' });
+    }
+}
+let linkDestacado = false;
+
+function botaoOS(rotulo, acao) {
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'btn-app btn-outline-app';
+    botao.textContent = rotulo;
+    botao.onclick = acao;
+    return botao;
+}
+
+async function concluirCartao(os, pecas) {
+    if (gravandoOS || !confirm('Concluir esta ordem e registrar a baixa das peças?')) return;
+    gravandoOS = true;
+    try {
+        const maquina = maquinaDaOrdem(os);
+        if (!maquina) throw new Error('Edite a ordem para vincular a máquina antes de concluir.');
+        await salvarOrdemServico({
+            maquina: maquina.nome, maquinaId: maquina.id, descricao: os.descricao,
+            status: 'concluido', tecnicoUid: os.tecnicoUid || null, pecas: pecas || null
+        }, { id: os.id, versao: os.versao || 0, execucao: os.execucao?.enviadoEm });
+        campo('filtroOSStatus').textContent = 'Ordem concluída e estoque atualizado.';
+    } catch (erro) {
+        campo('filtroOSStatus').textContent = erro.code === 'PERMISSION_DENIED'
+            ? 'A ordem ou o saldo mudou. Confira os dados atualizados.' : erro.message;
+    } finally {
+        gravandoOS = false;
+    }
+}
+
+function abrirDevolucao(os) {
+    ordemDevolvida = os;
+    campo('formDevolverOS').reset();
+    campo('devolucaoStatus').textContent = '';
+    campo('devolverOS').showModal();
 }
 
 function maquinaDaOrdem(os) {
@@ -288,7 +351,8 @@ function maquinaDaOrdem(os) {
 
 function prepararEdicaoOS(id) {
     const os = historicoOS.find(item => item.id === id);
-    if (!os || os.status === 'concluido') return;
+    if (!os || os.status === 'concluido' || gravandoOS) return;
+    if (idOSSendoEditada && !confirm('Substituir a edição aberta pelos dados atuais?')) return;
 
     atualizarSelectMaquinas();
     campo('maquinaOS').value = maquinaDaOrdem(os)?.id || '';
@@ -304,33 +368,9 @@ function prepararEdicaoOS(id) {
     if (os.execucao) {
         const relato = document.createElement('p');
         relato.textContent = os.execucao.relato;
-        revisao.append('Relato do t?cnico', relato);
+        revisao.append('Relato do técnico', relato);
         anexarFoto(revisao, os.execucao.foto);
-        const devolver = document.createElement('button');
-        devolver.type = 'button';
-        devolver.className = 'btn-app btn-outline-app';
-        devolver.textContent = 'Devolver para ajuste';
-        devolver.onclick = async () => {
-            devolver.disabled = true;
-            try {
-                await update(ref(db, `ordensServico/${id}`), {
-                    execucao: null,
-                    status: 'em andamento',
-                    revisaoDevolvidaEm: os.execucao.enviadoEm,
-                    versao: (os.versao || 0) + 1,
-                    atualizadoEm: serverTimestamp(),
-                    atualizadoPor: usuarioAtual.uid
-                });
-                limparEdicaoOS();
-                mostrarMensagem('ordem_servico', 'Ordem devolvida ao t?cnico.');
-            } catch (erro) {
-                console.error(erro);
-                mostrarMensagem('ordem_servico', 'N?o foi poss?vel devolver a ordem. Reabra a edi??o e tente novamente.', 'erro');
-            } finally {
-                devolver.disabled = false;
-            }
-        };
-        revisao.append(devolver);
+        revisao.append(botaoOS('Devolver para ajuste', () => abrirDevolucao(os)));
     }
 
     idOSSendoEditada = id;
@@ -353,11 +393,11 @@ function limparEdicaoOS() {
     editor.preencher(null);
 }
 
-async function salvarOrdemServico(dados) {
+async function salvarOrdemServico(dados, referencia = { id: idOSSendoEditada, versao: versaoOS, execucao: execucaoOS }) {
+    const { id, versao, execucao } = referencia;
     const uid = usuarioAtual?.uid;
     if (!uid) throw new Error('Sess?o expirada.');
     const ordens = ref(db, 'ordensServico');
-    const id = idOSSendoEditada;
     if (!id) {
         if (dados.status === 'concluido') throw new Error('Abra a ordem antes de conclu?-la.');
         await set(push(ordens), {
@@ -373,17 +413,17 @@ async function salvarOrdemServico(dados) {
     const ordem = ref(db, `ordensServico/${id}`);
     const atual = (await get(ordem)).val();
     if (!atual) throw new Error('Ordem indispon?vel.');
-    if (atual.status === 'concluido') throw new Error('Esta ordem j? foi conclu?da.');
-    if ((atual.versao || 0) !== versaoOS || atual.execucao?.enviadoEm !== execucaoOS) {
-        throw new Error('A ordem mudou. Abra a edi??o novamente para revisar os dados.');
+    if ((atual.status || atual.statusOs) === 'concluido') throw new Error('Esta ordem j? foi concluída.');
+    if ((atual.versao || 0) !== versao || atual.execucao?.enviadoEm !== execucao) {
+        throw new Error('A ordem mudou. Abra a edição novamente para revisar os dados.');
     }
-    if (atual.execucao && dados.tecnicoUid !== atual.tecnicoUid) throw new Error('Devolva a revis?o antes de trocar o t?cnico.');
+    if (atual.execucao && dados.tecnicoUid !== atual.tecnicoUid) throw new Error('Devolva a revisão antes de trocar o técnico.');
 
     const campos = {
         ...dados,
         atualizadoEm: serverTimestamp(),
         atualizadoPor: uid,
-        versao: versaoOS + 1
+        versao: versao + 1
     };
 
     if (dados.status !== 'concluido') {
@@ -393,14 +433,11 @@ async function salvarOrdemServico(dados) {
     }
 
     if ((atual.tecnicoUid || dados.tecnicoUid) && !atual.execucao) {
-        throw new Error('Aguarde o t?cnico enviar a ordem para revis?o antes de concluir.');
+        throw new Error('Aguarde o técnico enviar a ordem para revisão antes de concluir.');
     }
     const estoque = (await get(ref(db, 'estoque'))).val() || {};
-    for (const [pecaId, peca] of Object.entries(dados.pecas || {})) {
-        if (Number(estoque[pecaId]?.quantidade ?? -1) < peca.quantidade) {
-            throw new Error(`Saldo insuficiente para ${peca.nome}.`);
-        }
-    }
+    const saldo = faltas(dados.pecas, estoque);
+    if (saldo.length) throw new Error('Saldo insuficiente. ' + saldo.join(' · '));
 
     const chaveOrdem = `ordensServico/${id}`;
     const alteracoes = {};
@@ -421,9 +458,9 @@ async function salvarOrdemServico(dados) {
     const logId = push(ref(db, 'auditoria')).key;
     alteracoes[`auditoria/${logId}`] = {
         id: logId, dataHora: new Date().toISOString(), usuario: usuarioAtual.email || uid, usuarioUid: uid,
-        acao: 'Manuten??o: ordem conclu?da',
+        acao: 'Manuten??o: ordem concluída',
         detalhe: `OS ${id} ? ${dados.maquina}. ${resumoPecas(dados.pecas) || 'Sem pe?as utilizadas.'}`,
-        criticidade: 'info'
+        criticidade: 'info', ordemServicoId: id
     };
     await update(ref(db), alteracoes);
 }
@@ -443,6 +480,8 @@ function iniciarListenersFirebase() {
         listaMaquinas.sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR'));
         exibirMaquinas(document.querySelector('#buscaNomeMaquinas')?.value || '');
         atualizarSelectMaquinas();
+        atualizarOpcoesConta(campo('filtroMaquinaOS'), Object.fromEntries(listaMaquinas.map(m => [m.id, m])), 'Todas as máquinas');
+        exibirHistoricoOS();
         atualizarFicha();
     });
 
@@ -456,13 +495,24 @@ function iniciarListenersFirebase() {
             data: valor.data || (valor.criadoEm ? new Date(valor.criadoEm).toLocaleString('pt-BR') : '')
         }));
         historicoOS.sort((a, b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0));
+        if (ordemLink && !linkDestacado && !historicoOS.some(os => os.id === ordemLink)) {
+            campo('filtroOSStatus').textContent = 'Ordem do link não encontrada.';
+        } else if (ordemLink && !linkDestacado) {
+            campo('filtroOSStatus').textContent = '';
+        }
+        const editada = historicoOS.find(os => os.id === idOSSendoEditada);
+        if (idOSSendoEditada && !gravandoOS && (!editada || (editada.versao || 0) !== versaoOS || editada.execucao?.enviadoEm !== execucaoOS)) {
+            mostrarMensagem('ordem_servico', 'Esta ordem mudou durante a edição. Seu texto foi preservado. Consulte a versão atual antes de salvar.', 'erro');
+        }
         exibirHistoricoOS();
         atualizarFicha();
     }, erro => mostrarMensagem('ordem_servico', escaparHTML(erro.message), 'erro'));
 
     onValue(ref(db, 'estoque'), async snap => {
         const catalogo = Object.fromEntries(Object.entries(snap.val() || {}).map(([id, item]) => [id, item.nome]));
+        estoqueOS = snap.val() || {};
         editor.atualizarCatalogo(catalogo);
+        exibirHistoricoOS();
         try {
             const anterior = (await get(ref(db, 'catalogoPecas'))).val() || {};
             const mudancas = {};
@@ -471,7 +521,7 @@ function iniciarListenersFirebase() {
             }
             if (Object.keys(mudancas).length) await update(ref(db, 'catalogoPecas'), mudancas);
         } catch (erro) {
-            console.error('N?o foi poss?vel sincronizar o cat?logo usado pelos t?cnicos.', erro);
+            console.error('N?o foi poss?vel sincronizar o cat?logo usado pelos técnicos.', erro);
             campo('acessoTecnicoStatus').textContent = 'N?o foi poss?vel sincronizar o cat?logo de pe?as.';
         }
     });
@@ -480,7 +530,8 @@ function iniciarListenersFirebase() {
         const contas = Object.entries(snap.val() || {});
         tecnicos = Object.fromEntries(contas.filter(([, perfil]) => perfil.tipo === 'tecnico'));
         const contasDisponiveis = Object.fromEntries(contas.filter(([, perfil]) => ['usuario', 'cliente'].includes(perfil.tipo)));
-        atualizarOpcoesConta(campo('tecnicoOS'), tecnicos, 'Sem t?cnico atribu?do');
+        atualizarOpcoesConta(campo('tecnicoOS'), tecnicos, 'Sem técnico atribu?do');
+        atualizarOpcoesConta(campo('filtroTecnicoOS'), { 'sem-tecnico': { nome: 'Sem técnico' }, ...tecnicos }, 'Todos os técnicos');
         atualizarOpcoesConta(campo('contaTecnico'), contasDisponiveis, 'Selecione uma conta');
         exibirHistoricoOS();
     }, erro => {
@@ -503,6 +554,28 @@ function atualizarOpcoesConta(select, contas, placeholder) {
 }
 
 function configurarEventos() {
+    ['filtroMaquinaOS', 'filtroTecnicoOS', 'filtroEtapaOS'].forEach(id => campo(id).onchange = exibirHistoricoOS);
+    campo('cancelarDevolucao').onclick = () => campo('devolverOS').close();
+    campo('formDevolverOS').onsubmit = async evento => {
+        evento.preventDefault();
+        const motivo = campo('motivoDevolucao').value.trim();
+        if (!motivo || gravandoOS) return;
+        const os = ordemDevolvida;
+        gravandoOS = true;
+        try {
+            await update(ref(db, `ordensServico/${os.id}`), {
+                execucao: null, status: 'em andamento', motivoDevolucao: motivo,
+                revisaoDevolvidaEm: os.execucao.enviadoEm, versao: (os.versao || 0) + 1,
+                atualizadoEm: serverTimestamp(), atualizadoPor: usuarioAtual.uid
+            });
+            campo('devolverOS').close();
+            campo('filtroOSStatus').textContent = 'Ordem devolvida ao técnico.';
+        } catch (erro) {
+            campo('devolucaoStatus').textContent = 'A ordem mudou ou a devolução foi recusada.';
+        } finally {
+            gravandoOS = false;
+        }
+    };
     campo('cancelarEdicaoOS').onclick = limparEdicaoOS;
     campo('acessoTecnico').onsubmit = async (evento) => {
         evento.preventDefault();
@@ -516,8 +589,8 @@ function configurarEventos() {
             const perfil = (await get(perfilRef)).val();
             if (!['usuario', 'cliente'].includes(perfil?.tipo)) throw new Error('A conta mudou. Atualize a lista.');
             await update(perfilRef, { tipo: 'tecnico' });
-            campo('acessoTecnicoStatus').textContent = 'Acesso concedido. O t?cnico entra com a conta existente.';
-            void registrarAuditoria('Manuten??o: acesso t?cnico concedido', perfil.email || id);
+            campo('acessoTecnicoStatus').textContent = 'Acesso concedido. O técnico entra com a conta existente.';
+            void registrarAuditoria('Manuten??o: acesso técnico concedido', perfil.email || id);
         } catch (erro) {
             console.error(erro);
             campo('acessoTecnicoStatus').textContent = 'N?o foi poss?vel conceder acesso.';
@@ -557,14 +630,15 @@ function configurarEventos() {
     formOS?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const botao = formOS.querySelector('[type="submit"]');
-        if (botao.disabled) return;
+        if (botao.disabled || gravandoOS) return;
         const maquina = listaMaquinas.find(item => item.id === campo('maquinaOS').value);
         const descricao = campo('descricaoOS').value.trim();
         if (!maquina || !descricao) {
-            mostrarMensagem('ordem_servico', 'Selecione a m?quina e informe a descri??o.', 'erro');
+            mostrarMensagem('ordem_servico', 'Selecione a máquina e informe a descri??o.', 'erro');
             return;
         }
         botao.disabled = true;
+        gravandoOS = true;
         try {
             const status = campo('statusOS').value;
             await salvarOrdemServico({
@@ -573,7 +647,7 @@ function configurarEventos() {
                 pecas: editor.ler()
             });
             limparEdicaoOS();
-            mostrarMensagem('ordem_servico', status === 'concluido' ? 'Ordem conclu?da e estoque atualizado.' : 'Ordem salva.');
+            mostrarMensagem('ordem_servico', status === 'concluido' ? 'Ordem concluída e estoque atualizado.' : 'Ordem salva.');
         } catch (erro) {
             console.error(erro);
             const mensagem = erro.code === 'PERMISSION_DENIED'
@@ -581,6 +655,7 @@ function configurarEventos() {
                 : erro.message;
             mostrarMensagem('ordem_servico', escaparHTML(mensagem), 'erro');
         } finally {
+            gravandoOS = false;
             botao.disabled = false;
         }
     });
@@ -704,6 +779,7 @@ onAuthStateChanged(auth, async (user) => {
     try {
         const snap = await get(ref(db, `usuarios/${user.uid}`));
         const perfil = snap.exists() ? snap.val() : {};
+        if (auth.currentUser?.uid !== user.uid) return;
         if (perfil.tipo !== 'gestor') {
             if (perfil.tipo === 'tecnico') {
                 const url = new URL('tecnico.html', location.href);
@@ -718,7 +794,7 @@ onAuthStateChanged(auth, async (user) => {
 
         usuarioAtual = user;
         configurarEventos();
-        trocarTela('cadastro');
+        trocarTela(ordemLink ? 'estoque' : 'cadastro');
         iniciarListenersFirebase();
     } catch (erro) {
         console.error(erro);

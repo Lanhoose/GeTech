@@ -113,3 +113,11 @@ footer { margin-top: auto; }
         padding: 15px;           /* Reduz ligeiramente o espaçamento lateral em telas pequenas */
     }
 }
+
+.main-content { min-width: 0; }
+@media (max-width: 576px) {
+    .header-actions { flex-wrap: wrap; }
+    #produtoSelecionado, #previsaoSaida { overflow-wrap: anywhere; }
+}
+
+.tabela-rolavel { min-width: 0; max-width: 100%; overflow-x: auto; }

@@ -265,7 +265,7 @@ body {
 ========================= */
 .ar-machines-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 20px;
 }
 
@@ -653,7 +653,7 @@ body {
 
 .ar-steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
     gap: 12px;
     margin-top: 40px;
 }
@@ -705,7 +705,7 @@ body {
 @media (max-width: 1024px) {
     .ar-section { padding: 50px 30px; }
     .ar-how { padding: 50px 30px; }
-    .ar-machines-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .ar-machines-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
 }
 
 /* Tablets em pé (Portrait) */
@@ -717,7 +717,7 @@ body {
     .ar-section-header { margin-bottom: 30px; }
     .ar-section-header h2 { font-size: 1.4rem; }
     
-    .ar-machines-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .ar-machines-grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 16px; }
     .ar-card-viewer { height: 200px; }
     
     .ar-how { padding: 40px 20px; }
