@@ -4,7 +4,7 @@
 // Firebase Authentication + Realtime Database.
 // ==========================================================================
 
-import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
+import { auth, db, sessaoDemo } from "../../../Site C/assets/js/firebase-config.js";
 import {
     onAuthStateChanged,
     signOut
@@ -12,10 +12,11 @@ import {
 import {
     ref,
     get
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+} from "../../../Site%20C/assets/js/banco-getech.js";
 import { registrarAuditoria } from './auditoria.js';
 
 window.BASE_URL = window.location.origin + "/GeTech/site";
+if (sessaoDemo) document.getElementById('avisoDemo').hidden = false;
 const URL_LOGIN = `${window.BASE_URL}/public/pages/login.html`;
 
 // ==========================================================================

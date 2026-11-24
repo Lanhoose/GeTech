@@ -7,7 +7,7 @@
 
 import { auth, db } from "../../../Site C/assets/js/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { ref, get } from "../../../Site%20C/assets/js/banco-getech.js";
 
 const BASE_URL = window.location.origin + "/GeTech";
 const DESTINO_LOGIN = `${BASE_URL}/site/public/pages/login.html`;

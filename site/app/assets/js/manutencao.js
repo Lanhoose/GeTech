@@ -8,7 +8,7 @@ import {
     update,
     get,
     serverTimestamp, increment
-} from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+} from '../../../Site%20C/assets/js/banco-getech.js';
 import { registrarAuditoria } from './auditoria.js';
 import { editorPecas, resumoPecas } from './pecas-os.js';
 import { anexarFoto, abrirFicha, idFicha, urlFicha } from './ficha-maquina.js';

@@ -9,7 +9,7 @@ import {
     ref,
     get,
     set
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+} from "../../../Site%20C/assets/js/banco-getech.js";
 
 const SITE_ROOT = window.location.origin + "/GeTech/site";
 const URL_INDEX = `${SITE_ROOT}/public/pages/index.html`;

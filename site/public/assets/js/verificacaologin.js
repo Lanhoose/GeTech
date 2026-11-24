@@ -13,7 +13,7 @@ import {
 import {
     ref,
     get
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+} from "../../../Site%20C/assets/js/banco-getech.js";
 
 // Raiz do site (SEM barra no final). Todos os destinos abaixo são montados a
 // partir dela, para nunca gerar "//" nem apontar para pasta inexistente.

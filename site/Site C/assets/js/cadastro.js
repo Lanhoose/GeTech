@@ -61,7 +61,7 @@ document.getElementById('foto')?.addEventListener('change', function() {
 // ==========================================
 import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { ref, set } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { ref, set } from "./banco-getech.js";
 import { registrarAuditoria } from "../../../app/assets/js/auditoria.js";
 
 document.getElementById('cadastroForm')?.addEventListener('submit', async function(event) {

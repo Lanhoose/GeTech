@@ -1,6 +1,6 @@
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { ref, get } from "./banco-getech.js";
 
 document.addEventListener('DOMContentLoaded',()=>{
  const heroSubtitulo=document.getElementById('heroSubtitulo') || document.querySelector('.hero-subtitulo');

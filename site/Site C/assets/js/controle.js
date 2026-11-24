@@ -8,7 +8,7 @@
 
 import { auth, db } from "./firebase-config.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { ref, get } from "./banco-getech.js";
 import { registrarAuditoria } from "../../../app/assets/js/auditoria.js";
 
 // Perfis que enxergam a opção "Sistema" no menu e podem abrir sistema.html.

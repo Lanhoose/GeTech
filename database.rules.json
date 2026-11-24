@@ -4,37 +4,37 @@
     ".write": false,
     "usuarios": {
       "$uid": {
-        ".read": "auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
-        ".write": "auth != null && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && ((!data.exists() && (newData.child('tipo').val() === 'usuario' || newData.child('tipo').val() === 'cliente' || newData.child('tipo').val() === 'patrocinador')) || (data.exists() && newData.child('tipo').val() === data.child('tipo').val()))))",
+        ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'))",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && ((!data.exists() && (newData.child('tipo').val() === 'usuario' || newData.child('tipo').val() === 'cliente' || newData.child('tipo').val() === 'patrocinador')) || (data.exists() && newData.child('tipo').val() === data.child('tipo').val())))))",
         ".validate": "newData.hasChildren(['email','tipo']) && (!data.exists() || newData.child('tipo').val() === data.child('tipo').val() || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
         "assinatura": {
           ".validate": "root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || !newData.exists() || (newData.child('plano').val() === 'Essencial' && newData.child('valorMensal').val() === 499) || (newData.child('plano').val() === 'Pro Performance' && newData.child('valorMensal').val() === 1299) || (newData.child('plano').val() === 'Enterprise' && newData.child('valorMensal').val() === root.child('solicitacoesPlanos').child($uid).child('preco').val())"
         }
       },
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
     },
     "estoque": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
       "$itemId": {
         ".validate": "newData.hasChildren(['nome','quantidade']) && newData.child('quantidade').isNumber() && newData.child('quantidade').val() >= 0"
       }
     },
     "maquinas": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
       "$maquinaId": {
-        ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico'"
+        ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico')"
       }
     },
     "ordensServico": {
       ".indexOn": [
         "tecnicoUid"
       ],
-      ".read": "(auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && query.orderByChild === 'tecnicoUid' && query.equalTo === auth.uid)",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && ((auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && query.orderByChild === 'tecnicoUid' && query.equalTo === auth.uid))",
       "$ordemId": {
-        ".read": "(auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && data.child('tecnicoUid').val() === auth.uid)",
-        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && newData.exists() && data.child('status').val() !== 'concluido' && data.child('statusOs').val() !== 'concluido' && (!data.exists() || (newData.child('versao').isNumber() && ((!data.child('versao').exists() && newData.child('versao').val() === 1) || newData.child('versao').val() === data.child('versao').val() + 1))) && (newData.child('status').val() !== 'concluido' || !data.exists() || (newData.child('encerradaEm').isNumber() && newData.parent().parent().child('movimentacoesOS').child($ordemId).child('gestorUid').val() === auth.uid && (!data.child('tecnicoUid').exists() || (data.child('execucao').child('enviadoEm').exists() && newData.child('revisaoConfirmadaEm').val() === data.child('execucao').child('enviadoEm').val())))) && (!data.child('execucao').child('enviadoEm').exists() || newData.child('execucao').child('enviadoEm').exists() || newData.child('revisaoDevolvidaEm').val() === data.child('execucao').child('enviadoEm').val()) && (!data.child('execucao').exists() || !newData.child('execucao').exists() || newData.child('tecnicoUid').val() === data.child('tecnicoUid').val())",
+        ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && ((auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && data.child('tecnicoUid').val() === auth.uid))",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && newData.exists() && data.child('status').val() !== 'concluido' && data.child('statusOs').val() !== 'concluido' && (!data.exists() || (newData.child('versao').isNumber() && ((!data.child('versao').exists() && newData.child('versao').val() === 1) || newData.child('versao').val() === data.child('versao').val() + 1))) && (newData.child('status').val() !== 'concluido' || !data.exists() || (newData.child('encerradaEm').isNumber() && newData.parent().parent().child('movimentacoesOS').child($ordemId).child('gestorUid').val() === auth.uid && (!data.child('tecnicoUid').exists() || (data.child('execucao').child('enviadoEm').exists() && newData.child('revisaoConfirmadaEm').val() === data.child('execucao').child('enviadoEm').val())))) && (!data.child('execucao').child('enviadoEm').exists() || newData.child('execucao').child('enviadoEm').exists() || newData.child('revisaoDevolvidaEm').val() === data.child('execucao').child('enviadoEm').val()) && (!data.child('execucao').exists() || !newData.child('execucao').exists() || newData.child('tecnicoUid').val() === data.child('tecnicoUid').val()))",
         ".validate": "newData.hasChildren(['maquina','descricao','status']) && (newData.child('status').val() === 'pendente' || newData.child('status').val() === 'em andamento' || newData.child('status').val() === 'concluido')",
         "tecnicoUid": {
           ".validate": "newData.isString() && (newData.val() === data.val() || root.child('usuarios').child(newData.val()).child('tipo').val() === 'tecnico')"
@@ -54,7 +54,7 @@
           }
         },
         "execucao": {
-          ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && data.parent().child('tecnicoUid').val() === auth.uid && (data.parent().child('status').val() === 'pendente' || data.parent().child('status').val() === 'em andamento') && !data.exists() && newData.exists() && newData.child('uid').val() === auth.uid && newData.child('versaoOS').val() === (data.parent().child('versao').exists() ? data.parent().child('versao').val() : 0)",
+          ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && data.parent().child('tecnicoUid').val() === auth.uid && (data.parent().child('status').val() === 'pendente' || data.parent().child('status').val() === 'em andamento') && !data.exists() && newData.exists() && newData.child('uid').val() === auth.uid && newData.child('versaoOS').val() === (data.parent().child('versao').exists() ? data.parent().child('versao').val() : 0))",
           ".validate": "newData.hasChildren(['relato','uid','enviadoEm','versaoOS'])",
           "relato": {
             ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 3000"
@@ -92,36 +92,36 @@
       }
     },
     "ordens": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
     },
     "pedidos": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
     },
     "pedidosLogs": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
     },
     "funcionarios": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
     },
     "pontos": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
     },
     "postsBlog": {
-      ".read": "auth != null",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null)",
       "$postId": {
-        ".write": "(auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists())) || (auth != null && !root.child('postsBlogOcultos').child($postId).exists() && ((!data.exists() && newData.child('criadoPor').val() === auth.uid) || (data.exists() && data.child('criadoPor').val() === auth.uid)))",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && ((auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists())) || (auth != null && !root.child('postsBlogOcultos').child($postId).exists() && ((!data.exists() && newData.child('criadoPor').val() === auth.uid) || (data.exists() && data.child('criadoPor').val() === auth.uid))))",
         ".validate": "newData.hasChildren(['title','type','date','desc','authorName','criadoEm','criadoPor']) && newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 150 && newData.child('desc').isString() && newData.child('desc').val().length > 0 && newData.child('desc').val().length <= 5000 && newData.child('criadoPor').val() === (data.exists() ? data.child('criadoPor').val() : (root.child('postsBlogOcultos').child($postId).exists() ? root.child('postsBlogOcultos').child($postId).child('criadoPor').val() : auth.uid))"
       }
     },
     "depoimentos": {
-      ".read": "auth != null",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null)",
       "$depoimentoId": {
-        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists())",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists()))",
         ".validate": "newData.hasChildren(['nome','cargo','texto','nota','criadoEm','criadoPor'])",
         "nome": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
@@ -147,8 +147,8 @@
       }
     },
     "auditoria": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
       ".indexOn": [
         "dataHora"
       ],
@@ -158,43 +158,43 @@
     },
     "solicitacoesPlanos": {
       "$uid": {
-        ".read": "auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
-        ".write": "auth != null && (root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && (!data.exists() || (newData.child('preco').val() === data.child('preco').val() && newData.child('status').val() === data.child('status').val()))))",
+        ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && (auth.uid === $uid || root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'))",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && (root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && (!data.exists() || (newData.child('preco').val() === data.child('preco').val() && newData.child('status').val() === data.child('status').val())))))",
         ".validate": "newData.hasChildren(['uid','email','plano','status','criadaEm']) && newData.child('uid').val() === $uid"
       },
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'"
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
     },
     "chamadosChatbot": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
-      ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (!data.exists() && newData.hasChildren(['nome','email','problema','data','status']))",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+      ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (!data.exists() && newData.hasChildren(['nome','email','problema','data','status'])))",
       "$id": {
         ".validate": "newData.hasChildren(['nome','email','problema','data','status'])"
       }
     },
     "catalogoPecas": {
-      ".read": "(auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico')",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && ((auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico'))",
       "$itemId": {
-        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
         ".validate": "newData.isString() && newData.val().length > 0"
       }
     },
     "movimentacoesOS": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
       "$ordemId": {
-        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && !data.exists() && newData.exists()",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && !data.exists() && newData.exists())",
         ".validate": "newData.hasChildren(['encerradaEm','gestorUid']) && newData.child('gestorUid').val() === auth.uid && newData.parent().parent().child('ordensServico').child($ordemId).child('status').val() === 'concluido'"
       }
     },
     "postsBlogOcultos": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
       "$postId": {
-        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists())"
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists()))"
       }
     },
     "depoimentosPendentes": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
       "$depoimentoId": {
-        ".write": "(auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && data.exists() && !newData.exists()) || (auth != null && !data.exists() && newData.exists() && newData.child('criadoPor').val() === auth.uid)",
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && ((auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && data.exists() && !newData.exists()) || (auth != null && !data.exists() && newData.exists() && newData.child('criadoPor').val() === auth.uid))",
         ".validate": "newData.hasChildren(['nome','cargo','texto','nota','criadoEm','criadoPor'])",
         "nome": {
           ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
@@ -220,9 +220,236 @@
       }
     },
     "depoimentosOcultos": {
-      ".read": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'",
+      ".read": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
       "$depoimentoId": {
-        ".write": "auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists())"
+        ".write": "(auth == null || !(auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/))) && (auth != null && root.child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists()))"
+      }
+    },
+    "ambientesDemo": {
+      "$sessao": {
+        "usuarios": {
+          "$uid": {
+            ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && (auth.uid === $uid || root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'))",
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && ((!data.exists() && (newData.child('tipo').val() === 'usuario' || newData.child('tipo').val() === 'cliente' || newData.child('tipo').val() === 'patrocinador')) || (data.exists() && newData.child('tipo').val() === data.child('tipo').val()))))) || (auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/) && $uid === $sessao && !data.exists() && newData.child('tipo').val() === 'gestor' && newData.child('email').val() === auth.token.email)",
+            ".validate": "newData.hasChildren(['email','tipo']) && (!data.exists() || newData.child('tipo').val() === data.child('tipo').val() || root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+            "assinatura": {
+              ".validate": "root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || !newData.exists() || (newData.child('plano').val() === 'Essencial' && newData.child('valorMensal').val() === 499) || (newData.child('plano').val() === 'Pro Performance' && newData.child('valorMensal').val() === 1299) || (newData.child('plano').val() === 'Enterprise' && newData.child('valorMensal').val() === root.child('ambientesDemo').child($sessao).child('solicitacoesPlanos').child($uid).child('preco').val())"
+            }
+          },
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+        },
+        "estoque": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          "$itemId": {
+            ".validate": "newData.hasChildren(['nome','quantidade']) && newData.child('quantidade').isNumber() && newData.child('quantidade').val() >= 0"
+          }
+        },
+        "maquinas": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          "$maquinaId": {
+            ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico')"
+          }
+        },
+        "ordensServico": {
+          ".indexOn": [
+            "tecnicoUid"
+          ],
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && ((auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && query.orderByChild === 'tecnicoUid' && query.equalTo === auth.uid))",
+          "$ordemId": {
+            ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && ((auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && data.child('tecnicoUid').val() === auth.uid))",
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && newData.exists() && data.child('status').val() !== 'concluido' && data.child('statusOs').val() !== 'concluido' && (!data.exists() || (newData.child('versao').isNumber() && ((!data.child('versao').exists() && newData.child('versao').val() === 1) || newData.child('versao').val() === data.child('versao').val() + 1))) && (newData.child('status').val() !== 'concluido' || !data.exists() || (newData.child('encerradaEm').isNumber() && newData.parent().parent().child('movimentacoesOS').child($ordemId).child('gestorUid').val() === auth.uid && (!data.child('tecnicoUid').exists() || (data.child('execucao').child('enviadoEm').exists() && newData.child('revisaoConfirmadaEm').val() === data.child('execucao').child('enviadoEm').val())))) && (!data.child('execucao').child('enviadoEm').exists() || newData.child('execucao').child('enviadoEm').exists() || newData.child('revisaoDevolvidaEm').val() === data.child('execucao').child('enviadoEm').val()) && (!data.child('execucao').exists() || !newData.child('execucao').exists() || newData.child('tecnicoUid').val() === data.child('tecnicoUid').val()))",
+            ".validate": "newData.hasChildren(['maquina','descricao','status']) && (newData.child('status').val() === 'pendente' || newData.child('status').val() === 'em andamento' || newData.child('status').val() === 'concluido')",
+            "tecnicoUid": {
+              ".validate": "newData.isString() && (newData.val() === data.val() || root.child('ambientesDemo').child($sessao).child('usuarios').child(newData.val()).child('tipo').val() === 'tecnico')"
+            },
+            "pecas": {
+              "$itemId": {
+                ".validate": "newData.hasChildren(['nome','quantidade'])",
+                "nome": {
+                  ".validate": "newData.isString() && newData.val().length > 0"
+                },
+                "quantidade": {
+                  ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 1000000 && newData.val() % 1 === 0"
+                },
+                "$outro": {
+                  ".validate": false
+                }
+              }
+            },
+            "execucao": {
+              ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico' && data.parent().child('tecnicoUid').val() === auth.uid && (data.parent().child('status').val() === 'pendente' || data.parent().child('status').val() === 'em andamento') && !data.exists() && newData.exists() && newData.child('uid').val() === auth.uid && newData.child('versaoOS').val() === (data.parent().child('versao').exists() ? data.parent().child('versao').val() : 0))",
+              ".validate": "newData.hasChildren(['relato','uid','enviadoEm','versaoOS'])",
+              "relato": {
+                ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 3000"
+              },
+              "uid": {
+                ".validate": "newData.isString() && newData.val() === newData.parent().parent().child('tecnicoUid').val()"
+              },
+              "enviadoEm": {
+                ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+              },
+              "foto": {
+                ".validate": "newData.isString() && newData.val().length <= 250000 && newData.val().beginsWith('data:image/jpeg;base64,')"
+              },
+              "pecas": {
+                "$itemId": {
+                  ".validate": "newData.hasChildren(['nome','quantidade'])",
+                  "nome": {
+                    ".validate": "newData.isString() && newData.val().length > 0"
+                  },
+                  "quantidade": {
+                    ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 1000000 && newData.val() % 1 === 0"
+                  },
+                  "$outro": {
+                    ".validate": false
+                  }
+                }
+              },
+              "$outro": {
+                ".validate": false
+              },
+              "versaoOS": {
+                ".validate": "newData.isNumber() && newData.val() >= 0"
+              }
+            }
+          }
+        },
+        "ordens": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+        },
+        "pedidos": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+        },
+        "pedidosLogs": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+        },
+        "funcionarios": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+        },
+        "pontos": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+        },
+        "postsBlog": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null)",
+          "$postId": {
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && ((auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists())) || (auth != null && !root.child('ambientesDemo').child($sessao).child('postsBlogOcultos').child($postId).exists() && ((!data.exists() && newData.child('criadoPor').val() === auth.uid) || (data.exists() && data.child('criadoPor').val() === auth.uid))))",
+            ".validate": "newData.hasChildren(['title','type','date','desc','authorName','criadoEm','criadoPor']) && newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 150 && newData.child('desc').isString() && newData.child('desc').val().length > 0 && newData.child('desc').val().length <= 5000 && newData.child('criadoPor').val() === (data.exists() ? data.child('criadoPor').val() : (root.child('ambientesDemo').child($sessao).child('postsBlogOcultos').child($postId).exists() ? root.child('ambientesDemo').child($sessao).child('postsBlogOcultos').child($postId).child('criadoPor').val() : auth.uid))"
+          }
+        },
+        "depoimentos": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null)",
+          "$depoimentoId": {
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists()))",
+            ".validate": "newData.hasChildren(['nome','cargo','texto','nota','criadoEm','criadoPor'])",
+            "nome": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
+            },
+            "cargo": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 150"
+            },
+            "texto": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000"
+            },
+            "nota": {
+              ".validate": "newData.isString() && newData.val().matches(/^(★★★★★|★★★★☆|★★★☆☆|★★☆☆☆|★☆☆☆☆)$/)"
+            },
+            "criadoEm": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "criadoPor": {
+              ".validate": "newData.isString() && newData.val() === (data.exists() ? data.val() : (root.child('ambientesDemo').child($sessao).child('depoimentosPendentes').child($depoimentoId).exists() ? root.child('ambientesDemo').child($sessao).child('depoimentosPendentes').child($depoimentoId).child('criadoPor').val() : root.child('ambientesDemo').child($sessao).child('depoimentosOcultos').child($depoimentoId).child('criadoPor').val()))"
+            },
+            "$outro": {
+              ".validate": false
+            }
+          }
+        },
+        "auditoria": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".indexOn": [
+            "dataHora"
+          ],
+          "$id": {
+            ".validate": "newData.hasChildren(['id','dataHora','usuario','acao'])"
+          }
+        },
+        "solicitacoesPlanos": {
+          "$uid": {
+            ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && (auth.uid === $uid || root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor'))",
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && (root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (auth.uid === $uid && (!data.exists() || (newData.child('preco').val() === data.child('preco').val() && newData.child('status').val() === data.child('status').val())))))",
+            ".validate": "newData.hasChildren(['uid','email','plano','status','criadaEm']) && newData.child('uid').val() === $uid"
+          },
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')"
+        },
+        "chamadosChatbot": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' || (!data.exists() && newData.hasChildren(['nome','email','problema','data','status'])))",
+          "$id": {
+            ".validate": "newData.hasChildren(['nome','email','problema','data','status'])"
+          }
+        },
+        "catalogoPecas": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && ((auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor') || (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'tecnico'))",
+          "$itemId": {
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+            ".validate": "newData.isString() && newData.val().length > 0"
+          }
+        },
+        "movimentacoesOS": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          "$ordemId": {
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && !data.exists() && newData.exists())",
+            ".validate": "newData.hasChildren(['encerradaEm','gestorUid']) && newData.child('gestorUid').val() === auth.uid && newData.parent().parent().child('ordensServico').child($ordemId).child('status').val() === 'concluido'"
+          }
+        },
+        "postsBlogOcultos": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          "$postId": {
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists()))"
+          }
+        },
+        "depoimentosPendentes": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          "$depoimentoId": {
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && ((auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && data.exists() && !newData.exists()) || (auth != null && !data.exists() && newData.exists() && newData.child('criadoPor').val() === auth.uid))",
+            ".validate": "newData.hasChildren(['nome','cargo','texto','nota','criadoEm','criadoPor'])",
+            "nome": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
+            },
+            "cargo": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 150"
+            },
+            "texto": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 2000"
+            },
+            "nota": {
+              ".validate": "newData.isString() && newData.val().matches(/^(★★★★★|★★★★☆|★★★☆☆|★★☆☆☆|★☆☆☆☆)$/)"
+            },
+            "criadoEm": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now"
+            },
+            "criadoPor": {
+              ".validate": "newData.isString() && newData.val() === auth.uid"
+            },
+            "$outro": {
+              ".validate": false
+            }
+          }
+        },
+        "depoimentosOcultos": {
+          ".read": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor')",
+          "$depoimentoId": {
+            ".write": "(auth != null && auth.uid === $sessao && auth.token.email != null && auth.token.email.matches(/^getech-demo-[a-f0-9]+@demo[.]getech[.]test$/)) && (auth != null && root.child('ambientesDemo').child($sessao).child('usuarios').child(auth.uid).child('tipo').val() === 'gestor' && (data.exists() || newData.exists()))"
+          }
+        }
       }
     }
   }

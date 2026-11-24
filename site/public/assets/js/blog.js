@@ -1,6 +1,6 @@
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
-import { ref, get, push, set, onValue, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+import { ref, get, push, set, onValue, serverTimestamp } from '../../../Site%20C/assets/js/banco-getech.js';
 import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
 let pararFeed;

@@ -1,7 +1,7 @@
 // Sistema de Manutenção - Firebase compartilhado com todo o Site C
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
-import { ref, push, onValue, get, query, orderByChild } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+import { ref, push, onValue, get, query, orderByChild } from './banco-getech.js';
 
 const $ = (id) => document.getElementById(id);
 let perfilAtual = null;

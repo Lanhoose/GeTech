@@ -1,6 +1,6 @@
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
-import { ref, get, runTransaction, onValue, query, orderByChild, equalTo, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+import { ref, get, runTransaction, onValue, query, orderByChild, equalTo, serverTimestamp } from '../../../Site%20C/assets/js/banco-getech.js';
 import { editorPecas, resumoPecas } from './pecas-os.js';
 import { anexarFoto, abrirFicha, idFicha, urlFicha } from './ficha-maquina.js';
 

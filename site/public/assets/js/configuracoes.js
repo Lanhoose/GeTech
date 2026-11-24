@@ -1,6 +1,6 @@
 import { auth, db } from '../../../Site C/assets/js/firebase-config.js';
 import { onAuthStateChanged, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js';
-import { ref, get, update } from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+import { ref, get, update } from '../../../Site%20C/assets/js/banco-getech.js';
 import { registrarAuditoria } from '../../../app/assets/js/auditoria.js';
 
 // Constante própria — NÃO usar window.BASE_URL aqui.

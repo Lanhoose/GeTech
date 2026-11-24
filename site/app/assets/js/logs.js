@@ -10,7 +10,7 @@ import {
     orderByChild,
     limitToLast,
     onValue
-} from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+} from '../../../Site%20C/assets/js/banco-getech.js';
 
 const BASE_URL = window.location.origin + '/GeTech';
 

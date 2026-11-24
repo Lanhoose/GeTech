@@ -3,7 +3,9 @@ Desenvolvimento de um sistema de ERP Industrial e Registro de sistema de manuten
 
 ## Login livre para testes
 
-Nos dois logins, o botão **Login livre** abre uma demonstração no navegador sem exigir configuração. Ela usa dados fictícios e permite testar uma ordem de serviço, revisão, baixa de estoque e histórico.
+Nos dois logins, **Login livre** cria uma conta de teste e abre o mesmo painel ERP usado por gestores. O Authentication usa o provedor existente de e-mail e senha com credenciais geradas automaticamente. Os dados são gravados em `ambientesDemo/<uid>`, dentro do mesmo Realtime Database, com regras de acesso por conta. As contas e os dados de teste persistem no Firebase até serem removidos.
+
+Para ativar o botão no site online, publique o código e o `database.rules.json` no projeto Firebase atual. O botão **Entrar** continua usando a área normal.
 
 ### ERP completo em ambiente local
 

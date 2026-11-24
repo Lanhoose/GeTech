@@ -3,7 +3,7 @@ import {
     signInWithEmailAndPassword,
     sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { ref, get } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
+import { ref, get } from "./banco-getech.js";
 
 // E-mails de recuperação enviados em português.
 auth.languageCode = "pt-BR";

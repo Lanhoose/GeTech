@@ -14,7 +14,7 @@ import {
     get,
     update,
     set
-} from 'https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js';
+} from '../../../Site%20C/assets/js/banco-getech.js';
 
 import {
     registrarAuditoria
